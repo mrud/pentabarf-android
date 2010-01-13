@@ -29,6 +29,7 @@ public class Main extends Activity implements ParserEventListener {
 	private static final int UPDATE_ID = Menu.FIRST+1;
 	private static final int SETTINGS_ID = Menu.FIRST +2;
 	private static final int TEST_ID = Menu.FIRST +3;
+	private static final int TEST_DISPLAY_EVENT_ID = Menu.FIRST + 4;
 
     
 	public int counter=0;
@@ -39,8 +40,6 @@ public class Main extends Activity implements ParserEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        
     }
     
     @Override
@@ -50,6 +49,7 @@ public class Main extends Activity implements ParserEventListener {
         menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
         menu.add(0, TEST_ID, 2, R.string.menu_testing).setIcon(R.drawable.menu_refresh);
         menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(0, TEST_DISPLAY_EVENT_ID, 2, R.string.menu_test_display_event).setIcon(android.R.drawable.ic_menu_view);
         return true;
     }
     
@@ -63,13 +63,16 @@ public class Main extends Activity implements ParserEventListener {
     	case TEST_ID:
     		testChri();
     		return true;
+    	case TEST_DISPLAY_EVENT_ID:
+    		testDisplayEvent();
+    		return true;
         		
         }
         return super.onMenuItemSelected(featureId, item);
     }
    
     
-    public Handler handler = new Handler(){
+	public Handler handler = new Handler(){
     	public void handleMessage(Message msg) {
     		if(msg==null)return;
     		if(msg.arg1==TAGEVENT){
@@ -83,8 +86,6 @@ public class Main extends Activity implements ParserEventListener {
     };
     
     
-    
-
 	public void onTagEvent(String tag, int type) {
 		if(tag.equals("event") && type==ParserEventListener.TAG_OPEN){
 			counter++;
@@ -101,8 +102,16 @@ public class Main extends Activity implements ParserEventListener {
 		startActivity(i);
 		
 	}
-	
-	
+
+	/**
+	 * Sandb's test method for display event activity 
+	 */
+	private void testDisplayEvent() {
+		final Intent intent = new Intent(DisplayEvent.ACTION_DISPLAY_EVENT);
+		intent.putExtra(DisplayEvent.ID, 528);
+		startActivity(intent);
+	}
+
 	public void updateXML() {
 		/*TODO: this is test code, it has to be replaced by some code to:
 	        * - if the db is empty, fill it up from xml (using the fetcher as below)

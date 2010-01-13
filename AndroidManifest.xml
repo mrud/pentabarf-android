@@ -14,9 +14,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="org.fosdem.schedules.DisplayEvent">
+            <intent-filter>
+                <action android:name="org.fosdem.schedules.DISPLAY_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 		<activity android:name="org.fosdem.schedules.RoomListActivity"></activity>
     </application>
-    <uses-sdk  android:minSdkVersion="3" android:targetSdkVersion="4" />
+    <uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="4"/>
 	<instrumentation android:name="android.test.InstrumentationTestRunner"
     android:targetPackage="org.fosdem"
     android:label="FOSDEM JUnit" />

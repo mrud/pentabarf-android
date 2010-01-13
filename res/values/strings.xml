@@ -7,4 +7,5 @@
     <string name="menu_testing">Testing</string>
     <string name="menu_update">Update</string>
    
+<string name="menu_test_display_event">Display event</string>
 </resources>
