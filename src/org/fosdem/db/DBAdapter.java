@@ -113,6 +113,36 @@ public class DBAdapter {
 		Cursor eventsCursor = getRawEvents();
 		return getEventsFromCursor(eventsCursor);
 	}
+	
+	protected Cursor getRawRooms() {
+		return db.query(true, TABLE_EVENTS, new String[] { ROOM }, null, null,
+				null, null, null, null);
+	}
+
+	public String[] getRooms() {
+		Cursor trackCursor = getRawRooms();
+		return getStringFromCursor(trackCursor, ROOM);
+	}
+
+	protected Cursor getRawTracks() {
+		return db.query(true, TABLE_EVENTS, new String[] { TRACK }, null, null,
+				null, null, null, null);
+	}
+
+	public String[] getTracks() {
+		Cursor trackCursor = getRawTracks();
+		return getStringFromCursor(trackCursor, TRACK);
+	}
+
+	protected String[] getStringFromCursor(Cursor cursor, String field) {
+		cursor.moveToFirst();
+		String[] values = new String[cursor.getCount()];
+		for (int i = 0; i < cursor.getCount(); i++) {
+			values[i] = cursor.getString(cursor.getColumnIndex(field));
+			cursor.moveToNext();
+		}
+		return values;
+	}
 
 	public List<Event> getEventsFiltered(Date beginDate, Date endDate, String[] tracks, String[] types, String[] tags, String[] rooms, String[] languages) {
 		StringBuilder sb = new StringBuilder();
