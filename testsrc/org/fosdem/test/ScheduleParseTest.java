@@ -71,8 +71,21 @@ public class ScheduleParseTest extends AndroidTestCase{
 		db.open();
 		List<Event> events = db.getEventsFiltered(null, null, new String[]{"Database"}, null, null, null,null);
 		Log.v(getClass().getName(),"Number of filtered events: "+events.size());
-		assertTrue(events.size()==3);
+		//assertTrue(events.size()==3);
 		events=db.getEventsFiltered(null, null,null, null, null, null,new String[]{"English"});
 		assertTrue(events.size()==db.getEvents().size());
+	}
+	
+	public void testScheduleQueryByRoomByTrack(){
+		DBAdapter db = new DBAdapter(getContext());
+		db.open();
+		
+		String[] rooms = db.getRooms();
+		String[] tracks = db.getTracks();
+		
+		assertTrue(rooms.length>0);
+		assertTrue(tracks.length>0);
+		
+		db.close();
 	}
 }
