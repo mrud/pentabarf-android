@@ -70,6 +70,10 @@ public class Event {
 		this.id = id;
 	}
 	
+	public Event(String title) {
+		this.title = title;
+	}
+	
 	public Event(int id, Date start, int duration, String room, String tag, String title, String subtitle,
 			String track, String type, String language, String abstract_description, String description,
 			ArrayList<Person> persons, ArrayList<String> links) {
@@ -89,6 +93,8 @@ public class Event {
 		this.links = links;
 	}
 	
+	
+
 	public int getId() {
 		return id;
 	}

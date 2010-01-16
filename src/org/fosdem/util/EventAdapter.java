@@ -6,7 +6,7 @@ package org.fosdem.util;
 import java.util.ArrayList;
 
 import org.fosdem.R;
-import org.fosdem.pojo.Room;
+import org.fosdem.pojo.Event;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,11 +19,11 @@ import android.widget.TextView;
  * @author Christophe Vandeplas <christophe@vandeplas.com>
  *
  */
-public class RoomAdapter extends ArrayAdapter<Room> {
+public class EventAdapter extends ArrayAdapter<Event> {
 
-	private ArrayList<Room> items;
+	private ArrayList<Event> items;
 
-	public RoomAdapter(Context context, int textViewResourceId, ArrayList<Room> items) {
+	public EventAdapter(Context context, int textViewResourceId, ArrayList<Event> items) {
 		super(context, textViewResourceId, items);
 		this.items = items;
 	}
@@ -35,11 +35,11 @@ public class RoomAdapter extends ArrayAdapter<Room> {
 			LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.simple_list_tab_indicator, null);
 		}
-		Room room = items.get(position);
-		if (room != null) {
+		Event event = items.get(position);
+		if (event != null) {
 			TextView text1 = (TextView) v.findViewById(R.id.text1);
 			if (text1 != null) {
-				text1.setText(room.getName());
+				text1.setText(event.getTitle());
 			}
 		}
 		return v;

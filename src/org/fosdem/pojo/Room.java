@@ -27,6 +27,7 @@ public class Room {
 
 	private String name;
 	private ArrayList<Event> events = new ArrayList<Event>();
+	public static final String CLASSNAME = "room";  
 	
 	public Room(String name) {
 		this.name = name;

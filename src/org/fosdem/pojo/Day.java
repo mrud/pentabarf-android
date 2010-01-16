@@ -33,6 +33,8 @@ public class Day {
 	private Date date;
 	private int index;
 	private ArrayList<Room> rooms = new ArrayList<Room>();
+	
+	public static final String CLASSNAME = "day";
 		
 	public Day(){
 		;

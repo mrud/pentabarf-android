@@ -21,9 +21,11 @@
             </intent-filter>
         </activity>
 		<activity android:name="org.fosdem.schedules.RoomListActivity"></activity>
+		<activity android:name="org.fosdem.schedules.EventListActivity"></activity>
     </application>
-    <uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="4"/>
-	<instrumentation android:name="android.test.InstrumentationTestRunner"
-    android:targetPackage="org.fosdem"
-    android:label="FOSDEM JUnit" />
+    <uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>
+	<instrumentation 
+		android:name="android.test.InstrumentationTestRunner"
+    	android:targetPackage="org.fosdem"
+    	android:label="FOSDEM JUnit" />
 </manifest> 
