@@ -9,6 +9,7 @@ import org.fosdem.R;
 import org.fosdem.pojo.Event;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.TextView;
  */
 public class EventAdapter extends ArrayAdapter<Event> {
 
+	public static final String LOG_TAG= EventAdapter.class.getName();
 	private ArrayList<Event> items;
 
 	public EventAdapter(Context context, int textViewResourceId, ArrayList<Event> items) {
@@ -33,13 +35,18 @@ public class EventAdapter extends ArrayAdapter<Event> {
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.simple_list_tab_indicator, null);
+			v = vi.inflate(R.layout.event_list, null);
 		}
 		Event event = items.get(position);
 		if (event != null) {
-			TextView text1 = (TextView) v.findViewById(R.id.text1);
-			if (text1 != null) {
-				text1.setText(event.getTitle());
+			TextView title = (TextView) v.findViewById(R.id.event_title);
+			TextView speaker = (TextView) v.findViewById(R.id.event_speakers);
+			// TODO set other values like time, speaker,...
+			if (title != null && speaker != null) {
+				title.setText(event.getTitle());
+				speaker.setText(event.getPersonsNames());
+			} else {
+				Log.e(LOG_TAG, "Cannot find some of the TextViews to fill in");
 			}
 		}
 		return v;

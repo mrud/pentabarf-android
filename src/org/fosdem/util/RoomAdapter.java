@@ -33,7 +33,7 @@ public class RoomAdapter extends ArrayAdapter<Room> {
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.simple_list_tab_indicator, null);
+			v = vi.inflate(R.layout.room_list, null);
 		}
 		Room room = items.get(position);
 		if (room != null) {

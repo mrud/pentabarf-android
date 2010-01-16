@@ -6,7 +6,9 @@ package org.fosdem.schedules;
 import java.util.ArrayList;
 
 import org.fosdem.R;
+import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Day;
+import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Room;
 import org.fosdem.util.RoomAdapter;
 
@@ -24,6 +26,9 @@ import android.widget.ListView;
 public class RoomListActivity extends ListActivity  {
 
 	public static final String LOG_TAG=RoomListActivity.class.getName();
+
+	public static final String DAY_INDEX = "dayIndex";
+	
     
 	private ArrayList<Room> rooms = null;
 	private Day day = null;
@@ -35,40 +40,31 @@ public class RoomListActivity extends ListActivity  {
 		super.onCreate(savedInstanceState);
 
 		// what day should we show? fetch from the parameters or saved instance
-		dayIndex = savedInstanceState != null ? savedInstanceState.getInt(Day.CLASSNAME) : 0;
+		dayIndex = savedInstanceState != null ? savedInstanceState.getInt(DAY_INDEX) : 0;
 		
-		if (dayIndex == 0) { 
-			Bundle extras = getIntent().getExtras();
-			if (extras != null)
-				dayIndex = extras.getInt(Day.CLASSNAME);
-			if (dayIndex == 0 ) {
-				Log.e(LOG_TAG, "You are loading this class with no valid day parameter");
-				return;
-			}
-		}
+		
+		rooms = getRooms();
 		
 		setTitle("Rooms for Day " + dayIndex);
 		
 //		day = new Day();
 //		day.setIndex(dayIndex);
 
-		// FIXME rooms = database.getRoomsByDayIndex(day_i);
-		
-		Room room1 = new Room("Janson");
-		Room room2 = new Room("Chavanne");
-		Room room3 = new Room("Ferrer");
-		
-		rooms = new ArrayList<Room>();
-		rooms.add(room1);
-		rooms.add(room2);
-		rooms.add(room3);
+//		Room room1 = new Room("Janson");
+//		Room room2 = new Room("Chavanne");
+//		Room room3 = new Room("Ferrer");
+//		
+//		rooms = new ArrayList<Room>();
+//		rooms.add(room1);
+//		rooms.add(room2);
+//		rooms.add(room3);
 		
 		
 //		String[] room_a = { "foo", "bar" };
 //		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, room_a));
 			
 		// TODO chri - adapt layout to show a right arrow 
-        setListAdapter(new RoomAdapter(this, R.layout.simple_list_tab_indicator, rooms));
+        setListAdapter(new RoomAdapter(this, R.layout.room_list, rooms));
        
 	}
 	
@@ -81,9 +77,37 @@ public class RoomListActivity extends ListActivity  {
         
         // TODO load list of Events in Room
         Intent i = new Intent(this, EventListActivity.class);
-		i.putExtra(Room.CLASSNAME, room.getName());
+		i.putExtra(EventListActivity.ROOM_NAME, room.getName());
+		i.putExtra(EventListActivity.DAY_INDEX, dayIndex);
 		startActivity(i);
     }
+	
+	private ArrayList<Room> getRooms() {
+
+		if (dayIndex == 0) { 
+			Bundle extras = getIntent().getExtras();
+			if (extras != null)
+				dayIndex = extras.getInt(DAY_INDEX);
+			if (dayIndex == 0 ) {
+				Log.e(LOG_TAG, "You are loading this class with no valid day parameter");
+				return null;
+			}
+		}
+		
+		// Load event with specified id from the db
+		final DBAdapter db = new DBAdapter(this);
+		try {
+			db.open();
+			String[] roomNames = db.getRoomsByDayIndex(dayIndex);
+			ArrayList<Room> rooms = new ArrayList<Room>();
+			for (String roomName : roomNames) {
+				rooms.add(new Room(roomName));
+			}
+			return rooms;
+		} finally {
+			db.close();
+		}
+	}
     
     
 	

@@ -3,6 +3,7 @@ package org.fosdem.schedules;
 import java.util.ArrayList;
 
 import org.fosdem.R;
+import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Day;
 import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Room;
@@ -22,7 +23,10 @@ import android.widget.ListView;
 	public class EventListActivity extends ListActivity{
 
 	public static final String LOG_TAG=EventListActivity.class.getName();
-    
+	
+	public static final String ROOM_NAME = "roomName";
+	public static final String DAY_INDEX = "dayIndex";
+	
 	private ArrayList<Event> events = null;
 	private Room room = null;
 	private String roomName = null;
@@ -32,56 +36,62 @@ import android.widget.ListView;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// what room should we show? fetch from the parameters
-		roomName = savedInstanceState != null ? savedInstanceState.getString(Room.CLASSNAME) : null;
+		roomName = savedInstanceState != null ? savedInstanceState.getString(ROOM_NAME) : null;
+		// TODO dayindex
 		
-		if (roomName == null) { 
-			Bundle extras = getIntent().getExtras();
-			if (extras != null)
-				roomName = extras.getString(Room.CLASSNAME);
-			if (roomName == null ) {
-				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
-				return;
-			}
-		}
+		events = getEventList();
 		
 		setTitle(roomName);
+		// FIXME also pass on the day or dates of the event
 		
-//		room = new Room(roomName);
-
-		// FIXME events = database.getEventsByRoomName(roomName);
-		
-		Event event1 = new Event("Opening talk");
-		Event event2 = new Event("Why open source matters");
-		Event event3 = new Event("Closing talk");
-		
-		events = new ArrayList<Event>();
-		events.add(event1);
-		events.add(event2);
-		events.add(event3);
-		
-		
-//		String[] room_a = { "foo", "bar" };
-//		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, room_a));
-			
 		// TODO chri - adapt layout to show a right arrow 
-        setListAdapter(new EventAdapter(this, R.layout.simple_list_tab_indicator, events));
+        setListAdapter(new EventAdapter(this, R.layout.event_list, events));
        
 	}
 	
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Room room = (Room) getListView().getItemAtPosition(position);
+        Event event = (Event) getListView().getItemAtPosition(position);
         
-        Log.d(LOG_TAG, "Room selected: " + room.getName());
+        Log.d(LOG_TAG, "Event selected: " + event.getTitle());
         
-        // TODO load list of Events in Room
         Intent i = new Intent(this, EventListActivity.class);
-		i.putExtra(Room.CLASSNAME, room.getName());
+		i.putExtra(DisplayEvent.ID, event.getId());
 		startActivity(i);
     }
     
+	
+	/**
+	 * Gets the {@link Event} that was specified through the intent or null if
+	 * no or wrongly specified event.
+	 * 
+	 * @return The Event or null.
+	 */
+	private ArrayList<Event> getEventList() {
+		
+		// TODO dayIndex 
+		// what room should we show? fetch from the parameters
+		if (roomName == null) { 
+			Bundle extras = getIntent().getExtras();
+			if (extras != null)
+				roomName = extras.getString(ROOM_NAME);
+			if (roomName == null ) {
+				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
+				return null;
+			}
+		}
+		
+		// Load event with specified id from the db
+		final DBAdapter db = new DBAdapter(this);
+		try {
+			db.open();
+			return (ArrayList<Event>) db.getEventsByRoomName(roomName);
+		} finally {
+			db.close();
+		}
+	}
+
     
 	
 }

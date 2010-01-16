@@ -34,7 +34,6 @@ public class Day {
 	private int index;
 	private ArrayList<Room> rooms = new ArrayList<Room>();
 	
-	public static final String CLASSNAME = "day";
 		
 	public Day(){
 		;

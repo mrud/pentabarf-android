@@ -5,6 +5,8 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_vertical"
+	
+	android:paddingRight="7dip"
 	>
 	 
 	<TextView
@@ -18,12 +20,14 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 	
-	<ImageView
-		android:paddingRight="15dip"
-		android:src="@drawable/more_icon"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-		android:layout_alignParentRight="true"
-		 />
+	<CheckBox
+        android:id="@+id/event_star"
+        android:layout_width="23dip"
+        android:layout_height="23dip"
+        android:layout_marginTop="7dip"
+        android:layout_marginLeft="7dip"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:button="@drawable/more_icon"
+        />
 </RelativeLayout>

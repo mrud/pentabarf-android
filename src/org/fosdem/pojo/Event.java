@@ -21,8 +21,11 @@ package org.fosdem.pojo;
 
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+
+import android.util.Log;
 
 
 public class Event {
@@ -46,6 +49,7 @@ public class Event {
 //    </links>
 //   </event>
 	
+	public static final String LOG_TAG = Event.class.getName();
 	public static final int DURATION_BLOCK = 15;
 	private int id;
 	private Date start;
@@ -182,6 +186,20 @@ public class Event {
 	}
 	public void setLinks(ArrayList<String> links) {
 		this.links = links;
+	}
+	
+	public String getPersonsNames() {
+		String names = null;
+		if (persons == null) {
+			Log.i(LOG_TAG, "Event has no speakers");
+			return "";
+		}
+		Iterator<Person> itr = persons.iterator();
+		while(itr.hasNext()) {
+			if (names == null) names = itr.next().getName();
+			else names += ", " + itr.next().getName();
+		}
+		return names;
 	}
 	
 	public String toString() {

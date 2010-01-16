@@ -124,6 +124,15 @@ public class DBAdapter {
 		return getStringFromCursor(trackCursor, ROOM);
 	}
 
+	public String[] getRoomsByDayIndex(int dayIndex) {
+		return getRooms();
+//		String where = "dayindex ='"+dayIndex+"'"; // FIXME dayindex is not in table
+//		Cursor trackCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM }, where, null,
+//				null, null, null, null);
+//		return getStringFromCursor(trackCursor, ROOM);
+	}
+	
+
 	protected Cursor getRawTracks() {
 		return db.query(true, TABLE_EVENTS, new String[] { TRACK }, null, null,
 				null, null, null, null);
@@ -226,9 +235,24 @@ public class DBAdapter {
 
 		return getEventsFromCursor(eventsById).get(0);
 	}
+	
+	/**
+	 * Retrieves the list of events for a given room name, or null if no such events exists.
+	 * @param roomName
+	 * @return A list of events
+	 */
+	public List<Event> getEventsByRoomName(String roomName) {
+		//getEventsFiltered(Date beginDate, Date endDate, String[] tracks, String[] types, String[] tags, String[] rooms, String[] languages)
+		
+		String rooms[] = { roomName };
+		return getEventsFiltered(null, null, null, null, null,rooms, null);
+	}
+	
 
 	public void clearEvents() {
 		db.execSQL("delete from " + TABLE_EVENTS);
 	}
+
+	
 
 }

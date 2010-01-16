@@ -7,7 +7,7 @@ import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.parsers.ScheduleParser;
-import org.fosdem.pojo.Schedule;
+import org.fosdem.pojo.*;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,6 +40,7 @@ public class Main extends Activity implements ParserEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
     }
     
     @Override
@@ -72,7 +73,7 @@ public class Main extends Activity implements ParserEventListener {
     }
    
     
-	public Handler handler = new Handler(){
+    public Handler handler = new Handler(){
     	public void handleMessage(Message msg) {
     		if(msg==null)return;
     		if(msg.arg1==TAGEVENT){
@@ -86,6 +87,8 @@ public class Main extends Activity implements ParserEventListener {
     };
     
     
+    
+
 	public void onTagEvent(String tag, int type) {
 		if(tag.equals("event") && type==ParserEventListener.TAG_OPEN){
 			counter++;
@@ -99,10 +102,11 @@ public class Main extends Activity implements ParserEventListener {
 	public void testChri() {
 		// test function for Christophe
 		Intent i = new Intent(this, RoomListActivity.class);
+		i.putExtra(RoomListActivity.DAY_INDEX, 1);
 		startActivity(i);
 		
 	}
-
+	
 	/**
 	 * Sandb's test method for display event activity 
 	 */
@@ -111,7 +115,7 @@ public class Main extends Activity implements ParserEventListener {
 		intent.putExtra(DisplayEvent.ID, 528);
 		startActivity(intent);
 	}
-
+	
 	public void updateXML() {
 		/*TODO: this is test code, it has to be replaced by some code to:
 	        * - if the db is empty, fill it up from xml (using the fetcher as below)
