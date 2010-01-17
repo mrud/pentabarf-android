@@ -90,21 +90,24 @@ public class ScheduleParseTest extends AndroidTestCase {
 		}
 
 	}
-	
-	public void testScheduleQueriesByDate(){
+
+	public void testScheduleQueriesByDate() {
 		DBAdapter db = new DBAdapter(getContext());
 		db.open();
-		
-		String[] roomsByDay = db.getRoomsByDayIndex(0);
-		String[] tracksByDay = db.getRoomsByDayIndex(0);
-		
-		assertTrue(roomsByDay.length>0);
-		assertTrue(tracksByDay.length>0);
-		Log.v(getClass().getName(),"Rooms by day: "+roomsByDay.length+" "+roomsByDay.toString());
-		Log.v(getClass().getName(),"Tracks by day: "+tracksByDay.length+" "+tracksByDay.toString());
-		
-		
-		db.close();
+		try {
+			String[] roomsByDay = db.getRoomsByDayIndex(1);
+			String[] tracksByDay = db.getRoomsByDayIndex(1);
+
+			assertTrue(roomsByDay.length > 0);
+			assertTrue(tracksByDay.length > 0);
+			Log.v(getClass().getName(), "Rooms by day: " + roomsByDay.length
+					+ " " + roomsByDay.toString());
+			Log.v(getClass().getName(), "Tracks by day: " + tracksByDay.length
+					+ " " + tracksByDay.toString());
+		} finally {
+
+			db.close();
+		}
 	}
 
 	public void testScheduleQueryByRoomByTrack() {
