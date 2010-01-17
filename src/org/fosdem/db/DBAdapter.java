@@ -303,6 +303,11 @@ public class DBAdapter {
 		String rooms[] = { roomName };
 		return getEventsFiltered(null, null, null, null, null, rooms, null);
 	}
+	
+	public List<Event> getEventsByTrackName(String trackName) {
+		String tracks[] = { trackName };
+		return getEventsFiltered(null, null, tracks, null, null, null, null);
+	}
 
 	public void clearEvents() {
 		db.execSQL("delete from " + TABLE_EVENTS);
