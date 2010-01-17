@@ -1,8 +1,12 @@
 package org.fosdem.util;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.fosdem.pojo.Person;
+
+
 
 /**
  * String utilities specific to the fosdem schedule application.
@@ -89,5 +93,11 @@ public class StringUtil {
 			first = false;
 		}
 		return sb.toString();
+	}
+	
+	
+	public static String datesToString(Date start, int duration) {
+		return "@" + DateFormat.getDateInstance(DateFormat.SHORT).format(start) + " - " + duration + " min";
+		
 	}
 }

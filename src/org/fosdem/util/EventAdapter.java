@@ -41,13 +41,15 @@ public class EventAdapter extends ArrayAdapter<Event> {
 		if (event != null) {
 			TextView title = (TextView) v.findViewById(R.id.event_title);
 			TextView speaker = (TextView) v.findViewById(R.id.event_speakers);
+			TextView room = (TextView) v.findViewById(R.id.event_room);
+			TextView time = (TextView) v.findViewById(R.id.event_time);
 			// TODO set other values like time, speaker,...
-			if (title != null && speaker != null) {
-				title.setText(event.getTitle());
-				speaker.setText(event.getPersonsNames());
-			} else {
-				Log.e(LOG_TAG, "Cannot find some of the TextViews to fill in");
-			}
+
+			title.setText(event.getTitle());
+			speaker.setText(event.getPersonsNames());
+			room.setText(event.getRoom());
+			time.setText(StringUtil.datesToString(event.getStart(), event.getDuration()));
+			
 		}
 		return v;
 	}
