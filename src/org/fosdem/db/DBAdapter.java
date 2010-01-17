@@ -101,7 +101,6 @@ public class DBAdapter {
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
 		initialValues.put(DAYINDEX, event.getDayindex());
-		Log.v(getClass().getName(), event.getStart().toString());
 		return db.insert(TABLE_EVENTS, null, initialValues);
 	}
 
