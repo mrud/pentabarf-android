@@ -134,8 +134,7 @@ public class Main extends Activity implements ParserEventListener {
 	        Thread t = new Thread(){
 	        	public void run() {
 	        		try {
-						//ScheduleParser parser=new ScheduleParser("http://fosdem.org/2010/schedule/xml");
-						ScheduleParser parser=new ScheduleParser("http://archive.fosdem.org/2009/schedule/xml");
+						ScheduleParser parser=new ScheduleParser("http://fosdem.org/schedule/xml");
 	        			parser.addTagEventListener(Main.this);
 						Schedule s = parser.parse();
 						Message msg = new Message();
