@@ -76,10 +76,10 @@ public class RoomListActivity extends ListActivity  {
         Log.d(LOG_TAG, "Room selected: " + room.getName());
         
         // TODO load list of Events in Room
-        Intent i = new Intent(this, EventListActivity.class);
-		i.putExtra(EventListActivity.ROOM_NAME, room.getName());
-		i.putExtra(EventListActivity.DAY_INDEX, dayIndex);
-		startActivity(i);
+//        Intent i = new Intent(this, EventListActivity.class);
+//		i.putExtra(EventListActivity.ROOM_NAME, room.getName());
+//		i.putExtra(EventListActivity.DAY_INDEX, dayIndex);
+//		startActivity(i);
     }
 	
 	private ArrayList<Room> getRooms() {

@@ -77,7 +77,7 @@ public class TrackListActivity extends ListActivity  {
         
         // TODO load list of Events in Track
         Intent i = new Intent(this, EventListActivity.class);
-		i.putExtra(EventListActivity.ROOM_NAME, track.getName());
+		i.putExtra(EventListActivity.TRACK_NAME, track.getName());
 		i.putExtra(EventListActivity.DAY_INDEX, dayIndex);
 		startActivity(i);
     }

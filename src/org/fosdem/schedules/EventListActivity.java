@@ -24,28 +24,25 @@ import android.widget.ListView;
 
 	public static final String LOG_TAG=EventListActivity.class.getName();
 	
-	public static final String ROOM_NAME = "roomName";
 	public static final String DAY_INDEX = "dayIndex";
+	public static final String TRACK_NAME = "trackName";
 	
 	private ArrayList<Event> events = null;
-	private Room room = null;
-	private String roomName = null;
-    
+	private String trackName = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		roomName = savedInstanceState != null ? savedInstanceState.getString(ROOM_NAME) : null;
+		trackName = savedInstanceState != null ? savedInstanceState.getString(TRACK_NAME) : null;
 		// TODO dayindex
 		
 		events = getEventList();
 		
-		setTitle(roomName);
+		setTitle(trackName);
 		// FIXME also pass on the day or dates of the event
 		
-		// TODO chri - adapt layout to show a right arrow 
-        setListAdapter(new EventAdapter(this, R.layout.event_list, events));
+		setListAdapter(new EventAdapter(this, R.layout.event_list, events));
        
 	}
 	
@@ -54,9 +51,9 @@ import android.widget.ListView;
         super.onListItemClick(l, v, position, id);
         Event event = (Event) getListView().getItemAtPosition(position);
         
-        Log.d(LOG_TAG, "Event selected: " + event.getTitle());
+        Log.d(LOG_TAG, "Event selected: " + event.getId() + " - " + event.getTitle());
         
-        Intent i = new Intent(this, EventListActivity.class);
+        Intent i = new Intent(this, DisplayEvent.class);
 		i.putExtra(DisplayEvent.ID, event.getId());
 		startActivity(i);
     }
@@ -72,11 +69,11 @@ import android.widget.ListView;
 		
 		// TODO dayIndex 
 		// what room should we show? fetch from the parameters
-		if (roomName == null) { 
+		if (trackName == null) { 
 			Bundle extras = getIntent().getExtras();
 			if (extras != null)
-				roomName = extras.getString(ROOM_NAME);
-			if (roomName == null ) {
+				trackName = extras.getString(TRACK_NAME);
+			if (trackName == null ) {
 				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
 				return null;
 			}
@@ -86,7 +83,7 @@ import android.widget.ListView;
 		final DBAdapter db = new DBAdapter(this);
 		try {
 			db.open();
-			return (ArrayList<Event>) db.getEventsByRoomName(roomName);
+			return (ArrayList<Event>) db.getEventsByTrackName(trackName);
 		} finally {
 			db.close();
 		}
