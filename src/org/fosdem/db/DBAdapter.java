@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.fosdem.pojo.Day;
 import org.fosdem.pojo.Event;
+import org.fosdem.pojo.Person;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Schedule;
 
@@ -18,9 +19,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DBAdapter {
+	// TODO: add getter methods for getting persons and their events
 	protected static final String DB_NAME = "fosdem_schedule";
 	protected static final String TABLE_EVENTS = "events";
-	protected static final int DB_VERSION = 3;
+	protected static final String TABLE_PERSONS = "persons";
+	protected static final String TABLE_JOIN_PERSON_EVENT = "person_event";
+	protected static final int DB_VERSION = 4;
 
 	public static final String ID = "id";
 	public static final String START = "start";
@@ -35,9 +39,15 @@ public class DBAdapter {
 	public static final String ABSTRACT = "abstract";
 	public static final String DESCRIPTION = "description";
 	public static final String DAYINDEX = "dayindex";
+	public static final String NAME = "name";
+	public static final String PERSONS = "person";
+	public static final String PERSONID = "personid";
+	public static final String EVENTID = "eventid";
 
 	// TODO replace fields and table
 	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer)";
+	protected static final String DB_CREATE_PERSONS = "create table persons (id integer primary key,name text)";
+	protected static final String DB_CREATE_PERSON_EVENT = "create table person_event (id integer primary key autoincrement,personid integer,eventid integer)";
 
 	protected DatabaseHelper dbHelper;
 	protected Context context;
@@ -62,7 +72,11 @@ public class DBAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.v(getClass().getName(), "Updating db to version " + DB_VERSION);
 			db.execSQL("drop table if exists events");
+			db.execSQL("drop table if exists persons");
+			db.execSQL("drop table if exists person_event");
 			db.execSQL(DB_CREATE_EVENTS);
+			db.execSQL(DB_CREATE_PERSONS);
+			db.execSQL(DB_CREATE_PERSON_EVENT);
 		}
 	}
 
@@ -76,13 +90,45 @@ public class DBAdapter {
 	}
 
 	public void persistSchedule(Schedule s) {
+		clearEvents();
+		clearPersons();
+		clearPersonEventLinks();
 		for (Day day : s.getDays()) {
 			for (Room room : day.getRooms()) {
 				for (Event event : room.getEvents()) {
 					addEvent(event);
+					persistPersons(event.getPersons());
+					persistPersonEventLink(event);
 				}
 			}
 		}
+	}
+
+	public void persistPersons(List<Person> persons) {
+		for (Person p : persons) {
+			addPerson(p);
+		}
+	}
+
+	public void persistPersonEventLink(Event event) {
+		for (Person p : event.getPersons()) {
+			linkPersonToEvent(p, event);
+		}
+	}
+
+	public long addPerson(Person person) {
+		deleteFromPersons(person.getId());
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(ID, person.getId());
+		initialValues.put(NAME, person.getName());
+		return db.insert(TABLE_PERSONS, null, initialValues);
+	}
+
+	public long linkPersonToEvent(Person person, Event event) {
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(PERSONID, person.getId());
+		initialValues.put(EVENTID, event.getId());
+		return db.insert(TABLE_JOIN_PERSON_EVENT, null, initialValues);
 	}
 
 	public long addEvent(Event event) {
@@ -101,8 +147,13 @@ public class DBAdapter {
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
 		initialValues.put(DAYINDEX, event.getDayindex());
-		//Log.v(getClass().getName(), "Putting dayindex " + event.getDayindex());
+		// Log.v(getClass().getName(), "Putting dayindex " +
+		// event.getDayindex());
 		return db.insert(TABLE_EVENTS, null, initialValues);
+	}
+
+	public boolean deleteFromPersons(int id) {
+		return db.delete(TABLE_PERSONS, ID + "='" + id + "'", null) > 0;
 	}
 
 	public boolean deleteFromEvents(int id) {
@@ -112,7 +163,7 @@ public class DBAdapter {
 	protected Cursor getRawEvents() {
 		return db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM,
 				TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT,
-				DESCRIPTION, DAYINDEX }, null, null, null, null, null, null);
+				DESCRIPTION, DAYINDEX }, null, null, null, null, START, null);
 	}
 
 	public List<Event> getEvents() {
@@ -122,7 +173,7 @@ public class DBAdapter {
 
 	protected Cursor getRawRooms() {
 		return db.query(true, TABLE_EVENTS, new String[] { ROOM }, null, null,
-				null, null, null, null);
+				null, null, START, null);
 	}
 
 	public String[] getRooms() {
@@ -153,7 +204,7 @@ public class DBAdapter {
 
 	public String[] getRoomsByDayIndex(int dayIndex) {
 		Cursor roomCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM },
-				DAYINDEX + "=" + dayIndex, null, null, null, null, null);
+				DAYINDEX + "=" + dayIndex, null, null, null, START, null);
 		return getStringFromCursor(roomCursor, ROOM);
 	}
 
@@ -166,7 +217,7 @@ public class DBAdapter {
 
 	protected Cursor getRawTracks() {
 		return db.query(true, TABLE_EVENTS, new String[] { TRACK }, null, null,
-				null, null, null, null);
+				null, null, START, null);
 	}
 
 	public String[] getTracks() {
@@ -224,7 +275,7 @@ public class DBAdapter {
 		Cursor c = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION,
 				ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE,
 				ABSTRACT, DESCRIPTION, DAYINDEX }, where, null, null, null,
-				null, null);
+				START, null);
 		return getEventsFromCursor(c);
 	}
 
@@ -284,7 +335,7 @@ public class DBAdapter {
 		final Cursor eventsById = db.query(TABLE_EVENTS, new String[] { ID,
 				START, DURATION, ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE,
 				LANGUAGE, ABSTRACT, DESCRIPTION, DAYINDEX }, "id = :1",
-				new String[] { Integer.toString(id) }, null, null, null, null);
+				new String[] { Integer.toString(id) }, null, null, START, null);
 
 		if (eventsById.getCount() < 1)
 			return null;
@@ -311,6 +362,14 @@ public class DBAdapter {
 
 	public void clearEvents() {
 		db.execSQL("delete from " + TABLE_EVENTS);
+	}
+
+	public void clearPersons() {
+		db.execSQL("delete from " + TABLE_PERSONS);
+	}
+
+	public void clearPersonEventLinks() {
+		db.execSQL("delete from " + TABLE_JOIN_PERSON_EVENT);
 	}
 
 }
