@@ -112,7 +112,7 @@ public class Main extends Activity implements ParserEventListener {
 	 */
 	private void testDisplayEvent() {
 		final Intent intent = new Intent(DisplayEvent.ACTION_DISPLAY_EVENT);
-		intent.putExtra(DisplayEvent.ID, 528);
+		intent.putExtra(DisplayEvent.ID, 505);
 		startActivity(intent);
 	}
 	

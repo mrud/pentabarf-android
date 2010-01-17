@@ -3,6 +3,7 @@ package org.fosdem.schedules;
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
+import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -30,15 +31,7 @@ public class DisplayEvent extends Activity {
 			return;
 		}
 
-		// final Event event = new Event();
-		// event.setTitle("Free. Open. Future?");
-		// event.setRoom("Janson");
-		// event.setTrack("Keynotes");
-		// event.setDescription("Freedom, openness and participation have become a pervasive part of digital life. 250 million people use Firefox. Wikipedia reaches people in 260 languages. Whole countries have Linux in their schools. Flickr hosts millions of openly licenses photos. Apache underpins the Internet. We have moved mountains.\n\n"
-		// +
-		// "At the same time, the terrain has shifted. Our digital world has moved into the cloud. And, our window into this world is just as often unhackable phones in our pocket as it is flexible computers on our desktop. Hundreds of millions of people take being digital for granted, and rarely stop to think what it means. The world where free and open source software were born is not the same as the world they have helped to build.\n\n"
-		// +
-		// "It's time to ask: what do freedom, openness and participation look like 10 years from now? How do we promote these values into the future? Building the open web and hackability into the world of mobile is part of the answer. Promoting privacy, portability and user control in the cloud are also critical. But what else? Mark Surman will reflect on these questions and chat with the FOSDEM crowd.");
+		// populate the UI_event
 		showEvent(event);
 	}
 
@@ -81,8 +74,12 @@ public class DisplayEvent extends Activity {
 	 */
 	private void setTextViewText(int id, String value) {
 		final TextView tv = (TextView) findViewById(id);
-		if (value == null)
-			value = "Null!!";
+
+		if (value == null) {
+			tv.setText("");
+			return;
+		}
+
 		tv.setText(value);
 	}
 
@@ -96,8 +93,9 @@ public class DisplayEvent extends Activity {
 		setTextViewText(R.id.event_title, event.getTitle());
 		setTextViewText(R.id.event_track, event.getTrack());
 		setTextViewText(R.id.event_room, event.getRoom());
-		setTextViewText(R.id.event_speaker, event.getPersons().toString());
-		setTextViewText(R.id.event_description, event.getDescription());
+		setTextViewText(R.id.event_speaker, StringUtil.personsToString(event.getPersons()));
+		setTextViewText(R.id.event_abstract, StringUtil.niceify(event.getAbstract_description()));
+		setTextViewText(R.id.event_description, StringUtil.niceify(event.getDescription()));
 	}
 
 }
