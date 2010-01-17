@@ -2,7 +2,6 @@ package org.fosdem.test;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.fosdem.db.DBAdapter;
