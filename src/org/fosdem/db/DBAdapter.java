@@ -20,7 +20,7 @@ import android.util.Log;
 public class DBAdapter {
 	protected static final String DB_NAME = "fosdem_schedule";
 	protected static final String TABLE_EVENTS = "events";
-	protected static final int DB_VERSION = 1;
+	protected static final int DB_VERSION = 3;
 
 	public static final String ID = "id";
 	public static final String START = "start";
@@ -34,9 +34,10 @@ public class DBAdapter {
 	public static final String LANGUAGE = "language";
 	public static final String ABSTRACT = "abstract";
 	public static final String DESCRIPTION = "description";
+	public static final String DAYINDEX = "dayindex";
 
 	// TODO replace fields and table
-	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration int,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text)";
+	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer)";
 
 	protected DatabaseHelper dbHelper;
 	protected Context context;
@@ -59,6 +60,7 @@ public class DBAdapter {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			Log.v(getClass().getName(), "Updating db to version " + DB_VERSION);
 			db.execSQL("drop table if exists events");
 			db.execSQL(DB_CREATE_EVENTS);
 		}
@@ -98,6 +100,8 @@ public class DBAdapter {
 		initialValues.put(LANGUAGE, event.getLanguage());
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
+		initialValues.put(DAYINDEX, event.getDayindex());
+		Log.v(getClass().getName(), event.getStart().toString());
 		return db.insert(TABLE_EVENTS, null, initialValues);
 	}
 
@@ -106,14 +110,16 @@ public class DBAdapter {
 	}
 
 	protected Cursor getRawEvents() {
-		return db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT, DESCRIPTION }, null, null, null, null, null, null);
+		return db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM,
+				TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT,
+				DESCRIPTION, DAYINDEX }, null, null, null, null, null, null);
 	}
 
 	public List<Event> getEvents() {
 		Cursor eventsCursor = getRawEvents();
 		return getEventsFromCursor(eventsCursor);
 	}
-	
+
 	protected Cursor getRawRooms() {
 		return db.query(true, TABLE_EVENTS, new String[] { ROOM }, null, null,
 				null, null, null, null);
@@ -124,14 +130,32 @@ public class DBAdapter {
 		return getStringFromCursor(trackCursor, ROOM);
 	}
 
-	public String[] getRoomsByDayIndex(int dayIndex) {
-		return getRooms();
-//		String where = "dayindex ='"+dayIndex+"'"; // FIXME dayindex is not in table
-//		Cursor trackCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM }, where, null,
-//				null, null, null, null);
-//		return getStringFromCursor(trackCursor, ROOM);
+	public List<Date> getDays() {
+		ArrayList<Date> list = new ArrayList<Date>();
+		Cursor c = db.rawQuery("select min(" + START + "),max(" + START
+				+ ") from " + TABLE_EVENTS, null);
+		c.moveToFirst();
+		long min = c.getLong(0);
+		long max = c.getLong(1);
+		Date minDate = new Date(min);
+		Date maxDate = new Date(max);
+		Date currDate = minDate;
+		currDate.setHours(0);
+		currDate.setMinutes(0);
+		currDate.setSeconds(0);
+		while (currDate.getTime() <= maxDate.getTime()) {
+			list.add(currDate);
+			currDate = new Date(currDate.getTime() + (60 * 60 * 24 * 1000));
+		}
+		c.close();
+		return list;
 	}
-	
+
+	public String[] getRoomsByDayIndex(int dayIndex) {
+		Cursor roomCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM },
+				DAYINDEX + "=" + dayIndex, null, null, null, null, null);
+		return getStringFromCursor(roomCursor, ROOM);
+	}
 
 	protected Cursor getRawTracks() {
 		return db.query(true, TABLE_EVENTS, new String[] { TRACK }, null, null,
@@ -150,10 +174,13 @@ public class DBAdapter {
 			values[i] = cursor.getString(cursor.getColumnIndex(field));
 			cursor.moveToNext();
 		}
+		cursor.close();
 		return values;
 	}
 
-	public List<Event> getEventsFiltered(Date beginDate, Date endDate, String[] tracks, String[] types, String[] tags, String[] rooms, String[] languages) {
+	public List<Event> getEventsFiltered(Date beginDate, Date endDate,
+			String[] tracks, String[] types, String[] tags, String[] rooms,
+			String[] languages) {
 		StringBuilder sb = new StringBuilder();
 		if (tracks != null)
 			for (String track : tracks) {
@@ -176,7 +203,8 @@ public class DBAdapter {
 				sb.append(" or language='" + language + "'");
 			}
 		if (beginDate != null && endDate != null) {
-			sb.append("and (start>=" + beginDate.getTime() + " and end<=" + endDate.getTime() + ")");
+			sb.append("and (start>=" + beginDate.getTime() + " and end<="
+					+ endDate.getTime() + ")");
 		}
 		String where = sb.toString();
 		if (where.startsWith(" or ")) {
@@ -186,36 +214,55 @@ public class DBAdapter {
 			where = where.substring(5);
 		}
 		Log.v(getClass().getName(), where);
-		Cursor c = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT, DESCRIPTION }, where, null, null, null, null, null);
+		Cursor c = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION,
+				ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE,
+				ABSTRACT, DESCRIPTION, DAYINDEX }, where, null, null, null,
+				null, null);
 		return getEventsFromCursor(c);
 	}
 
 	/**
 	 * Converts a cursor over the events table to a list of {@link Event}s. If
-	 * the cursor is empty, will return an empty list. 
+	 * the cursor is empty, will return an empty list.
 	 * 
-	 * @param eventsCursor The cursor. 
+	 * @param eventsCursor
+	 *            The cursor.
 	 * @return A list of events.
 	 */
 	protected List<Event> getEventsFromCursor(Cursor eventsCursor) {
-
+		eventsCursor.moveToFirst();
 		final List<Event> events = new ArrayList<Event>();
-		while (eventsCursor.moveToNext()) {
+		for (int i = 0; i < eventsCursor.getCount(); i++) {
 			final Event event = new Event();
 			event.setId(eventsCursor.getInt(eventsCursor.getColumnIndex(ID)));
-			event.setStart(new Date(eventsCursor.getLong(eventsCursor.getColumnIndex(START))));
-			event.setDuration(eventsCursor.getInt(eventsCursor.getColumnIndex(DURATION)));
-			event.setRoom(eventsCursor.getString(eventsCursor.getColumnIndex(ROOM)));
-			event.setTag(eventsCursor.getString(eventsCursor.getColumnIndex(TAG)));
-			event.setTitle(eventsCursor.getString(eventsCursor.getColumnIndex(TITLE)));
-			event.setSubtitle(eventsCursor.getString(eventsCursor.getColumnIndex(SUBTITLE)));
-			event.setTrack(eventsCursor.getString(eventsCursor.getColumnIndex(TRACK)));
-			event.setType(eventsCursor.getString(eventsCursor.getColumnIndex(EVENTTYPE)));
-			event.setLanguage(eventsCursor.getString(eventsCursor.getColumnIndex(LANGUAGE)));
-			event.setAbstract_description(eventsCursor.getString(eventsCursor.getColumnIndex(ABSTRACT)));
-			event.setDescription(eventsCursor.getString(eventsCursor.getColumnIndex(DESCRIPTION)));
+			event.setStart(new Date(eventsCursor.getLong(eventsCursor
+					.getColumnIndex(START))));
+			event.setDuration(eventsCursor.getInt(eventsCursor
+					.getColumnIndex(DURATION)));
+			event.setRoom(eventsCursor.getString(eventsCursor
+					.getColumnIndex(ROOM)));
+			event.setTag(eventsCursor.getString(eventsCursor
+					.getColumnIndex(TAG)));
+			event.setTitle(eventsCursor.getString(eventsCursor
+					.getColumnIndex(TITLE)));
+			event.setSubtitle(eventsCursor.getString(eventsCursor
+					.getColumnIndex(SUBTITLE)));
+			event.setTrack(eventsCursor.getString(eventsCursor
+					.getColumnIndex(TRACK)));
+			event.setType(eventsCursor.getString(eventsCursor
+					.getColumnIndex(EVENTTYPE)));
+			event.setLanguage(eventsCursor.getString(eventsCursor
+					.getColumnIndex(LANGUAGE)));
+			event.setAbstract_description(eventsCursor.getString(eventsCursor
+					.getColumnIndex(ABSTRACT)));
+			event.setDescription(eventsCursor.getString(eventsCursor
+					.getColumnIndex(DESCRIPTION)));
+			event.setDayindex(eventsCursor.getInt(eventsCursor
+					.getColumnIndex(DAYINDEX)));
 			events.add(event);
+			eventsCursor.moveToNext();
 		}
+		eventsCursor.close();
 		return events;
 	}
 
@@ -227,7 +274,9 @@ public class DBAdapter {
 	 * @return The event or null.
 	 */
 	public Event getEventById(int id) {
-		final Cursor eventsById = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT, DESCRIPTION }, "id = :1",
+		final Cursor eventsById = db.query(TABLE_EVENTS, new String[] { ID,
+				START, DURATION, ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE,
+				LANGUAGE, ABSTRACT, DESCRIPTION, DAYINDEX }, "id = :1",
 				new String[] { Integer.toString(id) }, null, null, null, null);
 
 		if (eventsById.getCount() < 1)
@@ -235,24 +284,21 @@ public class DBAdapter {
 
 		return getEventsFromCursor(eventsById).get(0);
 	}
-	
+
 	/**
-	 * Retrieves the list of events for a given room name, or null if no such events exists.
+	 * Retrieves the list of events for a given room name, or null if no such
+	 * events exists.
+	 * 
 	 * @param roomName
 	 * @return A list of events
 	 */
 	public List<Event> getEventsByRoomName(String roomName) {
-		//getEventsFiltered(Date beginDate, Date endDate, String[] tracks, String[] types, String[] tags, String[] rooms, String[] languages)
-		
 		String rooms[] = { roomName };
-		return getEventsFiltered(null, null, null, null, null,rooms, null);
+		return getEventsFiltered(null, null, null, null, null, rooms, null);
 	}
-	
 
 	public void clearEvents() {
 		db.execSQL("delete from " + TABLE_EVENTS);
 	}
-
-	
 
 }
