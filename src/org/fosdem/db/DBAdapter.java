@@ -101,6 +101,7 @@ public class DBAdapter {
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
 		initialValues.put(DAYINDEX, event.getDayindex());
+		//Log.v(getClass().getName(), "Putting dayindex " + event.getDayindex());
 		return db.insert(TABLE_EVENTS, null, initialValues);
 	}
 
@@ -155,10 +156,11 @@ public class DBAdapter {
 				DAYINDEX + "=" + dayIndex, null, null, null, null, null);
 		return getStringFromCursor(roomCursor, ROOM);
 	}
-	
+
 	public String[] getTracksByDayIndex(int dayIndex) {
-		Cursor trackCursor = db.query(true, TABLE_EVENTS, new String[] { TRACK },
-				DAYINDEX + "=" + dayIndex, null, null, null, null, null);
+		Cursor trackCursor = db.query(true, TABLE_EVENTS,
+				new String[] { TRACK }, DAYINDEX + "=" + dayIndex, null, null,
+				null, null, null);
 		return getStringFromCursor(trackCursor, TRACK);
 	}
 
