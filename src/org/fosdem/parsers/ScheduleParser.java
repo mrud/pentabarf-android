@@ -243,8 +243,8 @@ public class ScheduleParser extends BaseParser {
 	            			 date.getYear(),
 	            			 date.getMonth(),
 	            			 date.getDay(),
-	            			 Integer.parseInt(content.substring(0, 1)),
-	            			 Integer.parseInt(content.substring(3, 4)));
+	            			 Integer.parseInt(content.substring(0, 2)),
+	            			 Integer.parseInt(content.substring(3, 5)));
 	            	 event.setStart(d);
 	             }
 	             else if(xpp.getName().equals(DURATION)){
