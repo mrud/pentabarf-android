@@ -10,16 +10,129 @@ import org.fosdem.pojo.Person;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Schedule;
 
+import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
-public class DBAdapter {
+/*
+ * This class can either be used as a content provider or as a standalone DBAdapter.
+ */
+public class DBAdapter extends ContentProvider {
+	// TODO: favorites (later)
+	// TODO: filter events
+	// TODO: search
+	// TODO: arrows in list
 	// TODO: add getter methods for getting persons and their events
+
+	// Provider related
+	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
+	public static final Uri CONTENT_URI = Uri.parse("content://"
+			+ PROVIDER_NAME + "/events");
+
+	private static final int EVENTS = 1;
+	private static final int EVENT_ID = 2;
+
+	private static final UriMatcher uriMatcher;
+	static {
+		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+		uriMatcher.addURI(PROVIDER_NAME, "events", EVENTS);
+		uriMatcher.addURI(PROVIDER_NAME, "events/#", EVENT_ID);
+	}
+
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		int count=0;
+		switch(uriMatcher.match(uri)){
+		case EVENTS:
+			count=db.delete(TABLE_EVENTS, selection, selectionArgs);
+			break;
+		case EVENT_ID:
+			String id = uri.getPathSegments().get(1);
+			count=db.delete(TABLE_EVENTS,                        
+		               ID + " = " + id + 
+		               (!TextUtils.isEmpty(selection) ? " AND (" + 
+		               selection + ')' : ""), selectionArgs);
+			break;
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
+	}
+
+	@Override
+	public String getType(Uri uri) {
+		switch (uriMatcher.match(uri)) {
+		case EVENTS:
+			return "vnd.org.fosdem.events/vnd.fosdem.org";
+		case EVENT_ID:
+			return "vnd.org.fosdem.event/vnd.fosdem.org";
+		default:
+			throw new IllegalArgumentException("Unsupported URI: "+uri);
+		}
+	}
+
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		long rowId = db.insert(TABLE_EVENTS, null, values);
+		
+		if(rowId>0){
+			Uri _uri = ContentUris.withAppendedId(uri, rowId);
+			getContext().getContentResolver().notifyChange(_uri, null);
+			return _uri;
+		}
+		throw new SQLException("Failed to insert row into "+uri);
+	}
+
+	@Override
+	public boolean onCreate() {
+		Context context=getContext();
+		dbHelper = new DatabaseHelper(context);
+		db=dbHelper.getWritableDatabase();
+		return db!=null;
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		if(uriMatcher.match(uri)==EVENT_ID)selection=ID+" = "+uri.getPathSegments().get(1);
+		if(sortOrder==null || sortOrder.length()==0)sortOrder=START;
+
+		Cursor c = db.query(TABLE_EVENTS, projection, selection, selectionArgs, null, null, sortOrder);
+		c.setNotificationUri(getContext().getContentResolver(), uri);
+		return c;
+	}
+
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+		int count = 0;
+		switch(uriMatcher.match(uri)){
+		case EVENT_ID:
+			String id = uri.getPathSegments().get(1);
+			count=db.update(TABLE_EVENTS, values, ID + " = " + id + 
+		               (!TextUtils.isEmpty(selection) ? " AND (" + 
+		                       selection + ')' : ""), selectionArgs);
+			break;
+		case EVENTS:
+			count=db.update(TABLE_EVENTS, values, selection, selectionArgs);
+			break;
+		default:
+				throw new IllegalArgumentException("Unknown Uri "+uri);
+		
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
+	}
+
+	// DB Related
 	protected static final String DB_NAME = "fosdem_schedule";
 	protected static final String TABLE_EVENTS = "events";
 	protected static final String TABLE_PERSONS = "persons";
@@ -53,6 +166,10 @@ public class DBAdapter {
 	protected Context context;
 	protected SQLiteDatabase db;
 
+	public DBAdapter(){
+		super();
+	}
+	
 	public DBAdapter(Context context) {
 		this.context = context;
 		dbHelper = new DatabaseHelper(context);
@@ -354,7 +471,7 @@ public class DBAdapter {
 		String rooms[] = { roomName };
 		return getEventsFiltered(null, null, null, null, null, rooms, null);
 	}
-	
+
 	public List<Event> getEventsByTrackName(String trackName) {
 		String tracks[] = { trackName };
 		return getEventsFiltered(null, null, tracks, null, null, null, null);
