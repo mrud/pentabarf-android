@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
 		<activity android:name="org.fosdem.schedules.RoomListActivity"></activity>
+		<activity android:name="org.fosdem.schedules.TrackListActivity"></activity>
 		<activity android:name="org.fosdem.schedules.EventListActivity"></activity>
     </application>
     <uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>

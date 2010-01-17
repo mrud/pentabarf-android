@@ -101,10 +101,13 @@ public class Main extends Activity implements ParserEventListener {
 	
 	public void testChri() {
 		// test function for Christophe
-		Intent i = new Intent(this, RoomListActivity.class);
-		i.putExtra(RoomListActivity.DAY_INDEX, 1);
+//		Intent i = new Intent(this, RoomListActivity.class);
+//		i.putExtra(RoomListActivity.DAY_INDEX, 1);
+//		startActivity(i);
+		Intent i = new Intent(this, TrackListActivity.class);
+		i.putExtra(TrackListActivity.DAY_INDEX, 1);
 		startActivity(i);
-		
+
 	}
 	
 	/**
