@@ -30,6 +30,8 @@ public class StringUtil {
 	 * @return A niceified version of the value
 	 */
 	public static String niceify(String value) {
+		if (value == null) return "";
+		
 		final StringBuffer sb = new StringBuffer(value.length());
 		final int length = value.length();
 		int state = STATE_NORMAL;
