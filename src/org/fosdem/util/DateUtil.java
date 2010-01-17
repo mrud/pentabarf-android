@@ -16,7 +16,7 @@ public class DateUtil {
 	}
 
 	public static int convertStringToMinutes(String minutes) {
-		return Integer.parseInt(minutes.substring(0, 1)) * 60
-				+ Integer.parseInt(minutes.substring(3, 4));
+		return Integer.parseInt(minutes.substring(0, 2)) * 60
+				+ Integer.parseInt(minutes.substring(3, 5));
 	}
 }
