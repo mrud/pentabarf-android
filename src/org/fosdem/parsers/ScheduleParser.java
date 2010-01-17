@@ -135,7 +135,7 @@ public class ScheduleParser extends BaseParser {
 		            		 }
 		            	 }
 		            	 xpp.next();
-		            	 Event e = parseEvent(xpp,day.getDate());
+		            	 Event e = parseEvent(xpp,day);
 		            	 e.setId(id);
 		            	 room.addEvent(e);
 		             }
@@ -219,7 +219,7 @@ public class ScheduleParser extends BaseParser {
         return null;
 	}
 	
-	public Event parseEvent(XmlPullParser xpp,Date date) throws XmlPullParserException, IOException, ParseException{
+	public Event parseEvent(XmlPullParser xpp,Day day) throws XmlPullParserException, IOException, ParseException{
 		String content = null;
 		int eventType = xpp.getEventType();
 		Event event = new Event();
@@ -240,12 +240,13 @@ public class ScheduleParser extends BaseParser {
 	        	 launchEvent(xpp.getName(), ParserEventListener.TAG_CLOSED);
 	        	 if(xpp.getName().equals(START)){
 	            	 Date d = new Date(
-	            			 date.getYear(),
-	            			 date.getMonth(),
-	            			 date.getDay(),
+	            			 day.getDate().getYear(),
+	            			 day.getDate().getMonth(),
+	            			 day.getDate().getDay(),
 	            			 Integer.parseInt(content.substring(0, 2)),
 	            			 Integer.parseInt(content.substring(3, 5)));
 	            	 event.setStart(d);
+	            	 event.setDayindex(day.getIndex());
 	             }
 	             else if(xpp.getName().equals(DURATION)){
 	            	 event.setDuration(DateUtil.convertStringToMinutes(content));
