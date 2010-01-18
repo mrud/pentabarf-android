@@ -397,9 +397,13 @@ public class DBAdapter extends ContentProvider {
 	}
 
 	public List<Event> getEventsFilteredLike(Date beginDate, Date endDate,
-			String[] tracks, String[] types, String[] tags, String[] rooms,
-			String[] languages) {
+			String[] titles, String[] tracks, String[] types, String[] tags,
+			String[] rooms, String[] languages) {
 		StringBuilder sb = new StringBuilder();
+		if (titles != null)
+			for (String title : titles) {
+				sb.append(" or title like '%" + title + "%'");
+			}
 		if (tracks != null)
 			for (String track : tracks) {
 				sb.append(" or track like '%" + track + "%'");
