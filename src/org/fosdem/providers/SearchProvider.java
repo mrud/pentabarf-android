@@ -16,7 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class SearchProvider extends ContentProvider {
-
+	// TODO: add person to search suggestions
 	public static String AUTHORITY = "fosdemsearch";
 
 	private static final int SEARCH_SUGGEST = 0;
@@ -108,7 +108,7 @@ public class SearchProvider extends ContentProvider {
 		MatrixCursor cursor = null;
 		try {
 			List<Event> events = db.getEventsFilteredLike(null, null, queryVal,
-					queryVal, queryVal, queryVal, null);
+					queryVal, queryVal, queryVal, queryVal, null);
 			cursor = new MatrixCursor(COLUMNS);
 			for (Event event : events) {
 				cursor.addRow(columnValuesOfEvent(event));
