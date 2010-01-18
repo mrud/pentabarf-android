@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Day;
-import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Track;
 import org.fosdem.util.TrackAdapter;
 
@@ -38,7 +37,6 @@ public class TrackListActivity extends ListActivity  {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// what day should we show? fetch from the parameters or saved instance
 		dayIndex = savedInstanceState != null ? savedInstanceState.getInt(DAY_INDEX) : 0;
 		

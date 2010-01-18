@@ -7,9 +7,11 @@ import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.parsers.ScheduleParser;
-import org.fosdem.pojo.*;
+import org.fosdem.pojo.Schedule;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,8 +41,21 @@ public class Main extends Activity implements ParserEventListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
         
+        final Intent intent = getIntent();
+        final String queryAction = intent.getAction();
+        if(Intent.ACTION_SEARCH.equals(queryAction)){
+        	EventListActivity.doSearchWithIntent(this,intent);
+        	finish();
+        }
+        if (Intent.ACTION_VIEW.equals(queryAction)) {
+        	Intent i = new Intent(this, DisplayEvent.class);
+    		i.putExtra(DisplayEvent.ID, Integer.parseInt(intent.getDataString()));
+    		startActivity(i);
+    		finish();
+        }
+        
+        setContentView(R.layout.main);
     }
     
     @Override

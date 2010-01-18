@@ -10,6 +10,8 @@ import org.fosdem.pojo.Room;
 import org.fosdem.util.EventAdapter;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,14 +28,16 @@ import android.widget.ListView;
 	
 	public static final String DAY_INDEX = "dayIndex";
 	public static final String TRACK_NAME = "trackName";
+	public static final String QUERY = "query";
 	
 	private ArrayList<Event> events = null;
 	private String trackName = null;
+	private String query = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		trackName = savedInstanceState != null ? savedInstanceState.getString(TRACK_NAME) : null;
 		// TODO dayindex
 		
@@ -69,26 +73,41 @@ import android.widget.ListView;
 		
 		// TODO dayIndex 
 		// what room should we show? fetch from the parameters
-		if (trackName == null) { 
-			Bundle extras = getIntent().getExtras();
-			if (extras != null)
-				trackName = extras.getString(TRACK_NAME);
-			if (trackName == null ) {
+		Bundle extras = getIntent().getExtras();
+		if (trackName == null && query == null && extras!=null) { 
+			trackName = extras.getString(TRACK_NAME);
+			query = extras.getString(QUERY);
+			if(query==null && trackName==null){
 				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
 				return null;
 			}
 		}
-		
-		// Load event with specified id from the db
+				// Load event with specified id from the db
 		final DBAdapter db = new DBAdapter(this);
 		try {
 			db.open();
+			
+			if(trackName!=null){
+				return (ArrayList<Event>) db.getEventsByTrackName(trackName);	
+			}
+			else if(query!=null){
+				String[] queryArgs = new String[]{query};
+				return (ArrayList<Event>) db.getEventsFilteredLike(null, null, queryArgs, queryArgs, queryArgs, queryArgs, queryArgs, null);
+			}
+			
 			return (ArrayList<Event>) db.getEventsByTrackName(trackName);
 		} finally {
 			db.close();
 		}
 	}
 
+	
+    public static void doSearchWithIntent(Context context,final Intent queryIntent){
+    	queryIntent.getStringExtra(SearchManager.QUERY);
+    	Intent i = new Intent(context, EventListActivity.class);
+		i.putExtra(EventListActivity.QUERY, queryIntent.getStringExtra(SearchManager.QUERY));
+		context.startActivity(i);
+    }
     
 	
 }
