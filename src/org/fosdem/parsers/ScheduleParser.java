@@ -20,8 +20,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.util.Log;
-
 //TODO: persons and links need to be added to the parser.
 public class ScheduleParser extends BaseParser {
 
@@ -210,7 +208,7 @@ public class ScheduleParser extends BaseParser {
 
 	public Event parseEvent(XmlPullParser xpp, Day day)
 			throws XmlPullParserException, IOException, ParseException {
-		//Log.v(getClass().getName(),day.getDate().toString());
+		// Log.v(getClass().getName(),day.getDate().toString());
 		String content = null;
 		int eventType = xpp.getEventType();
 		Event event = new Event();
@@ -237,7 +235,7 @@ public class ScheduleParser extends BaseParser {
 					d.setHours(Integer.parseInt(content.substring(0, 2)));
 					d.setMinutes(Integer.parseInt(content.substring(3, 5)));
 					d.setSeconds(0);
-					
+
 					event.setStart(d);
 					event.setDayindex(day.getIndex());
 				} else if (xpp.getName().equals(DURATION)) {
