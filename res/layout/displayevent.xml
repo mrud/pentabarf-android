@@ -5,57 +5,72 @@
 	android:background="#fff" 
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent">
-	<LinearLayout 
-		android:id="@+id/LinearLayout01" 
+	<RelativeLayout 
+		android:id="@+id/RelativeRootLayout" 
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent" 
 		android:orientation="vertical" 
-		android:padding="4px">
+		android:padding="5dip">
 		<TextView 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:id="@+id/event_title" android:textColor="#333" android:textSize="12pt" android:textStyle="bold" android:text="Title">
+			android:id="@+id/event_title" 
+			android:textColor="#333" 
+			android:textSize="25dip" 
+			android:textStyle="bold" 
+			android:text="Title">
 		</TextView>
-		<LinearLayout 	
-			android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"> 
-			<TextView 
-				android:text="event_track" 
-				android:id="@+id/event_track" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:textColor="#000" 
-				android:layout_marginRight="4px" />
-			<TextView 
-				android:text="event_speaker" 
-				android:id="@+id/event_speaker" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:textColor="#000" 
-				android:layout_marginRight="4px" />
-			<TextView 
-				android:text="event_room" 
-				android:id="@+id/event_room" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:textColor="#000" 
-				android:layout_marginRight="4px" />
-		</LinearLayout>
+		<TextView 
+			android:text="event_track" 
+			android:id="@+id/event_track" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:textColor="#000" 
+			android:layout_marginRight="2dip" 
+			android:layout_alignParentRight="true"
+       		android:layout_below="@id/event_title"
+       		
+			/>
+		<TextView 
+			android:text="event_room" 
+			android:id="@+id/event_room" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:textColor="#000" 
+			android:layout_marginRight="2dip" 
+			android:layout_marginBottom="5dip"
+			android:layout_alignParentRight="true"
+       		android:layout_below="@id/event_track"
+			/>
+				
+			
+		<TextView 
+			android:text="event_speaker" 
+			android:id="@+id/event_speaker" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:textColor="#000" 
+			android:layout_marginRight="2dip"
+			android:layout_below="@id/event_title" />
+			
 		<TextView 
 			android:text="event_abstract" 
 			android:id="@+id/event_abstract" 
-			android:layout_width="wrap_content" 
+			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:textColor="#007" 
-			android:layout_marginBottom="4px" 
-			android:textStyle="italic" />
+			android:layout_marginBottom="5dip" 
+			android:textStyle="italic"
+			android:layout_below="@id/event_room"
+			android:background="#FFDBA1" />
 			
 		<TextView 
 			android:text="event_description" 
 			android:id="@+id/event_description" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content" 
-			android:textColor="#000" />
-	</LinearLayout>
+			android:layout_width="fill_parent" 
+			android:layout_height="fill_parent" 
+			android:textColor="#000"
+			android:layout_below="@id/event_abstract"
+			android:background="#F4FFA1" />
+	</RelativeLayout>
 </ScrollView>

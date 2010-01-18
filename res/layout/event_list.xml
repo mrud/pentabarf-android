@@ -1,43 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical"
-	>
-	 
-	<TextView
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:id="@+id/title"
-		android:paddingLeft="20dip"
-		android:minHeight="?android:attr/listPreferredItemHeight"
-		
-		android:gravity="center_vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:id="@+id/speaker"
-		android:paddingLeft="20dip"
-		android:minHeight="?android:attr/listPreferredItemHeight"
-		
-		android:gravity="center_vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	
-	<ImageView
-		android:paddingRight="15dip"
-		android:src="@drawable/more_icon"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-		android:layout_alignParentRight="true"
-		 />
-</RelativeLayout>
-
--->
 <!-- 
     Copyright (C) 2009 Virgil Dobjanschi, Jeff Sharkey
     
