@@ -395,6 +395,50 @@ public class DBAdapter extends ContentProvider {
 				START, null);
 		return getEventsFromCursor(c);
 	}
+	
+	public List<Event> getEventsFilteredLike(Date beginDate, Date endDate,
+			String[] tracks, String[] types, String[] tags, String[] rooms,
+			String[] languages) {
+		StringBuilder sb = new StringBuilder();
+		if (tracks != null)
+			for (String track : tracks) {
+				sb.append(" or track like '%" + track + "%'");
+			}
+		if (types != null)
+			for (String type : types) {
+				sb.append(" or eventtype like '%" + type + "%'");
+			}
+		if (tags != null)
+			for (String tag : tags) {
+				sb.append(" or tag like '%" + tag + "%'");
+			}
+		if (rooms != null)
+			for (String room : rooms) {
+				sb.append(" or room like '%" + room + "%'");
+			}
+		if (languages != null)
+			for (String language : languages) {
+				sb.append(" or language like '%" + language + "%'");
+			}
+		if (beginDate != null && endDate != null) {
+			sb.append("and (start>=" + beginDate.getTime() + " and end<="
+					+ endDate.getTime() + ")");
+		}
+		String where = sb.toString();
+		if (where.startsWith(" or ")) {
+			where = where.substring(4);
+		}
+		if (where.startsWith(" and ")) {
+			where = where.substring(5);
+		}
+		Log.v(getClass().getName(), where);
+		Cursor c = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION,
+				ROOM, TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE,
+				ABSTRACT, DESCRIPTION, DAYINDEX }, where, null, null, null,
+				START, null);
+		return getEventsFromCursor(c);
+	}
+
 
 	/**
 	 * Converts a cursor over the events table to a list of {@link Event}s. If
