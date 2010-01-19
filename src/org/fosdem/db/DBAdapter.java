@@ -355,7 +355,7 @@ public class DBAdapter extends ContentProvider {
 
 	public List<Event> getEventsFiltered(Date beginDate, Date endDate,
 			String[] tracks, String[] types, String[] tags, String[] rooms,
-			String[] languages) {
+			String[] languages, int dayIndex) {
 		StringBuilder sb = new StringBuilder();
 		if (tracks != null)
 			for (String track : tracks) {
@@ -381,6 +381,9 @@ public class DBAdapter extends ContentProvider {
 			sb.append("and (start>=" + beginDate.getTime() + " and end<="
 					+ endDate.getTime() + ")");
 		}
+		//FIXME if (dayIndex ) {
+			sb.append(" and dayindex ='"+dayIndex+"'");
+		//}
 		String where = sb.toString();
 		if (where.startsWith(" or ")) {
 			where = where.substring(4);
@@ -507,21 +510,9 @@ public class DBAdapter extends ContentProvider {
 		return getEventsFromCursor(eventsById).get(0);
 	}
 
-	/**
-	 * Retrieves the list of events for a given room name, or null if no such
-	 * events exists.
-	 * 
-	 * @param roomName
-	 * @return A list of events
-	 */
-	public List<Event> getEventsByRoomName(String roomName) {
-		String rooms[] = { roomName };
-		return getEventsFiltered(null, null, null, null, null, rooms, null);
-	}
-
-	public List<Event> getEventsByTrackName(String trackName) {
+	public List<Event> getEventsByTrackNameAndDayIndex(String trackName, int dayIndex) {
 		String tracks[] = { trackName };
-		return getEventsFiltered(null, null, tracks, null, null, null, null);
+		return getEventsFiltered(null, null, tracks, null, null, null, null, dayIndex);
 	}
 
 	public void clearEvents() {

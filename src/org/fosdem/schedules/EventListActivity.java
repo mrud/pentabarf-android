@@ -32,6 +32,7 @@ import android.widget.ListView;
 	
 	private ArrayList<Event> events = null;
 	private String trackName = null;
+	private int dayIndex = 0;
 	private String query = null;
 	
 	@Override
@@ -76,6 +77,7 @@ import android.widget.ListView;
 		Bundle extras = getIntent().getExtras();
 		if (trackName == null && query == null && extras!=null) { 
 			trackName = extras.getString(TRACK_NAME);
+			dayIndex = extras.getInt(DAY_INDEX);
 			query = extras.getString(QUERY);
 			if(query==null && trackName==null){
 				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
@@ -88,14 +90,14 @@ import android.widget.ListView;
 			db.open();
 			
 			if(trackName!=null){
-				return (ArrayList<Event>) db.getEventsByTrackName(trackName);	
+				return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(trackName, dayIndex);	
 			}
 			else if(query!=null){
 				String[] queryArgs = new String[]{query};
 				return (ArrayList<Event>) db.getEventsFilteredLike(null, null, queryArgs, queryArgs, queryArgs, queryArgs, queryArgs, null);
 			}
 			
-			return (ArrayList<Event>) db.getEventsByTrackName(trackName);
+			return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(trackName, dayIndex);
 		} finally {
 			db.close();
 		}

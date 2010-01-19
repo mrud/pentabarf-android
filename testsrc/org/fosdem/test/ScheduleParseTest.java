@@ -76,12 +76,12 @@ public class ScheduleParseTest extends AndroidTestCase {
 		db.open();
 		try {
 			List<Event> events = db.getEventsFiltered(null, null,
-					new String[] { "Database" }, null, null, null, null);
+					new String[] { "Database" }, null, null, null, null, 0); // FIXME eMich
 			Log.v(getClass().getName(), "Number of filtered events: "
 					+ events.size());
 			// assertTrue(events.size()==3);
 			events = db.getEventsFiltered(null, null, null, null, null, null,
-					new String[] { "English" });
+					new String[] { "English" }, 0); // FIXME eMich
 			assertTrue(events.size() == db.getEvents().size());
 		} catch (Exception e) {
 			fail(e.getMessage());
