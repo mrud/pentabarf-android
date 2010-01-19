@@ -1,6 +1,6 @@
 package org.fosdem.util;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -97,7 +97,8 @@ public class StringUtil {
 	
 	
 	public static String datesToString(Date start, int duration) {
-		return "@" + DateFormat.getDateInstance(DateFormat.SHORT).format(start) + " - " + duration + " min";
+		return new SimpleDateFormat("EEE @HH:mm").format(start)
+			+ " - " + duration + " min";
 		
 	}
 }
