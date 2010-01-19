@@ -45,7 +45,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 			// TODO set other values like time, speaker,...
 
 			title.setText(event.getTitle());
-			speaker.setText(event.getPersonsNames());
+			speaker.setText(StringUtil.personsToString(event.getPersons()));
 			room.setText(event.getRoom());
 			time.setText(StringUtil.datesToString(event.getStart(), event.getDuration()));
 			

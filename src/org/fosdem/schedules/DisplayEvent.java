@@ -93,6 +93,7 @@ public class DisplayEvent extends Activity {
 		setTextViewText(R.id.event_title, event.getTitle());
 		setTextViewText(R.id.event_track, event.getTrack());
 		setTextViewText(R.id.event_room, event.getRoom());
+		setTextViewText(R.id.event_time, StringUtil.datesToString(event.getStart(), event.getDuration()));
 		setTextViewText(R.id.event_speaker, StringUtil.personsToString(event.getPersons()));
 		setTextViewText(R.id.event_abstract, StringUtil.niceify(event.getAbstract_description()));
 		setTextViewText(R.id.event_description, StringUtil.niceify(event.getDescription()));

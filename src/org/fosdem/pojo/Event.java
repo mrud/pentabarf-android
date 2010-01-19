@@ -214,22 +214,6 @@ public class Event {
 		this.links = links;
 	}
 
-	public String getPersonsNames() {
-		String names = null;
-		if (persons == null) {
-			Log.i(LOG_TAG, "Event has no speakers");
-			return "";
-		}
-		Iterator<Person> itr = persons.iterator();
-		while (itr.hasNext()) {
-			if (names == null)
-				names = itr.next().getName();
-			else
-				names += ", " + itr.next().getName();
-		}
-		return names;
-	}
-
 	public String toString() {
 		return "Event: " + id + " " + title;
 	}
