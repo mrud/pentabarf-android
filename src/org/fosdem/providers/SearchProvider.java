@@ -1,9 +1,11 @@
 package org.fosdem.providers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
+import org.fosdem.pojo.Person;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;
@@ -123,10 +125,19 @@ public class SearchProvider extends ContentProvider {
 	private Object[] columnValuesOfEvent(Event event) {
 		return new String[] { Integer.toString(event.getId()), // _id
 				event.getTitle(), // text1
-				event.getTrack(), // text2
+				getPersonsAsString(event.getPersons())+" - "+event.getTrack(), // text2
 				Integer.toString(event.getId()), // intent_data (included when
 		// clicking on item)
 		};
+	}
+	
+	private String getPersonsAsString(ArrayList<Person> persons){
+		StringBuilder personStr=new StringBuilder();
+		for(Person person:persons){
+			if(personStr.length()!=0)personStr.append(" , ");
+			personStr.append(person.getName());
+		}
+		return personStr.toString();
 	}
 
 	/**
