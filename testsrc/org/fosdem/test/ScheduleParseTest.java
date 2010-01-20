@@ -64,6 +64,7 @@ public class ScheduleParseTest extends AndroidTestCase {
 			Log.v(getClass().getName(), "Event count : " + events.size()
 					+ ", normal total:" + total);
 			assertTrue(total == events.size());
+			assertTrue(events.get(0).getPersons().size()>0);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		} finally {
@@ -81,7 +82,8 @@ public class ScheduleParseTest extends AndroidTestCase {
 					+ events.size());
 			// assertTrue(events.size()==3);
 			events = db.getEventsFiltered(null, null, null, null, null, null,
-					new String[] { "English" }, 0); // FIXME eMich
+					new String[] { "English" },0); // FIXME eMich
+			Log.v(getClass().getName(),events.size()+" "+db.getEvents().size());
 			assertTrue(events.size() == db.getEvents().size());
 		} catch (Exception e) {
 			fail(e.getMessage());

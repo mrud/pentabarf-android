@@ -293,6 +293,30 @@ public class DBAdapter extends ContentProvider {
 				null, null, START, null);
 	}
 
+	protected ArrayList<Person> getPersonsForEvent(int id) {
+		Cursor c = db.query(TABLE_JOIN_PERSON_EVENT, new String[] { PERSONID },
+				EVENTID + " = '" + id + "'", null, null, null, null);
+		int[] personIds = getIntFromCursor(c, PERSONID);
+
+		ArrayList<Person> persons = new ArrayList<Person>();
+		for (int personId : personIds) {
+			Person person = getPersonById(personId);
+			if (person != null)
+				persons.add(person);
+		}
+
+		return persons;
+	}
+
+	protected Person getPersonById(int id) {
+		Cursor c = db.query(TABLE_PERSONS, new String[] { NAME }, ID + " = "
+				+ id, null, null, null, null);
+		String[] persons = getStringFromCursor(c, NAME);
+		if (persons.length == 0)
+			return null;
+		return new Person(id, persons[0]);
+	}
+
 	public String[] getRooms() {
 		Cursor trackCursor = getRawRooms();
 		return getStringFromCursor(trackCursor, ROOM);
@@ -353,9 +377,20 @@ public class DBAdapter extends ContentProvider {
 		return values;
 	}
 
+	protected int[] getIntFromCursor(Cursor cursor, String field) {
+		cursor.moveToFirst();
+		int[] values = new int[cursor.getCount()];
+		for (int i = 0; i < cursor.getCount(); i++) {
+			values[i] = cursor.getInt(cursor.getColumnIndex(field));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return values;
+	}
+
 	public List<Event> getEventsFiltered(Date beginDate, Date endDate,
 			String[] tracks, String[] types, String[] tags, String[] rooms,
-			String[] languages, int dayIndex) {
+			String[] languages, Integer dayIndex) {
 		StringBuilder sb = new StringBuilder();
 		if (tracks != null)
 			for (String track : tracks) {
@@ -381,9 +416,9 @@ public class DBAdapter extends ContentProvider {
 			sb.append("and (start>=" + beginDate.getTime() + " and end<="
 					+ endDate.getTime() + ")");
 		}
-		//FIXME if (dayIndex ) {
-			sb.append(" and dayindex ='"+dayIndex+"'");
-		//}
+		if (dayIndex!=null) {
+			sb.append(" or dayindex = :" + dayIndex + "");
+		}
 		String where = sb.toString();
 		if (where.startsWith(" or ")) {
 			where = where.substring(4);
@@ -485,6 +520,7 @@ public class DBAdapter extends ContentProvider {
 			event.setDayindex(eventsCursor.getInt(eventsCursor
 					.getColumnIndex(DAYINDEX)));
 			events.add(event);
+			event.setPersons(getPersonsForEvent(event.getId()));
 			eventsCursor.moveToNext();
 		}
 		eventsCursor.close();
@@ -510,9 +546,11 @@ public class DBAdapter extends ContentProvider {
 		return getEventsFromCursor(eventsById).get(0);
 	}
 
-	public List<Event> getEventsByTrackNameAndDayIndex(String trackName, int dayIndex) {
+	public List<Event> getEventsByTrackNameAndDayIndex(String trackName,
+			int dayIndex) {
 		String tracks[] = { trackName };
-		return getEventsFiltered(null, null, tracks, null, null, null, null, dayIndex);
+		return getEventsFiltered(null, null, tracks, null, null, null, null,
+				dayIndex);
 	}
 
 	public void clearEvents() {
