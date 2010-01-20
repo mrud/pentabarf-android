@@ -1,12 +1,17 @@
 package org.fosdem.schedules;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
+import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DisplayEvent extends Activity {
@@ -82,6 +87,21 @@ public class DisplayEvent extends Activity {
 
 		tv.setText(value);
 	}
+	
+	private void setImageViewImage(int id, String filename) {
+		if (filename == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		final ImageView iv = (ImageView) findViewById(id);
+		try {
+			iv.setImageDrawable(FileUtil.fetchCachedDrawable(filename));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Loads the contents of the event with into the gui.
@@ -97,6 +117,8 @@ public class DisplayEvent extends Activity {
 		setTextViewText(R.id.event_speaker, StringUtil.personsToString(event.getPersons()));
 		setTextViewText(R.id.event_abstract, StringUtil.niceify(event.getAbstract_description()));
 		setTextViewText(R.id.event_description, StringUtil.niceify(event.getDescription()));
+		setImageViewImage(R.id.room_image, StringUtil.roomNameToURL(event.getRoom()));
+		
 	}
 
 }

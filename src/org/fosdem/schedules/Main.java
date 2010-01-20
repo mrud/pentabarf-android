@@ -16,11 +16,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class Main extends Activity implements ParserEventListener {
+public class Main extends Activity implements ParserEventListener, OnClickListener {
     public static final String LOG_TAG=Main.class.getName();
     protected static final int DONEFETCHING=0;
     protected static final int TAGEVENT=1;
@@ -36,7 +41,8 @@ public class Main extends Activity implements ParserEventListener {
     
 	public int counter=0;
 	protected TextView tv=null;
-    
+	protected Button btn_day_1, btn_day_2, btn_search;
+   
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,14 @@ public class Main extends Activity implements ParserEventListener {
         }
         
         setContentView(R.layout.main);
+        
+        btn_day_1 = (Button) findViewById(R.id.btn_day_1);
+        btn_day_1.setOnClickListener(this);
+        btn_day_2 = (Button) findViewById(R.id.btn_day_2);
+        btn_day_2.setOnClickListener(this);
+        btn_search = (Button) findViewById(R.id.btn_search);
+        btn_search.setOnClickListener(this);
+        
     }
     
     @Override
@@ -63,11 +77,28 @@ public class Main extends Activity implements ParserEventListener {
         super.onCreateOptionsMenu(menu);
         menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
-        menu.add(0, TEST_ID, 2, R.string.menu_testing).setIcon(R.drawable.menu_refresh);
         menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
         menu.add(0, TEST_DISPLAY_EVENT_ID, 2, R.string.menu_test_display_event).setIcon(android.R.drawable.ic_menu_view);
         return true;
     }
+    
+    public void onClick(View v) {
+    	int id = v.getId();
+    	switch (id) {
+    	case R.id.btn_day_1:
+    		showTracksForDay(1);
+    		break;
+    	case R.id.btn_day_2:
+    		showTracksForDay(2);
+    		break;
+		case R.id.btn_search:
+			// FIXME 
+			break;
+		default:
+			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
+			break;
+		}
+	}
     
     
     @Override
@@ -76,9 +107,6 @@ public class Main extends Activity implements ParserEventListener {
 		case UPDATE_ID:
 			updateXML();
 			return true;
-    	case TEST_ID:
-    		testChri();
-    		return true;
     	case TEST_DISPLAY_EVENT_ID:
     		testDisplayEvent();
     		return true;
@@ -113,16 +141,11 @@ public class Main extends Activity implements ParserEventListener {
 		}
 	}
 	
-	
-	public void testChri() {
-		// test function for Christophe
-//		Intent i = new Intent(this, RoomListActivity.class);
-//		i.putExtra(RoomListActivity.DAY_INDEX, 1);
-//		startActivity(i);
+	public void showTracksForDay(int day) {
+		Log.d(LOG_TAG, "showTracksForDay("+day+");");
 		Intent i = new Intent(this, TrackListActivity.class);
-		i.putExtra(TrackListActivity.DAY_INDEX, 1);
+		i.putExtra(TrackListActivity.DAY_INDEX, day);
 		startActivity(i);
-
 	}
 	
 	/**

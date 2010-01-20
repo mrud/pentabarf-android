@@ -4,10 +4,29 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    android:id="@+id/progress"
-    />
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content" 
+	    android:text="@string/hello"
+	    android:id="@+id/progress"
+	    />
+
+	<Button 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_day_1"
+		android:text="Saturday"
+		/>
+	<Button 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_day_2"
+		android:text="Sunday"
+		/>
+	<Button 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_search"
+		android:text="Search"
+		/>
 </LinearLayout>

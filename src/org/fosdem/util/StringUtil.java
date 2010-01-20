@@ -7,7 +7,6 @@ import java.util.List;
 import org.fosdem.pojo.Person;
 
 
-
 /**
  * String utilities specific to the fosdem schedule application.
  * 
@@ -20,6 +19,9 @@ public class StringUtil {
 	private static final int STATE_IN_WHITESPACE = 1;
 	private static final int STATE_IN_FIRST_RETURN = 2;
 	private static final int STATE_IN_SUBSEQUENT_RETURNS = 4;
+	
+	private static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
+	
 
 	private static final int RETURN_STATES = STATE_IN_FIRST_RETURN | STATE_IN_SUBSEQUENT_RETURNS;
 
@@ -101,4 +103,15 @@ public class StringUtil {
 			+ " - " + duration + " min";
 		
 	}
+
+	/**
+	 * Clean up a string to remove dots and lowercase.
+	 * This is usually needed for url paths for the map download
+	 * @param name 
+	 * @return
+	 */
+	public static String roomNameToURL(String name) {
+		return ROOM_IMG_URL_BASE+name.replace(".", "").toLowerCase();
+	}
+
 }

@@ -81,7 +81,7 @@
 		android:text="room"
         />
 
-    
+	    
 
     <View
         android:id="@+id/star_delegate"

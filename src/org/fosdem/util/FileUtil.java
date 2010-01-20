@@ -58,16 +58,21 @@ public class FileUtil {
 	public static Drawable fetchCachedDrawable(String url)
 			throws MalformedURLException, IOException {
 		String cacheName = md5(url);
-		InputStream is = (InputStream) fetch(url);
-
 		checkAndCreateDirectoryIfNeeded();
 
-		FileOutputStream fos = new FileOutputStream(CACHELOCATION + cacheName);
-		int nextChar;
-		while ((nextChar = is.read()) != -1)
-			fos.write((char) nextChar);
+		File r = new File(CACHELOCATION + cacheName);
+		
+		// LATER download images if the timestamp on the server is new
+		if (!r.exists()) {
+			InputStream is = (InputStream) fetch(url);
 
-		fos.flush();
+			FileOutputStream fos = new FileOutputStream(CACHELOCATION + cacheName);
+			int nextChar;
+			while ((nextChar = is.read()) != -1)
+				fos.write((char) nextChar);
+
+			fos.flush();
+		}
 
 		FileInputStream fis = new FileInputStream(CACHELOCATION + cacheName);
 

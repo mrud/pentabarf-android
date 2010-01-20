@@ -81,5 +81,12 @@
 			android:textColor="#000"
 			android:layout_below="@id/event_abstract"
 			android:background="#F4FFA1" />
+			
+		<ImageView
+			android:id="@+id/room_image"
+			android:layout_width="fill_parent" 
+			android:layout_height="fill_parent" 
+			android:layout_below="@id/event_description"
+			/>
 	</RelativeLayout>
 </ScrollView>
