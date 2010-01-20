@@ -7,6 +7,7 @@
     <string name="menu_testing">Testing</string>
     <string name="menu_update">Update</string>
 	<string name="search_label">Search</string>
-	<string name="settings_description">FOSDEM search</string>   
+	<string name="settings_description">FOSDEM search</string>  
+	<string name="menu_prefetch_rooms">Prefetch Room Images</string> 
 <string name="menu_test_display_event">Display event</string>
 </resources>

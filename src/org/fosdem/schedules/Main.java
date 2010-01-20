@@ -1,6 +1,7 @@
 package org.fosdem.schedules;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
@@ -8,6 +9,8 @@ import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.parsers.ScheduleParser;
 import org.fosdem.pojo.Schedule;
+import org.fosdem.util.FileUtil;
+import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -30,6 +33,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     protected static final int DONEFETCHING=0;
     protected static final int TAGEVENT=1;
     protected static final int DONELOADINGDB=2;
+    protected static final int ROOMIMGSTART=3;
+    protected static final int ROOMIMGDONE=4;
     
     
     private static final int ABOUT_ID = Menu.FIRST;
@@ -37,6 +42,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	private static final int SETTINGS_ID = Menu.FIRST +2;
 	private static final int TEST_ID = Menu.FIRST +3;
 	private static final int TEST_DISPLAY_EVENT_ID = Menu.FIRST + 4;
+	private static final int PREFETCH_IMG_ID= Menu.FIRST + 5;
 
     
 	public int counter=0;
@@ -77,6 +83,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         super.onCreateOptionsMenu(menu);
         menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
+        menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(R.drawable.menu_refresh);
         menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
         menu.add(0, TEST_DISPLAY_EVENT_ID, 2, R.string.menu_test_display_event).setIcon(android.R.drawable.ic_menu_view);
         return true;
@@ -107,6 +114,9 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		case UPDATE_ID:
 			updateXML();
 			return true;
+		case PREFETCH_IMG_ID:
+			prefetchAllRoomImages();
+			return true;
     	case TEST_DISPLAY_EVENT_ID:
     		testDisplayEvent();
     		return true;
@@ -125,14 +135,15 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     			tv.setText("Done fetching, loading into DB");
     		}else if(msg.arg1==DONELOADINGDB){
     			tv.setText("Done loading into DB");
+    		}else if (msg.arg1==ROOMIMGSTART) {
+    			tv.setText("Downloading room images...");
+    		}else if (msg.arg1==ROOMIMGDONE) {
+    			tv.setText("Room Images downloaded");
     		}
     	}
     };
     
-    
-    
-
-	public void onTagEvent(String tag, int type) {
+    public void onTagEvent(String tag, int type) {
 		if(tag.equals("event") && type==ParserEventListener.TAG_OPEN){
 			counter++;
 			Message msg = new Message();
@@ -157,6 +168,10 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		startActivity(intent);
 	}
 	
+	/**
+	 * Download the new schedule from the server and import the data 
+	 * in the local database
+	 */
 	public void updateXML() {
 		/*TODO: this is test code, it has to be replaced by some code to:
 	        * - if the db is empty, fill it up from xml (using the fetcher as below)
@@ -195,10 +210,53 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 					}
 	        	};
 	        	
-	        	
-	        	
 	        };
 	        
 	        t.start();
+	}
+	
+	/**
+	 * This function will prefetch all the images of the rooms. 
+	 * This enables the user to have a fast and internet-less experience. 
+	 */
+	public void prefetchAllRoomImages() {
+		tv = (TextView)findViewById(R.id.progress);
+		Thread t = new Thread() {
+			public void run() {
+
+				Message msg1 = new Message();
+				msg1.arg1 = ROOMIMGSTART;
+				handler.sendMessage(msg1);
+
+				String[] rooms;
+
+				// get the list of the rooms
+				DBAdapter db = new DBAdapter(Main.this);
+				try {
+					db.open();
+					rooms = db.getRooms();
+				} finally {
+					db.close();
+				}
+				// download the images in the background
+				for (String room : rooms) {
+					Log.d(LOG_TAG, "Downloading room image:" + room);
+					try {
+						FileUtil.fetchCached(StringUtil.roomNameToURL(room));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				Message msg2 = new Message();
+				msg2.arg1 = ROOMIMGDONE;
+				handler.sendMessage(msg2);
+
+			};
+
+		};
+        
+        t.start();
 	}
 }
