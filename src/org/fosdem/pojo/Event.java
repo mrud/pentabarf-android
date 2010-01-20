@@ -20,12 +20,9 @@ package org.fosdem.pojo;
  *  @author Christophe Vandeplas <christophe@vandeplas.com>
  */
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.Date;
+import java.util.List;
 
 public class Event {
 
@@ -194,7 +191,7 @@ public class Event {
 		this.description = description;
 	}
 
-	public List<Person> getPersons() {
+	public ArrayList<Person> getPersons() {
 		return persons;
 	}
 
