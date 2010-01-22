@@ -116,7 +116,7 @@ public class DisplayEvent extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				Message msg = new Message();
+				Message msg = Message.obtain();
 				msg.arg1 = MAPREADY;
 				handler.sendMessage(msg);
 			}

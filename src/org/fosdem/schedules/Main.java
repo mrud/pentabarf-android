@@ -76,13 +76,12 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         // FIXME on first startup 
         // - propose user to update database
         
-        
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
+        //menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
         menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(R.drawable.menu_refresh);
         menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
@@ -145,7 +144,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     public void onTagEvent(String tag, int type) {
 		if(tag.equals("event") && type==ParserEventListener.TAG_OPEN){
 			counter++;
-			Message msg = new Message();
+			Message msg = Message.obtain();
 			msg.arg1=TAGEVENT;
 			handler.sendMessage(msg);
 		}
@@ -179,14 +178,14 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 						ScheduleParser parser=new ScheduleParser("http://fosdem.org/schedule/xml");
 	        			parser.addTagEventListener(Main.this);
 						Schedule s = parser.parse();
-						Message msg = new Message();
+						Message msg = Message.obtain();
 						msg.arg1=DONEFETCHING;
 						handler.sendMessage(msg);
 						DBAdapter db = new DBAdapter(Main.this);
 						db.open();
 						db.persistSchedule(s);
 						db.close();
-						Message msg2 = new Message();
+						Message msg2 = Message.obtain();
 						msg2.arg1=DONELOADINGDB;
 						handler.sendMessage(msg2);
 						
@@ -211,7 +210,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		Thread t = new Thread() {
 			public void run() {
 
-				Message msg1 = new Message();
+				Message msg1 = Message.obtain();
 				msg1.arg1 = ROOMIMGSTART;
 				handler.sendMessage(msg1);
 
@@ -236,7 +235,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 						e.printStackTrace();
 					}
 				}
-				Message msg2 = new Message();
+				Message msg2 = Message.obtain();
 				msg2.arg1 = ROOMIMGDONE;
 				handler.sendMessage(msg2);
 
