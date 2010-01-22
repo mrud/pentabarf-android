@@ -1,32 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-	<TextView  
-	    android:layout_width="fill_parent" 
-	    android:layout_height="wrap_content" 
-	    android:text="@string/hello"
-	    android:id="@+id/progress"
-	    />
+    android:background="@drawable/main_bg"   >
 
-	<Button 
-		android:layout_width="wrap_content" 
+	<RelativeLayout
+		android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+    	
+	>
+	<Button
+		android:id="@+id/btn_update"
+		android:text="Update"
+		
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
+		
+		android:textSize="20dip"
+		/>
+	<LinearLayout
+	android:id="@+id/btn_days"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/btn_update">
+		
+	<Button 
 		android:id="@+id/btn_day_1"
 		android:text="Saturday"
+		
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		
+		android:textSize="20dip"
 		/>
 	<Button 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
 		android:id="@+id/btn_day_2"
 		android:text="Sunday"
-		/>
-	<Button 
-		android:layout_width="wrap_content" 
+		
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		
+		android:textSize="20dip"
+		/>
+		</LinearLayout>
+	<Button 
 		android:id="@+id/btn_search"
 		android:text="Search"
+		
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/btn_days"
+		
+		android:textSize="20dip"
 		/>
-</LinearLayout>
+	
+	<TextView  
+	    android:text="Status:"
+	    android:id="@+id/progress"
+	    
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content" 
+	    android:layout_alignParentBottom="true"
+	    />
+	</RelativeLayout>
+</RelativeLayout>
