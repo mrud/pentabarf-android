@@ -19,5 +19,5 @@
 	<drawable name="solid_white">#ffffffff</drawable>
 	<drawable name="solid_black">#ff000000</drawable>
 	<drawable name="gray_text_color">#ffaaaaaa</drawable>
-
+	<drawable name="fosdem_blue">#ff0b4763</drawable>
 </resources>
