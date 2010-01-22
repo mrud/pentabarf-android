@@ -62,7 +62,7 @@ public class TrackListActivity extends ListActivity  {
 //		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, track_a));
 			
 		// TODO chri - adapt layout to show a right arrow 
-        setListAdapter(new TrackAdapter(this, R.layout.room_list, tracks));
+        setListAdapter(new TrackAdapter(this, R.layout.track_list, tracks));
        
 	}
 	

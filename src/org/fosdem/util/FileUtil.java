@@ -11,11 +11,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import org.fosdem.schedules.Main;
+
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 public class FileUtil {
-	public static final String CACHELOCATION = "/data/data/org.fosdem/files/";
+	public static final String LOG_TAG=FileUtil.class.getName();
+    public static final String CACHELOCATION = "/data/data/org.fosdem/files/";
 
 	public static Object fetch(String address) throws MalformedURLException,
 			IOException {
@@ -57,6 +60,7 @@ public class FileUtil {
 
 	public static Drawable fetchCachedDrawable(String url)
 			throws MalformedURLException, IOException {
+		Log.d(LOG_TAG, "Fetching cached : " + url);
 		String cacheName = md5(url);
 		checkAndCreateDirectoryIfNeeded();
 

@@ -71,7 +71,7 @@
 			android:layout_marginBottom="5dip" 
 			android:textStyle="italic"
 			android:layout_below="@id/event_room"
-			android:background="#FFDBA1" />
+			android:background="@drawable/bg_abstract" />
 			
 		<TextView 
 			android:text="event_description" 
@@ -80,7 +80,7 @@
 			android:layout_height="fill_parent" 
 			android:textColor="#000"
 			android:layout_below="@id/event_abstract"
-			android:background="#F4FFA1" />
+			android:background="@drawable/bg_description" />
 			
 		<ImageView
 			android:id="@+id/room_image"

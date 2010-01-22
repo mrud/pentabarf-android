@@ -53,4 +53,22 @@ public class Track {
 	}
 	
 
+	public String getType() {
+		// FOSDEM specific parts
+		String[] mainTracks = {	"Keynotes", "Security", "Scalability",
+												"Monitoring", "Various", "Database", "Javascript" };
+		String[] sameAsTrack =  {"Lightning Talks", "Certification"};
+		//private final String[] devrooms; = else 
+		
+		// Main Tracks
+		for (String s: mainTracks) {
+			if (0==name.compareTo(s)) return "Main Track";
+	    }
+		// 
+		for (String s: sameAsTrack) {
+			if (0==name.compareTo(s)) return name;
+	    }
+		// Rest are Devrooms
+		return "Developer Room";
+	}
 }

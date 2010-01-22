@@ -20,7 +20,7 @@ import android.widget.TextView;
  *
  */
 public class TrackAdapter extends ArrayAdapter<Track> {
-
+	
 	private ArrayList<Track> items;
 
 	public TrackAdapter(Context context, int textViewResourceId, ArrayList<Track> items) {
@@ -33,13 +33,16 @@ public class TrackAdapter extends ArrayAdapter<Track> {
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.room_list, null);
+			v = vi.inflate(R.layout.track_list, null);
 		}
 		Track track = items.get(position);
 		if (track != null) {
 			TextView text1 = (TextView) v.findViewById(R.id.text1);
-			if (text1 != null) {
+			TextView textSmall = (TextView) v.findViewById(R.id.text_small);
+			
+			if (text1 != null && textSmall != null) {
 				text1.setText(track.getName());
+				textSmall.setText(track.getType());
 			}
 		}
 		return v;

@@ -32,8 +32,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-		<activity android:name="org.fosdem.schedules.RoomListActivity">
-		</activity>
 		<activity android:name="org.fosdem.schedules.TrackListActivity">
 		</activity>
 		<activity android:name="org.fosdem.schedules.EventListActivity">
