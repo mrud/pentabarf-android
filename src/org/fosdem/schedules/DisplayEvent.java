@@ -10,7 +10,10 @@ import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +24,10 @@ public class DisplayEvent extends Activity {
 
 	/** Id extras parameter name */
 	public final static String ID = "org.fosdem.Id";
+	
+	private Drawable roomImageDrawable ;
+	
+	protected static final int MAPREADY = 1120;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,17 @@ public class DisplayEvent extends Activity {
 		// populate the UI_event
 		showEvent(event);
 	}
+	
+	public Handler handler = new Handler(){
+    	public void handleMessage(Message msg) {
+    		if(msg==null)return;
+    		if(msg.arg1==MAPREADY){
+    			ImageView iv = (ImageView) findViewById(R.id.room_image);
+    			iv.setImageDrawable(roomImageDrawable);
+//				tv.setText("Fetched "+counter+" events.");
+    		}
+    	}
+    };
 
 	/**
 	 * Gets the {@link Event} that was specified through the intent or null if
@@ -88,19 +106,39 @@ public class DisplayEvent extends Activity {
 		tv.setText(value);
 	}
 	
+	public void prefetchImageViewImageAndShowIt(final String filename) {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					roomImageDrawable = FileUtil.fetchCachedDrawable(filename);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				Message msg = new Message();
+				msg.arg1 = MAPREADY;
+				handler.sendMessage(msg);
+			}
+		};
+		t.start();
+
+	}
+	
 	private void setImageViewImage(int id, String filename) {
 		if (filename == null) {
 			throw new IllegalArgumentException();
 		}
-		
-		final ImageView iv = (ImageView) findViewById(id);
+
 		try {
+			ImageView iv = (ImageView) findViewById(id);
 			iv.setImageDrawable(FileUtil.fetchCachedDrawable(filename));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
@@ -122,8 +160,10 @@ public class DisplayEvent extends Activity {
 		setTextViewText(R.id.event_speaker, StringUtil.personsToString(event.getPersons()));
 		setTextViewText(R.id.event_abstract, eventAbstract);
 		setTextViewText(R.id.event_description, eventDescription);
-		setImageViewImage(R.id.room_image, StringUtil.roomNameToURL(event.getRoom()));
 		
+		
+//		setImageViewImage(R.id.room_image, StringUtil.roomNameToURL(event.getRoom()));
+		prefetchImageViewImageAndShowIt(StringUtil.roomNameToURL(event.getRoom()));
 	}
 
 }
