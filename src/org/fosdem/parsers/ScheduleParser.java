@@ -20,7 +20,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-//TODO: persons and links need to be added to the parser.
+//TODO eMich - persons and links need to be added to the parser.
 public class ScheduleParser extends BaseParser {
 
 	public static final String LOGTAG = ScheduleParser.class.getName();

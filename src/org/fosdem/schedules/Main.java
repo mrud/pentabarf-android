@@ -13,8 +13,6 @@ import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class Main extends Activity implements ParserEventListener, OnClickListener {
@@ -40,14 +37,12 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     private static final int ABOUT_ID = Menu.FIRST;
 	private static final int UPDATE_ID = Menu.FIRST+1;
 	private static final int SETTINGS_ID = Menu.FIRST +2;
-	private static final int TEST_ID = Menu.FIRST +3;
-	private static final int TEST_DISPLAY_EVENT_ID = Menu.FIRST + 4;
 	private static final int PREFETCH_IMG_ID= Menu.FIRST + 5;
 
     
 	public int counter=0;
 	protected TextView tv=null;
-	protected Button btn_day_1, btn_day_2, btn_search;
+	protected Button btn_day_1, btn_day_2, btn_search, btn_update;
    
 	/** Called when the activity is first created. */
     @Override
@@ -75,6 +70,12 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         btn_day_2.setOnClickListener(this);
         btn_search = (Button) findViewById(R.id.btn_search);
         btn_search.setOnClickListener(this);
+        btn_update = (Button) findViewById(R.id.btn_update);
+        btn_update.setOnClickListener(this);
+        
+        // FIXME on first startup 
+        // - propose user to update database
+        
         
     }
     
@@ -85,7 +86,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
         menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(R.drawable.menu_refresh);
         menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
-        menu.add(0, TEST_DISPLAY_EVENT_ID, 2, R.string.menu_test_display_event).setIcon(android.R.drawable.ic_menu_view);
         return true;
     }
     
@@ -99,7 +99,10 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     		showTracksForDay(2);
     		break;
 		case R.id.btn_search:
-			// FIXME 
+			// FIXME eMich - call search function 
+			break;
+		case R.id.btn_update:
+			updateXML();
 			break;
 		default:
 			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
@@ -117,11 +120,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		case PREFETCH_IMG_ID:
 			prefetchAllRoomImages();
 			return true;
-    	case TEST_DISPLAY_EVENT_ID:
-    		testDisplayEvent();
-    		return true;
-        		
-        }
+    	}
         return super.onMenuItemSelected(featureId, item);
     }
    
@@ -160,29 +159,19 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	}
 	
 	/**
-	 * Sandb's test method for display event activity 
-	 */
-	private void testDisplayEvent() {
-		final Intent intent = new Intent(DisplayEvent.ACTION_DISPLAY_EVENT);
-		intent.putExtra(DisplayEvent.ID, 505);
-		startActivity(intent);
-	}
-	
-	/**
 	 * Download the new schedule from the server and import the data 
 	 * in the local database
 	 */
 	public void updateXML() {
-		/*TODO: this is test code, it has to be replaced by some code to:
+		// FIXME sandb - ask user if he also wants to prefetch the room images once this XML is downloaded
+		
+		/*LATER: this is test code, it has to be replaced by some code to:
 	        * - if the db is empty, fill it up from xml (using the fetcher as below)
 	        * - if db is not empty, fetch headers of xml, check last mod date and 
 	        *   compare to fetch date. if fetch date is older dan last mod date, suggest update to user.
 	        * - updating: automatic/manual => setting!
 	        */
 	        
-	        /*TODO: make a view scrollable in 2 ways. Nesting a scrollview and horizontal
-	         * scroll view doesn't seem to do the trick: no diagonal scrolling...
-	         */
 	        tv = (TextView)findViewById(R.id.progress);
 	        Thread t = new Thread(){
 	        	public void run() {
@@ -202,10 +191,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 						handler.sendMessage(msg2);
 						
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ParserException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 	        	};

@@ -18,7 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class SearchProvider extends ContentProvider {
-	// TODO: add person to search suggestions
+	// TODO eMich - add person to search suggestions
 	public static String AUTHORITY = "fosdemsearch";
 
 	private static final int SEARCH_SUGGEST = 0;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Day;
 import org.fosdem.pojo.Track;
 import org.fosdem.util.TrackAdapter;
 
@@ -28,9 +27,7 @@ public class TrackListActivity extends ListActivity  {
 
 	public static final String DAY_INDEX = "dayIndex";
 	
-    
 	private ArrayList<Track> tracks = null;
-	private Day day = null;
 	private int dayIndex = 0;
     
 	
@@ -40,28 +37,8 @@ public class TrackListActivity extends ListActivity  {
 		// what day should we show? fetch from the parameters or saved instance
 		dayIndex = savedInstanceState != null ? savedInstanceState.getInt(DAY_INDEX) : 0;
 		
-		
 		tracks = getTracks();
-		
 		setTitle("Tracks for Day " + dayIndex);
-		
-//		day = new Day();
-//		day.setIndex(dayIndex);
-
-//		Track track1 = new Track("Janson");
-//		Track track2 = new Track("Chavanne");
-//		Track track3 = new Track("Ferrer");
-//		
-//		tracks = new ArrayList<Track>();
-//		tracks.add(track1);
-//		tracks.add(track2);
-//		tracks.add(track3);
-		
-		
-//		String[] track_a = { "foo", "bar" };
-//		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, track_a));
-			
-		// TODO chri - adapt layout to show a right arrow 
         setListAdapter(new TrackAdapter(this, R.layout.track_list, tracks));
        
 	}
@@ -73,7 +50,6 @@ public class TrackListActivity extends ListActivity  {
         
         Log.d(LOG_TAG, "Track selected: " + track.getName());
         
-        // TODO load list of Events in Track
         Intent i = new Intent(this, EventListActivity.class);
 		i.putExtra(EventListActivity.TRACK_NAME, track.getName());
 		i.putExtra(EventListActivity.DAY_INDEX, dayIndex);

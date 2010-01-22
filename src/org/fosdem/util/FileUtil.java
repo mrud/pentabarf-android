@@ -11,8 +11,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-import org.fosdem.schedules.Main;
-
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Day;
 import org.fosdem.pojo.Event;
-import org.fosdem.pojo.Room;
 import org.fosdem.util.EventAdapter;
 
 import android.app.ListActivity;

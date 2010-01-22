@@ -12,10 +12,8 @@ public class RemoteFileCache extends AndroidTestCase {
 		try {
 			FileUtil.fetchCached("http://fosdem.org/2010/map/room/aw1105/small");
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail("IOException during remote fetch");
 		}

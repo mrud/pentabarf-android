@@ -157,7 +157,7 @@ public class DBAdapter extends ContentProvider {
 	public static final String PERSONID = "personid";
 	public static final String EVENTID = "eventid";
 
-	// TODO replace fields and table
+	// TODO eMich - replace fields and table
 	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer)";
 	protected static final String DB_CREATE_PERSONS = "create table persons (id integer primary key,name text)";
 	protected static final String DB_CREATE_PERSON_EVENT = "create table person_event (id integer primary key autoincrement,personid integer,eventid integer)";
