@@ -5,6 +5,7 @@
 	android:layout_width="fill_parent"
 	android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
+    android:paddingLeft="10dip"
    >
 	 
 	<TextView
@@ -13,7 +14,6 @@
 		android:text="name"
 		android:singleLine="true"
 		
-		android:paddingLeft="20dip"
 		android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
@@ -22,8 +22,7 @@
 		android:id="@+id/text_small"
 		android:text="type"
 		
-		android:textColor="#aaaaaa"
-		android:paddingLeft="20dip"
+		android:textColor="@drawable/gray_text_color"
 		android:layout_below="@id/text1"
 		android:layout_alignParentBottom="true"
 		android:layout_width="wrap_content"

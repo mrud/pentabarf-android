@@ -40,12 +40,22 @@ import android.widget.ListView;
 		super.onCreate(savedInstanceState);
 		
 		trackName = savedInstanceState != null ? savedInstanceState.getString(TRACK_NAME) : null;
-		// TODO dayindex
+		
+		// what room should we show? fetch from the parameters
+		Bundle extras = getIntent().getExtras();
+		if (trackName == null && query == null && extras!=null) { 
+			trackName = extras.getString(TRACK_NAME);
+			dayIndex = extras.getInt(DAY_INDEX);
+			
+			query = extras.getString(QUERY);
+		}
+		if (trackName != null && dayIndex != 0) 
+			setTitle("Day " + dayIndex + " - " + trackName );
+		if (query != null) 
+			setTitle("Search for: " + query);
 		
 		events = getEventList();
 		
-		setTitle(trackName);
-		// FIXME also pass on the day or dates of the event
 		
 		setListAdapter(new EventAdapter(this, R.layout.event_list, events));
        
@@ -72,19 +82,11 @@ import android.widget.ListView;
 	 */
 	private ArrayList<Event> getEventList() {
 		
-		// TODO dayIndex 
-		// what room should we show? fetch from the parameters
-		Bundle extras = getIntent().getExtras();
-		if (trackName == null && query == null && extras!=null) { 
-			trackName = extras.getString(TRACK_NAME);
-			dayIndex = extras.getInt(DAY_INDEX);
-			query = extras.getString(QUERY);
-			if(query==null && trackName==null){
-				Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
-				return null;
-			}
+		if(query==null && trackName==null){
+			Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
+			return null;
 		}
-				// Load event with specified id from the db
+		// Load event with specified id from the db
 		final DBAdapter db = new DBAdapter(this);
 		try {
 			db.open();

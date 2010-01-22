@@ -42,8 +42,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 			TextView speaker = (TextView) v.findViewById(R.id.event_speakers);
 			TextView room = (TextView) v.findViewById(R.id.event_room);
 			TextView time = (TextView) v.findViewById(R.id.event_time);
-			// TODO set other values like time, speaker,...
-
+			
 			title.setText(event.getTitle());
 			speaker.setText(StringUtil.personsToString(event.getPersons()));
 			room.setText(event.getRoom());

@@ -18,6 +18,6 @@
 <resources>
 	<drawable name="solid_white">#ffffffff</drawable>
 	<drawable name="solid_black">#ff000000</drawable>
-	<drawable name="gray_text_color">#ff808080</drawable>
+	<drawable name="gray_text_color">#ffaaaaaa</drawable>
 
 </resources>
