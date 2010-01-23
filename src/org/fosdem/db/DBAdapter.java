@@ -137,7 +137,8 @@ public class DBAdapter extends ContentProvider {
 	protected static final String TABLE_EVENTS = "events";
 	protected static final String TABLE_PERSONS = "persons";
 	protected static final String TABLE_JOIN_PERSON_EVENT = "person_event";
-	protected static final int DB_VERSION = 4;
+	protected static final String TABLE_FAVORITES = "favorites";
+	protected static final int DB_VERSION = 5;
 
 	public static final String ID = "id";
 	public static final String START = "start";
@@ -161,6 +162,7 @@ public class DBAdapter extends ContentProvider {
 	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer)";
 	protected static final String DB_CREATE_PERSONS = "create table persons (id integer primary key,name text)";
 	protected static final String DB_CREATE_PERSON_EVENT = "create table person_event (id integer primary key autoincrement,personid integer,eventid integer)";
+	protected static final String DB_CREATE_FAVORITES = "create table favorites(id integer primary key,start long)";
 
 	protected DatabaseHelper dbHelper;
 	protected Context context;
@@ -191,9 +193,11 @@ public class DBAdapter extends ContentProvider {
 			db.execSQL("drop table if exists events");
 			db.execSQL("drop table if exists persons");
 			db.execSQL("drop table if exists person_event");
+			db.execSQL("drop table if exists favorites");
 			db.execSQL(DB_CREATE_EVENTS);
 			db.execSQL(DB_CREATE_PERSONS);
 			db.execSQL(DB_CREATE_PERSON_EVENT);
+			db.execSQL(DB_CREATE_FAVORITES);
 		}
 	}
 
@@ -264,9 +268,21 @@ public class DBAdapter extends ContentProvider {
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
 		initialValues.put(DAYINDEX, event.getDayindex());
-		// Log.v(getClass().getName(), "Putting dayindex " +
-		// event.getDayindex());
 		return db.insert(TABLE_EVENTS, null, initialValues);
+	}
+
+	public long addBookmark(Event event) {
+		deleteBookmark(event.getId());
+		Log.v(getClass().getName(),event.getId()+" - "+event.getStart().getTime());
+		ContentValues initialValues = new ContentValues();
+		initialValues.put(ID, event.getId());
+		initialValues.put(START, event.getStart().getTime());
+		return db.insert(TABLE_FAVORITES, null, initialValues);
+	}
+
+	public boolean deleteBookmark(int id) {
+		Log.v(getClass().getName(),"Deleting "+id);
+		return db.delete(TABLE_FAVORITES, ID + "='" + id+"'", null) > 0;
 	}
 
 	public boolean deleteFromPersons(int id) {
@@ -320,6 +336,29 @@ public class DBAdapter extends ContentProvider {
 	public String[] getRooms() {
 		Cursor trackCursor = getRawRooms();
 		return getStringFromCursor(trackCursor, ROOM);
+	}
+
+	public ArrayList<Event> getFavoriteEvents(Date fromDate) {
+		String dateCriteria = null;
+		if (fromDate != null)
+			dateCriteria = START + ">" + fromDate.getTime();
+		Cursor favoriteIdsCursor = db.query(TABLE_FAVORITES,
+				new String[] { ID }, dateCriteria, null, null, null, null);
+		int[] favoriteIds = getIntFromCursor(favoriteIdsCursor, ID);
+		ArrayList<Event> events = new ArrayList<Event>();
+		for (int favoriteId : favoriteIds) {
+			Event event = getEventById(favoriteId);
+			if (event != null)
+				events.add(event);
+		}
+		return events;
+	}
+	
+	public boolean isFavorite(Event event){
+		Cursor isFavoritesCursor = db.query(TABLE_FAVORITES, new String[]{ID}, ID+"='"+event.getId()+"'", null, null, null, null);
+		boolean retVal = isFavoritesCursor.getCount()>0;
+		isFavoritesCursor.close();
+		return retVal;
 	}
 
 	public List<Date> getDays() {
@@ -416,7 +455,7 @@ public class DBAdapter extends ContentProvider {
 			sb.append("and (start>=" + beginDate.getTime() + " and end<="
 					+ endDate.getTime() + ")");
 		}
-		if (dayIndex!=null) {
+		if (dayIndex != null) {
 			sb.append(" or dayindex = :" + dayIndex + "");
 		}
 		String where = sb.toString();
@@ -563,6 +602,10 @@ public class DBAdapter extends ContentProvider {
 
 	public void clearPersonEventLinks() {
 		db.execSQL("delete from " + TABLE_JOIN_PERSON_EVENT);
+	}
+
+	public void clearBookmarks() {
+		db.execSQL("delete from " + TABLE_FAVORITES);
 	}
 
 }
