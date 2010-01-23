@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.fosdem.pojo.Person;
+import org.fosdem.schedules.Main;
 
 
 /**
@@ -21,7 +22,6 @@ public class StringUtil {
 	private static final int STATE_IN_FIRST_RETURN = 2;
 	private static final int STATE_IN_SUBSEQUENT_RETURNS = 4;
 	
-	private static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
 	
 
 	private static final int RETURN_STATES = STATE_IN_FIRST_RETURN | STATE_IN_SUBSEQUENT_RETURNS;
@@ -117,7 +117,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String roomNameToURL(String name) {
-		return ROOM_IMG_URL_BASE+name.replace(".", "").toLowerCase();
+		return Main.ROOM_IMG_URL_BASE+name.replace(".", "").toLowerCase();
 	}
 
 }

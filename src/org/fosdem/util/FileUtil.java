@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class FileUtil {
 	public static final String LOG_TAG=FileUtil.class.getName();
-    public static final String CACHELOCATION = "/data/data/org.fosdem/files/";
+    public static final String CACHELOCATION = "/data/data/org.fosdem/files/";  // TODO eMich - get cachelocation from Android environment
 
 	public static Object fetch(String address) throws MalformedURLException,
 			IOException {

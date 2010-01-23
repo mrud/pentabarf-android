@@ -2,7 +2,6 @@ package org.fosdem.schedules;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.fosdem.R;
@@ -19,8 +18,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +45,9 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	private static final int PREFETCH_IMG_ID= Menu.FIRST + 5;
 
 	private static final String PREFS = "org.fosdem";
+	public static final String XML_URL = "http://fosdem.org/schedule/xml";
+	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
+	
     
 	public int counter=0;
 	protected TextView tvProgress=null, tvDbVer=null;
@@ -211,7 +211,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	        	public void run() {
 	        		try {
 	        			
-						ScheduleParser parser=new ScheduleParser("http://fosdem.org/schedule/xml");
+						ScheduleParser parser=new ScheduleParser(XML_URL);
 	        			parser.addTagEventListener(Main.this);
 						Schedule s = parser.parse();
 						Message msg = Message.obtain();
