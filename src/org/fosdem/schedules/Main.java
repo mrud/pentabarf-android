@@ -73,6 +73,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         btn_update = (Button) findViewById(R.id.btn_update);
         btn_update.setOnClickListener(this);
         
+        tv = (TextView)findViewById(R.id.progress);
+        
         // FIXME on first startup 
         // - propose user to update database
         
@@ -170,8 +172,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	        *   compare to fetch date. if fetch date is older dan last mod date, suggest update to user.
 	        * - updating: automatic/manual => setting!
 	        */
-	        
-	        tv = (TextView)findViewById(R.id.progress);
 	        Thread t = new Thread(){
 	        	public void run() {
 	        		try {
@@ -206,7 +206,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	 * This enables the user to have a fast and internet-less experience. 
 	 */
 	public void prefetchAllRoomImages() {
-		tv = (TextView)findViewById(R.id.progress);
 		Thread t = new Thread() {
 			public void run() {
 
@@ -238,11 +237,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 				Message msg2 = Message.obtain();
 				msg2.arg1 = ROOMIMGDONE;
 				handler.sendMessage(msg2);
-
 			};
-
 		};
-        
         t.start();
 	}
 }
