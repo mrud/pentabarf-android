@@ -138,7 +138,7 @@ public class DBAdapter extends ContentProvider {
 	protected static final String TABLE_PERSONS = "persons";
 	protected static final String TABLE_JOIN_PERSON_EVENT = "person_event";
 	protected static final String TABLE_FAVORITES = "favorites";
-	protected static final int DB_VERSION = 5;
+	protected static final int DB_VERSION = 6;
 
 	public static final String ID = "id";
 	public static final String START = "start";
@@ -157,9 +157,10 @@ public class DBAdapter extends ContentProvider {
 	public static final String PERSONS = "person";
 	public static final String PERSONID = "personid";
 	public static final String EVENTID = "eventid";
+	public static final String PERSONSEARCH = "personsearch";
 
 	// TODO eMich - replace fields and table
-	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer)";
+	protected static final String DB_CREATE_EVENTS = "create table events (id integer primary key,start long,duration integer,room text,tag text,title text,subtitle text,track text,eventtype text,language text,abstract text,description text,dayindex integer,personsearch text)";
 	protected static final String DB_CREATE_PERSONS = "create table persons (id integer primary key,name text)";
 	protected static final String DB_CREATE_PERSON_EVENT = "create table person_event (id integer primary key autoincrement,personid integer,eventid integer)";
 	protected static final String DB_CREATE_FAVORITES = "create table favorites(id integer primary key,start long)";
@@ -268,12 +269,14 @@ public class DBAdapter extends ContentProvider {
 		initialValues.put(ABSTRACT, event.getAbstract_description());
 		initialValues.put(DESCRIPTION, event.getDescription());
 		initialValues.put(DAYINDEX, event.getDayindex());
+		initialValues.put(PERSONSEARCH, event.getPersons().toString());
 		return db.insert(TABLE_EVENTS, null, initialValues);
 	}
 
 	public long addBookmark(Event event) {
 		deleteBookmark(event.getId());
-		Log.v(getClass().getName(),event.getId()+" - "+event.getStart().getTime());
+		Log.v(getClass().getName(), event.getId() + " - "
+				+ event.getStart().getTime());
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(ID, event.getId());
 		initialValues.put(START, event.getStart().getTime());
@@ -281,8 +284,8 @@ public class DBAdapter extends ContentProvider {
 	}
 
 	public boolean deleteBookmark(int id) {
-		Log.v(getClass().getName(),"Deleting "+id);
-		return db.delete(TABLE_FAVORITES, ID + "='" + id+"'", null) > 0;
+		Log.v(getClass().getName(), "Deleting " + id);
+		return db.delete(TABLE_FAVORITES, ID + "='" + id + "'", null) > 0;
 	}
 
 	public boolean deleteFromPersons(int id) {
@@ -343,7 +346,7 @@ public class DBAdapter extends ContentProvider {
 		if (fromDate != null)
 			dateCriteria = START + ">" + fromDate.getTime();
 		Cursor favoriteIdsCursor = db.query(TABLE_FAVORITES,
-				new String[] { ID }, dateCriteria, null, null, null, null);
+				new String[] { ID }, dateCriteria, null, null, null, START);
 		int[] favoriteIds = getIntFromCursor(favoriteIdsCursor, ID);
 		ArrayList<Event> events = new ArrayList<Event>();
 		for (int favoriteId : favoriteIds) {
@@ -353,10 +356,12 @@ public class DBAdapter extends ContentProvider {
 		}
 		return events;
 	}
-	
-	public boolean isFavorite(Event event){
-		Cursor isFavoritesCursor = db.query(TABLE_FAVORITES, new String[]{ID}, ID+"='"+event.getId()+"'", null, null, null, null);
-		boolean retVal = isFavoritesCursor.getCount()>0;
+
+	public boolean isFavorite(Event event) {
+		Cursor isFavoritesCursor = db.query(TABLE_FAVORITES,
+				new String[] { ID }, ID + "='" + event.getId() + "'", null,
+				null, null, null);
+		boolean retVal = isFavoritesCursor.getCount() > 0;
 		isFavoritesCursor.close();
 		return retVal;
 	}
@@ -475,7 +480,7 @@ public class DBAdapter extends ContentProvider {
 
 	public List<Event> getEventsFilteredLike(Date beginDate, Date endDate,
 			String[] titles, String[] tracks, String[] types, String[] tags,
-			String[] rooms, String[] languages) {
+			String[] rooms, String[] languages, String[] persons) {
 		StringBuilder sb = new StringBuilder();
 		if (titles != null)
 			for (String title : titles) {
@@ -500,6 +505,10 @@ public class DBAdapter extends ContentProvider {
 		if (languages != null)
 			for (String language : languages) {
 				sb.append(" or language like '%" + language + "%'");
+			}
+		if (persons != null)
+			for (String person : persons) {
+				sb.append(" or personsearch like '%" + person + "%'");
 			}
 		if (beginDate != null && endDate != null) {
 			sb.append("and (start>=" + beginDate.getTime() + " and end<="

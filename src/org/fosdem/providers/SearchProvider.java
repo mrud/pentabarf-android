@@ -110,7 +110,7 @@ public class SearchProvider extends ContentProvider {
 		MatrixCursor cursor = null;
 		try {
 			List<Event> events = db.getEventsFilteredLike(null, null, queryVal,
-					queryVal, queryVal, queryVal, queryVal, null);
+					queryVal, queryVal, queryVal, queryVal, null, queryVal);
 			cursor = new MatrixCursor(COLUMNS);
 			for (Event event : events) {
 				cursor.addRow(columnValuesOfEvent(event));
@@ -123,18 +123,21 @@ public class SearchProvider extends ContentProvider {
 	}
 
 	private Object[] columnValuesOfEvent(Event event) {
-		return new String[] { Integer.toString(event.getId()), // _id
+		return new String[] {
+				Integer.toString(event.getId()), // _id
 				event.getTitle(), // text1
-				getPersonsAsString(event.getPersons())+" - "+event.getTrack(), // text2
+				getPersonsAsString(event.getPersons()) + " - "
+						+ event.getTrack(), // text2
 				Integer.toString(event.getId()), // intent_data (included when
 		// clicking on item)
 		};
 	}
-	
-	private String getPersonsAsString(ArrayList<Person> persons){
-		StringBuilder personStr=new StringBuilder();
-		for(Person person:persons){
-			if(personStr.length()!=0)personStr.append(" , ");
+
+	private String getPersonsAsString(ArrayList<Person> persons) {
+		StringBuilder personStr = new StringBuilder();
+		for (Person person : persons) {
+			if (personStr.length() != 0)
+				personStr.append(" , ");
 			personStr.append(person.getName());
 		}
 		return personStr.toString();
