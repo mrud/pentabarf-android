@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">FOSDEM</string>
     <string name="menu_settings">Settings</string>
@@ -10,5 +11,10 @@
 	<string name="db_ver">Database last updated:</string>
 	<string name="about_text1">FOSDEM Schedule application</string>
 	<string name="about_text2">Programmed by: \nMichaël Uyttersprot, Pieter Iserbyt and Christophe Vandeplas.</string>
-	<string name="about_text3">Source available at http://fosdem.org/schedule/phone</string>
+	<string name="about_text3">Source available at http://fosdem.org/schedule/phone</string> 
+	<string name="menu_test_display_event">Display event</string>
+	<string name="favorites">Favorites</string>
+	<string name="favorites_event_removed">Event removed from favorites</string>
+	<string name="favorites_event_added">Event added to favorites</string>
+	<string name="share">Share...</string>
 </resources>
