@@ -6,6 +6,6 @@
     <string name="menu_update">Update</string>
 	<string name="search_label">Search</string>
 	<string name="settings_description">FOSDEM search</string>  
-	<string name="menu_prefetch_rooms">Prefetch Room Images</string> 
+	<string name="menu_prefetch_rooms">Prefetch Maps</string> 
 	<string name="db_ver">Database last updated:</string>
 </resources>
