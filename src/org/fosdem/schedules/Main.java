@@ -2,6 +2,8 @@ package org.fosdem.schedules;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
@@ -14,6 +16,7 @@ import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,10 +42,11 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	private static final int SETTINGS_ID = Menu.FIRST +2;
 	private static final int PREFETCH_IMG_ID= Menu.FIRST + 5;
 
+	private static final String PREFS = "org.fosdem";
     
 	public int counter=0;
-	protected TextView tv=null;
-	protected Button btn_day_1, btn_day_2, btn_search, btn_update;
+	protected TextView tvProgress=null, tvDbVer=null;
+	protected Button btnDay1, btnDay2, btnSearch;
    
 	/** Called when the activity is first created. */
     @Override
@@ -64,16 +68,16 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         
         setContentView(R.layout.main);
         
-        btn_day_1 = (Button) findViewById(R.id.btn_day_1);
-        btn_day_1.setOnClickListener(this);
-        btn_day_2 = (Button) findViewById(R.id.btn_day_2);
-        btn_day_2.setOnClickListener(this);
-        btn_search = (Button) findViewById(R.id.btn_search);
-        btn_search.setOnClickListener(this);
-        btn_update = (Button) findViewById(R.id.btn_update);
-        btn_update.setOnClickListener(this);
+        btnDay1 = (Button) findViewById(R.id.btn_day_1);
+        btnDay1.setOnClickListener(this);
+        btnDay2 = (Button) findViewById(R.id.btn_day_2);
+        btnDay2.setOnClickListener(this);
+        btnSearch = (Button) findViewById(R.id.btn_search);
+        btnSearch.setOnClickListener(this);
         
-        tv = (TextView)findViewById(R.id.progress);
+        tvProgress = (TextView)findViewById(R.id.progress);
+        tvDbVer = (TextView) findViewById(R.id.db_ver);
+        tvDbVer.setText(getString(R.string.db_ver) + " "+ StringUtil.dateTimeToString(getDBLastUpdated()));
         
         // FIXME on first startup 
         // - propose user to update database
@@ -100,10 +104,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     		showTracksForDay(2);
     		break;
 		case R.id.btn_search:
-			// FIXME eMich - call search function 
-			break;
-		case R.id.btn_update:
-			updateXML();
+			// nothing to do as btn is not active
 			break;
 		default:
 			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
@@ -130,15 +131,17 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     	public void handleMessage(Message msg) {
     		if(msg==null)return;
     		if(msg.arg1==TAGEVENT){
-				tv.setText("Fetched "+counter+" events.");
+				tvProgress.setText("Fetched "+counter+" events.");
     		}else if(msg.arg1==DONEFETCHING){
-    			tv.setText("Done fetching, loading into DB");
+    			tvProgress.setText("Done fetching, loading into DB");
+    			setDBLastUpdated();
     		}else if(msg.arg1==DONELOADINGDB){
-    			tv.setText("Done loading into DB");
+    			tvProgress.setText("Done loading into DB");
+    			tvDbVer.setText(getString(R.string.db_ver) + " " +StringUtil.dateTimeToString(getDBLastUpdated()));
     		}else if (msg.arg1==ROOMIMGSTART) {
-    			tv.setText("Downloading room images...");
+    			tvProgress.setText("Downloading room images...");
     		}else if (msg.arg1==ROOMIMGDONE) {
-    			tv.setText("Room Images downloaded");
+    			tvProgress.setText("Room Images downloaded");
     		}
     	}
     };
@@ -172,9 +175,11 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	        *   compare to fetch date. if fetch date is older dan last mod date, suggest update to user.
 	        * - updating: automatic/manual => setting!
 	        */
+			tvProgress.setText("Downloading...");
 	        Thread t = new Thread(){
 	        	public void run() {
 	        		try {
+	        			
 						ScheduleParser parser=new ScheduleParser("http://fosdem.org/schedule/xml");
 	        			parser.addTagEventListener(Main.this);
 						Schedule s = parser.parse();
@@ -240,5 +245,26 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 			};
 		};
         t.start();
+	}
+	
+	/**
+	 * Set NOW as the time that the Schedule database has been imported.
+	 */
+	private void setDBLastUpdated() {
+		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0).edit();
+		long timestamp = System.currentTimeMillis()/1000;
+		editor.putLong("db_last_updated", timestamp);
+		editor.commit(); // Don't forget to commit your edits!!!
+	}
+	
+	/**
+	 * Fetch the Date when the Schedule database has been imported
+	 * @return Date of the last Database update
+	 */
+	private Date getDBLastUpdated() {
+		SharedPreferences settings = getSharedPreferences(Main.PREFS, 0);
+		long timestamp = settings.getLong("db_last_updated", 0);
+		if (timestamp == 0) return null;
+		return new Date(timestamp*1000);
 	}
 }

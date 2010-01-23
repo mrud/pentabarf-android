@@ -1,5 +1,6 @@
 package org.fosdem.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ public class StringUtil {
 	 *            An unclean string value
 	 * @return A niceified version of the value
 	 */
-	public static String niceify(String value) {
+	public static String niceify(final String value) {
 		if (value == null) return "";
 		
 		final StringBuffer sb = new StringBuffer(value.length());
@@ -85,7 +86,7 @@ public class StringUtil {
 	 *            A list of persons
 	 * @return A string with their names
 	 */
-	public static String personsToString(List<Person> persons) {
+	public static String personsToString(final List<Person> persons) {
 		final StringBuffer sb = new StringBuffer();
 		boolean first = true;
 		for (final Person person : persons) {
@@ -98,10 +99,15 @@ public class StringUtil {
 	}
 	
 	
-	public static String datesToString(Date start, int duration) {
+	public static String datesToString(final Date start, final int duration) {
 		return new SimpleDateFormat("EEE @HH:mm").format(start)
 			+ " - " + duration + " min";
 		
+	}
+	
+	public static String dateTimeToString(final Date date) {
+		if (date == null) return "Never";
+		return DateFormat.getDateTimeInstance().format(date);
 	}
 
 	/**

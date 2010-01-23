@@ -5,27 +5,18 @@
     android:layout_height="fill_parent"
     android:background="@drawable/main_bg"   >
 
-	<Button
-		android:id="@+id/btn_update"
-		android:text="Update"
-		
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		
-		android:textSize="20dip"
-		/>
 	<LinearLayout
-	android:id="@+id/btn_days"
+		android:id="@+id/btn_days"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@id/btn_update">
+		>
 		
 	<Button 
 		android:id="@+id/btn_day_1"
 		android:text="Saturday"
 		
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
+		android:layout_height="80dip"
 		android:layout_weight="1"
 		
 		android:textSize="20dip"
@@ -35,7 +26,7 @@
 		android:text="Sunday"
 		
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
+		android:layout_height="80dip"
 		android:layout_weight="1"
 		
 		android:textSize="20dip"
@@ -43,22 +34,37 @@
 		</LinearLayout>
 	<Button 
 		android:id="@+id/btn_search"
-		android:text="Search"
+		android:text="To search press the Android search key"
 		
+		android:enabled="false"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:layout_below="@id/btn_days"
 		
-		android:textSize="20dip"
+		android:textSize="14dip"
 		/>
-	
+	<RelativeLayout
+		android:id="@+id/texts"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		>
 	<TextView  
-	    android:text="Status:"
 	    android:id="@+id/progress"
 	    
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
-	    android:layout_alignParentBottom="true"
 	    />
+	    
+    <TextView  
+	    android:text="Database version"
+	    android:id="@+id/db_ver"
+	    
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content" 
+	    
+	    android:layout_below="@id/progress"
+	    />
+	</RelativeLayout>
 
 </RelativeLayout>
