@@ -27,11 +27,13 @@ import android.widget.ListView;
 	public static final String DAY_INDEX = "dayIndex";
 	public static final String TRACK_NAME = "trackName";
 	public static final String QUERY = "query";
+	public static final String FAVORITES = "favorites";
 	
 	private ArrayList<Event> events = null;
 	private String trackName = null;
 	private int dayIndex = 0;
 	private String query = null;
+	private Boolean favorites = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,19 +46,22 @@ import android.widget.ListView;
 		if (trackName == null && query == null && extras!=null) { 
 			trackName = extras.getString(TRACK_NAME);
 			dayIndex = extras.getInt(DAY_INDEX);
-			
+			favorites = extras.getBoolean(FAVORITES);
 			query = extras.getString(QUERY);
 		}
 		if (trackName != null && dayIndex != 0) 
 			setTitle("Day " + dayIndex + " - " + trackName );
 		if (query != null) 
 			setTitle("Search for: " + query);
+		if (favorites!=null && favorites)
+			setTitle("Favorites");
 		
-		events = getEventList();
+		events = getEventList(favorites);
+		
 		
 		
 		setListAdapter(new EventAdapter(this, R.layout.event_list, events));
-       
+		
 	}
 	
 	@Override
@@ -78,9 +83,9 @@ import android.widget.ListView;
 	 * 
 	 * @return The Event or null.
 	 */
-	private ArrayList<Event> getEventList() {
+	private ArrayList<Event> getEventList(Boolean favoritesOnly) {
 		
-		if(query==null && trackName==null){
+		if(query==null && trackName==null && (favoritesOnly==null || !favoritesOnly)){
 			Log.e(LOG_TAG, "You are loading this class with no valid room parameter");
 			return null;
 		}
@@ -95,6 +100,10 @@ import android.widget.ListView;
 			else if(query!=null){
 				String[] queryArgs = new String[]{query};
 				return (ArrayList<Event>) db.getEventsFilteredLike(null, null, queryArgs, queryArgs, queryArgs, queryArgs, queryArgs, null);
+			}
+			else if(favorites!=null && favorites){
+				Log.e(LOG_TAG, "Getting favorites...");
+				return db.getFavoriteEvents(null);
 			}
 			
 			return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(trackName, dayIndex);

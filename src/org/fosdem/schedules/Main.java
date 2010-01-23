@@ -16,6 +16,10 @@ import org.fosdem.util.StringUtil;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -51,7 +55,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     
 	public int counter=0;
 	protected TextView tvProgress=null, tvDbVer=null;
-	protected Button btnDay1, btnDay2, btnSearch;
+	protected Button btnDay1, btnDay2, btnSearch, btnFavorites;
    
 	/** Called when the activity is first created. */
     @Override
@@ -79,6 +83,9 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         btnDay2.setOnClickListener(this);
         btnSearch = (Button) findViewById(R.id.btn_search);
         btnSearch.setOnClickListener(this);
+        btnFavorites = (Button) findViewById(R.id.btn_favorites);
+        btnFavorites.setOnClickListener(this);
+        
         
         tvProgress = (TextView)findViewById(R.id.progress);
         tvDbVer = (TextView) findViewById(R.id.db_ver);
@@ -86,7 +93,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         
         // FIXME on first startup 
         // - propose user to update database
-        
     }
     
     @Override
@@ -133,6 +139,9 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     		break;
 		case R.id.btn_search:
 			// nothing to do as btn is not active
+			break;
+		case R.id.btn_favorites:
+			showFavorites();
 			break;
 		default:
 			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
@@ -190,6 +199,12 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		Log.d(LOG_TAG, "showTracksForDay("+day+");");
 		Intent i = new Intent(this, TrackListActivity.class);
 		i.putExtra(TrackListActivity.DAY_INDEX, day);
+		startActivity(i);
+	}
+	
+	public void showFavorites(){
+		Intent i = new Intent(this, EventListActivity.class);
+		i.putExtra(EventListActivity.FAVORITES,true);
 		startActivity(i);
 	}
 	
