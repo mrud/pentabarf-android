@@ -11,14 +11,20 @@
 		android:layout_height="fill_parent" 
 		android:orientation="vertical" 
 		android:padding="5dip">
+		<org.fosdem.views.FavoriteButton
+			android:id="@+id/favoriteButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true" android:layout_marginTop="5dip" android:layout_marginRight="5dip"/>
 		<TextView 
-			android:layout_width="wrap_content" 
+			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:id="@+id/event_title" 
 			android:textColor="#333" 
 			android:textSize="25dip" 
 			android:textStyle="bold" 
-			android:text="Title">
+			android:text="Title"
+			android:paddingRight="25dip">
 		</TextView>
 		<TextView 
 			android:text="event_track" 
@@ -29,7 +35,6 @@
 			android:layout_marginRight="2dip" 
 			android:layout_alignParentRight="true"
        		android:layout_below="@id/event_title"
-       		
 			/>
 		<TextView 
 			android:text="event_room" 

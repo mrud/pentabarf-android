@@ -32,6 +32,13 @@
 		android:textSize="20dip"
 		/>
 		</LinearLayout>
+	<Button
+		android:id="@+id/btn_favorites"
+		android:text="@string/favorites"
+		android:layout_below="@id/btn_days"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textSize="20dip"/>
 	<Button 
 		android:id="@+id/btn_search"
 		android:text="To search press the Android search key"
@@ -39,7 +46,7 @@
 		android:enabled="false"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@id/btn_days"
+		android:layout_below="@id/btn_favorites"
 		
 		android:textSize="14dip"
 		/>
