@@ -15,8 +15,12 @@ import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +40,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
     protected static final int ROOMIMGSTART=3;
     protected static final int ROOMIMGDONE=4;
     
+    protected static final int DIALOG_ABOUT = 0;
     
     private static final int ABOUT_ID = Menu.FIRST;
 	private static final int UPDATE_ID = Menu.FIRST+1;
@@ -94,6 +99,29 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         return true;
     }
     
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        
+		switch (id) {
+		case DIALOG_ABOUT:
+			View view = getLayoutInflater().inflate(R.layout.about, null, false);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getString(R.string.app_name));
+			builder.setIcon(android.R.drawable.ic_dialog_info);
+			builder.setView(view);
+			builder.setPositiveButton(getString(android.R.string.ok), null);
+			builder.setCancelable(true);
+
+			dialog = builder.create();
+			break;
+        default:
+            dialog = null;
+        }
+        return dialog;
+    }
+
+    
     public void onClick(View v) {
     	int id = v.getId();
     	switch (id) {
@@ -122,6 +150,9 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		case PREFETCH_IMG_ID:
 			prefetchAllRoomImages();
 			return true;
+		case ABOUT_ID:
+			showDialog(DIALOG_ABOUT);
+			break;
     	}
         return super.onMenuItemSelected(featureId, item);
     }

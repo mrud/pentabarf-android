@@ -8,4 +8,7 @@
 	<string name="settings_description">FOSDEM search</string>  
 	<string name="menu_prefetch_rooms">Prefetch Maps</string> 
 	<string name="db_ver">Database last updated:</string>
+	<string name="about_text1">FOSDEM Schedule application</string>
+	<string name="about_text2">Programmed by: \nMichaël Uyttersprot, Pieter Iserbyt and Christophe Vandeplas.</string>
+	<string name="about_text3">Source available at http://fosdem.org/schedule/phone</string>
 </resources>
