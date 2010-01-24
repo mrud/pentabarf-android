@@ -3,6 +3,7 @@ package org.fosdem.schedules;
 import java.util.ArrayList;
 
 import org.fosdem.R;
+import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
 import org.fosdem.util.EventAdapter;
@@ -59,7 +60,7 @@ public class EventListActivity extends ListActivity {
 			setTitle("Search for: " + query);
 		if (favorites != null && favorites){
 			setTitle("Favorites");
-			registerReceiver(favoritesChangedReceiver, new IntentFilter(Main.FAVORITES_UPDATE));
+			registerReceiver(favoritesChangedReceiver, new IntentFilter(FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
 		}
 
 		events = getEventList(favorites);
