@@ -81,6 +81,7 @@ public class NotificationService extends Service {
 		Log.v(getClass().getName(), "NotificationService stopped.");
 		unregisterReceiver(favoritesChangedReceiver);
 		timer.cancel();
+		notificationManager.cancelAll();
 		super.onDestroy();
 	}
 
