@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.pojo.Day;
 import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Person;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Schedule;
-import org.fosdem.schedules.Main;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -284,30 +284,40 @@ public class DBAdapter extends ContentProvider {
 		initialValues.put(START, event.getStart().getTime());
 		long rowId = db.insert(TABLE_FAVORITES, null, initialValues);
 
-		Intent intent = new Intent(Main.FAVORITES_UPDATE);
-		intent.putExtra(Main.COUNT, getBookmarkCount());
+		Intent intent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_UPDATE);
+		intent.putExtra(FavoritesBroadcast.EXTRA_COUNT, getBookmarkCount());
+		intent.putExtra(FavoritesBroadcast.EXTRA_TYPE,
+				FavoritesBroadcast.EXTRA_TYPE_INSERT);
+		intent.putExtra(FavoritesBroadcast.EXTRA_ID, rowId);
 		context.sendBroadcast(intent);
-		
+
 		return rowId;
 	}
-	
-	public long getBookmarkCount(){
-		Cursor c = db.rawQuery("select count(" + ID + ") from " + TABLE_FAVORITES, null);
+
+	public long getBookmarkCount() {
+		Cursor c = db.rawQuery("select count(" + ID + ") from "
+				+ TABLE_FAVORITES, null);
 		c.moveToFirst();
 		long count = c.getLong(0);
 		c.close();
 		return count;
 	}
 
-	public boolean deleteBookmark(int id) {
+	public boolean deleteBookmark(long id) {
 		Log.v(getClass().getName(), "Deleting " + id);
-		boolean success = db.delete(TABLE_FAVORITES, ID + "='" + id + "'", null) > 0;
-		
-		//Intent intent = new Intent(context,FavoritesBroadcastReceiver.class);
-		Intent intent = new Intent(Main.FAVORITES_UPDATE);
-		intent.putExtra(Main.COUNT, getBookmarkCount());
-		context.sendBroadcast(intent);
-		
+		boolean success = db
+				.delete(TABLE_FAVORITES, ID + "='" + id + "'", null) > 0;
+
+		if (success) {
+			Intent intent = new Intent(
+					FavoritesBroadcast.ACTION_FAVORITES_UPDATE);
+			intent.putExtra(FavoritesBroadcast.EXTRA_COUNT, getBookmarkCount());
+			intent.putExtra(FavoritesBroadcast.EXTRA_TYPE,
+					FavoritesBroadcast.EXTRA_TYPE_DELETE);
+			intent.putExtra(FavoritesBroadcast.EXTRA_ID, id);
+			context.sendBroadcast(intent);
+		}
+
 		return success;
 	}
 
