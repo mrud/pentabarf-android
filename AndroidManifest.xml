@@ -45,6 +45,7 @@
         <provider android:name="org.fosdem.providers.SearchProvider"
                 android:authorities="fosdemsearch"
                 android:syncable="false" />
+         <service android:name="org.fosdem.services.NotificationService"/>
     </application>
     <uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>
 	<instrumentation 
