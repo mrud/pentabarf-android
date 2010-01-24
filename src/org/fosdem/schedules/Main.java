@@ -5,20 +5,19 @@ import java.net.MalformedURLException;
 import java.util.Date;
 
 import org.fosdem.R;
+import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.parsers.ScheduleParser;
 import org.fosdem.pojo.Schedule;
+import org.fosdem.services.NotificationService;
 import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -52,20 +51,17 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 
 	private static final String PREFS = "org.fosdem";
 	public static final String XML_URL = "http://fosdem.org/schedule/xml";
-	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
-	
-	public static final String FAVORITES_UPDATE = "favoritesupdate";
-	public static final String COUNT = "count";
-	
+	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";	
     
 	public int counter=0;
 	protected TextView tvProgress=null, tvDbVer=null;
 	protected Button btnDay1, btnDay2, btnSearch, btnFavorites;
+	protected Intent service;
 	
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long count = intent.getLongExtra(COUNT, -1);
+            long count = intent.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
             if(count==0)btnFavorites.setEnabled(false);
             else btnFavorites.setEnabled(true);
         }
@@ -105,7 +101,11 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         tvDbVer = (TextView) findViewById(R.id.db_ver);
         tvDbVer.setText(getString(R.string.db_ver) + " "+ StringUtil.dateTimeToString(getDBLastUpdated()));
         
-        registerReceiver(favoritesChangedReceiver, new IntentFilter(FAVORITES_UPDATE));
+        registerReceiver(favoritesChangedReceiver, new IntentFilter(FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
+        
+        service = new Intent(this,NotificationService.class);
+        startService(service);
+        
         
         // FIXME on first startup 
         // - propose user to update database
@@ -333,6 +333,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(favoritesChangedReceiver);
+		stopService(service);
 		super.onDestroy();
 	}
 }
