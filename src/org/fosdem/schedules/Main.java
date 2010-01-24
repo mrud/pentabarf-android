@@ -19,8 +19,10 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,10 +54,22 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	public static final String XML_URL = "http://fosdem.org/schedule/xml";
 	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
 	
+	public static final String FAVORITES_UPDATE = "favoritesupdate";
+	public static final String COUNT = "count";
+	
     
 	public int counter=0;
 	protected TextView tvProgress=null, tvDbVer=null;
 	protected Button btnDay1, btnDay2, btnSearch, btnFavorites;
+	
+	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long count = intent.getLongExtra(COUNT, -1);
+            if(count==0)btnFavorites.setEnabled(false);
+            else btnFavorites.setEnabled(true);
+        }
+    };
    
 	/** Called when the activity is first created. */
     @Override
@@ -90,6 +104,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
         tvProgress = (TextView)findViewById(R.id.progress);
         tvDbVer = (TextView) findViewById(R.id.db_ver);
         tvDbVer.setText(getString(R.string.db_ver) + " "+ StringUtil.dateTimeToString(getDBLastUpdated()));
+        
+        registerReceiver(favoritesChangedReceiver, new IntentFilter(FAVORITES_UPDATE));
         
         // FIXME on first startup 
         // - propose user to update database
@@ -312,5 +328,11 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		long timestamp = settings.getLong("db_last_updated", 0);
 		if (timestamp == 0) return null;
 		return new Date(timestamp*1000);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(favoritesChangedReceiver);
+		super.onDestroy();
 	}
 }

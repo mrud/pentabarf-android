@@ -9,8 +9,10 @@ import org.fosdem.util.EventAdapter;
 
 import android.app.ListActivity;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,7 @@ public class EventListActivity extends ListActivity {
 	private int dayIndex = 0;
 	private String query = null;
 	private Boolean favorites = null;
+	private EventAdapter eventAdapter=null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,13 +57,16 @@ public class EventListActivity extends ListActivity {
 			setTitle("Day " + dayIndex + " - " + trackName);
 		if (query != null)
 			setTitle("Search for: " + query);
-		if (favorites != null && favorites)
+		if (favorites != null && favorites){
 			setTitle("Favorites");
+			registerReceiver(favoritesChangedReceiver, new IntentFilter(Main.FAVORITES_UPDATE));
+		}
 
 		events = getEventList(favorites);
 
-		setListAdapter(new EventAdapter(this, R.layout.event_list, events));
-
+		eventAdapter=new EventAdapter(this, R.layout.event_list, events); 
+		setListAdapter(eventAdapter);
+		
 	}
 
 	@Override
@@ -123,5 +129,21 @@ public class EventListActivity extends ListActivity {
 				.getStringExtra(SearchManager.QUERY));
 		context.startActivity(i);
 	}
+	
+	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            eventAdapter.clear();
+            events = getEventList(favorites);
+            for(Event event:events){
+            	eventAdapter.add(event);
+            }
+        }
+    };
 
+    protected void onDestroy() {
+    	super.onDestroy();
+    	if(favorites!=null && favorites)unregisterReceiver(favoritesChangedReceiver);
+
+    }
 }
