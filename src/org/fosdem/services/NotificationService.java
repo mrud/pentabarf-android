@@ -71,7 +71,7 @@ public class NotificationService extends Service {
 			}
 
 		};
-		timer.scheduleAtFixedRate(task, 0, 1000);
+		timer.scheduleAtFixedRate(task, 0, 60000);
 
 		super.onCreate();
 	}
