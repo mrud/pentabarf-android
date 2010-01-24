@@ -9,11 +9,13 @@ import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Person;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Schedule;
+import org.fosdem.schedules.Main;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -280,12 +282,33 @@ public class DBAdapter extends ContentProvider {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(ID, event.getId());
 		initialValues.put(START, event.getStart().getTime());
-		return db.insert(TABLE_FAVORITES, null, initialValues);
+		long rowId = db.insert(TABLE_FAVORITES, null, initialValues);
+
+		Intent intent = new Intent(Main.FAVORITES_UPDATE);
+		intent.putExtra(Main.COUNT, getBookmarkCount());
+		context.sendBroadcast(intent);
+		
+		return rowId;
+	}
+	
+	public long getBookmarkCount(){
+		Cursor c = db.rawQuery("select count(" + ID + ") from " + TABLE_FAVORITES, null);
+		c.moveToFirst();
+		long count = c.getLong(0);
+		c.close();
+		return count;
 	}
 
 	public boolean deleteBookmark(int id) {
 		Log.v(getClass().getName(), "Deleting " + id);
-		return db.delete(TABLE_FAVORITES, ID + "='" + id + "'", null) > 0;
+		boolean success = db.delete(TABLE_FAVORITES, ID + "='" + id + "'", null) > 0;
+		
+		//Intent intent = new Intent(context,FavoritesBroadcastReceiver.class);
+		Intent intent = new Intent(Main.FAVORITES_UPDATE);
+		intent.putExtra(Main.COUNT, getBookmarkCount());
+		context.sendBroadcast(intent);
+		
+		return success;
 	}
 
 	public boolean deleteFromPersons(int id) {
