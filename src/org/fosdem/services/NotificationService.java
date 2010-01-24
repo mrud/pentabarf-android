@@ -91,7 +91,7 @@ public class NotificationService extends Service {
 		ArrayList<Event> events = db.getFavoriteEvents(new Date());
 		for (Event event : events) {
 			long timeDiff = event.getStart().getTime() - currentDate.getTime();
-			if (timeDiff > 0 && timeDiff < (5 * 60 * 1000))
+			if (timeDiff > 0 && timeDiff < (10 * 60 * 1000))
 				addNotification(event);
 		}
 		db.close();
@@ -100,9 +100,10 @@ public class NotificationService extends Service {
 	public void addNotification(Event event) {
 		Date currentDate = new Date();
 		long timeDiff = event.getStart().getTime() - currentDate.getTime();
-		if (timeDiff < 0 || timeDiff > (5 * 60 * 1000)
+		if (timeDiff < 0 || timeDiff > (10 * 60 * 1000)
 				|| notifiedIds.contains(event.getId()))
 			return;
+		//TODO: make notification icon (hero is black bg while magic white -> what to do ?)
 		int icon = R.drawable.icon;
 		long when = event.getStart().getTime();
 		Notification notification = new Notification(icon, event.getTitle(),
