@@ -4,7 +4,7 @@
       android:versionCode="1"
       android:versionName="1.0">
       <uses-permission android:name="android.permission.INTERNET" />
-      
+      <uses-permission android:name="android.permission.VIBRATE" />
     <application 
     	android:icon="@drawable/icon" 
     	android:label="@string/app_name" 
@@ -39,6 +39,8 @@
 		<activity android:name="org.fosdem.schedules.TrackListActivity">
 		</activity>
 		<activity android:name="org.fosdem.schedules.EventListActivity">
+		</activity>
+		<activity android:name="org.fosdem.schedules.Preferences">
 		</activity>
 		<provider android:name="org.fosdem.db.DBAdapter" android:authorities="org.fosdem.pojo.Event"/>
         <!-- Provides search suggestions for words and their definitions. -->
