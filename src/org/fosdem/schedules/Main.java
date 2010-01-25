@@ -51,7 +51,7 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int PREFETCH_IMG_ID = Menu.FIRST + 5;
 	private static final int QUIT_ID = Menu.FIRST + 6;
 
-	private static final String PREFS = "org.fosdem";
+	public static final String PREFS = "org.fosdem";
 	public static final String XML_URL = "http://fosdem.org/schedule/xml";
 	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
 
@@ -128,6 +128,7 @@ public class Main extends Activity implements ParserEventListener,
 				R.drawable.menu_refresh);
 		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(
 				android.R.drawable.ic_menu_info_details);
+		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
 		//Quitting this way will stop the background service. Otherwise it will keep running in background.
 		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(
 				android.R.drawable.ic_menu_close_clear_cancel);
@@ -194,6 +195,9 @@ public class Main extends Activity implements ParserEventListener,
 		case QUIT_ID:
 			stopService(service);
 			finish();
+			break;
+		case SETTINGS_ID:
+			showSettings();
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
@@ -357,5 +361,10 @@ public class Main extends Activity implements ParserEventListener,
 	protected void onDestroy() {
 		unregisterReceiver(favoritesChangedReceiver);
 		super.onDestroy();
+	}
+	
+	public void showSettings(){
+		Intent i = new Intent(this,Preferences.class);
+		startActivity(i);
 	}
 }
