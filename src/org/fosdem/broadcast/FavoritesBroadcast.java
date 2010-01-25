@@ -9,4 +9,5 @@ public class FavoritesBroadcast {
 
 	public static final int EXTRA_TYPE_INSERT = 1;
 	public static final int EXTRA_TYPE_DELETE = 2;
+	public static final int EXTRA_TYPE_REMOVE_NOTIFICATION = 3;
 }
