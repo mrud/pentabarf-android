@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="Notifications">
+<CheckBoxPreference
+android:title="Enable notifications"
+android:defaultValue="true"
+android:summary="If checked, this will notify you of upcoming events you favorited"
+android:key="notifyPref" />
+<CheckBoxPreference
+android:title="Vibrate"
+android:defaultValue="true"
+android:summary="Vibrate on notifications"
+android:key="vibratePref" />
+<CheckBoxPreference
+android:title="Flash led"
+android:defaultValue="true"
+android:summary="Blink led on notification"
+android:key="ledPref" />
+<EditTextPreference
+android:title="Notification time"
+android:defaultValue="10"
+android:summary="Delay before getting notified of an upcoming favorite event"
+android:key="delayPref"
+android:inputType="number"
+android:digits="0123456789"
+android:maxLength="3"
+/>
+</PreferenceCategory>
+</PreferenceScreen>
