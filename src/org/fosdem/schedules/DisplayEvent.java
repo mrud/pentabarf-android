@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.util.Calendar;
 
 import org.fosdem.R;
+import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
 import org.fosdem.util.FileUtil;
@@ -55,6 +56,12 @@ public class DisplayEvent extends Activity {
 		showEvent(event);
 		FavoriteButton fb = (FavoriteButton) findViewById(R.id.favoriteButton);
 		fb.setEvent(event);
+
+		Intent intent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_UPDATE);
+		intent.putExtra(FavoritesBroadcast.EXTRA_TYPE,
+				FavoritesBroadcast.EXTRA_TYPE_REMOVE_NOTIFICATION);
+		intent.putExtra(FavoritesBroadcast.EXTRA_ID, ((long) (event.getId())));
+		sendBroadcast(intent);
 	}
 
 	public Handler handler = new Handler() {
