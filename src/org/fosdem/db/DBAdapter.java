@@ -22,6 +22,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -29,6 +31,10 @@ import android.util.Log;
  * This class can either be used as a content provider or as a standalone DBAdapter.
  */
 public class DBAdapter extends ContentProvider {
+	
+	// Message related
+	public static final int MSG_EVENT_STORED = 1;
+	
 	// Provider related
 	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
 	public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -213,7 +219,7 @@ public class DBAdapter extends ContentProvider {
 		dbHelper.close();
 	}
 
-	public void persistSchedule(Schedule s) {
+	public void persistSchedule(Schedule s, Handler handler) {
 		clearEvents();
 		clearPersons();
 		clearPersonEventLinks();
@@ -223,6 +229,9 @@ public class DBAdapter extends ContentProvider {
 					addEvent(event);
 					persistPersons(event.getPersons());
 					persistPersonEventLink(event);
+					final Message msg = new Message();
+					msg.what = MSG_EVENT_STORED;
+					handler.sendMessage(msg);
 				}
 			}
 		}

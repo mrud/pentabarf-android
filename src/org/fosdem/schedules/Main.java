@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Main extends Activity implements ParserEventListener,
 		OnClickListener {
@@ -202,6 +203,12 @@ public class Main extends Activity implements ParserEventListener,
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
+	
+	public void toast(String message) {
+		final Context context = getApplicationContext();
+		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+		toast.show();
+	}
 
 	public Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -213,13 +220,17 @@ public class Main extends Activity implements ParserEventListener,
 				tvProgress.setText("Done fetching, loading into DB");
 				setDBLastUpdated();
 			} else if (msg.arg1 == DONELOADINGDB) {
-				tvProgress.setText("Done loading into DB");
+				final String doneMessage = "Done loading into DB";
+				tvProgress.setText(doneMessage);
+				toast(doneMessage);
 				tvDbVer.setText(getString(R.string.db_ver) + " "
 						+ StringUtil.dateTimeToString(getDBLastUpdated()));
 			} else if (msg.arg1 == ROOMIMGSTART) {
 				tvProgress.setText("Downloading room images...");
 			} else if (msg.arg1 == ROOMIMGDONE) {
-				tvProgress.setText("Room Images downloaded");
+				final String doneMessage = "Room Images downloaded";
+				tvProgress.setText(doneMessage);
+				toast(doneMessage);
 			}
 		}
 	};
@@ -274,7 +285,7 @@ public class Main extends Activity implements ParserEventListener,
 					handler.sendMessage(msg);
 					DBAdapter db = new DBAdapter(Main.this);
 					db.open();
-					db.persistSchedule(s);
+					db.persistSchedule(s, handler);
 					db.close();
 					Message msg2 = Message.obtain();
 					msg2.arg1 = DONELOADINGDB;

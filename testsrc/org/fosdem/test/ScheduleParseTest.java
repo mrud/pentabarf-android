@@ -12,6 +12,7 @@ import org.fosdem.pojo.Event;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Schedule;
 
+import android.os.Handler;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -53,7 +54,7 @@ public class ScheduleParseTest extends AndroidTestCase {
 			db.clearEvents();
 			assertTrue(db.getEvents().size() == 0);
 
-			db.persistSchedule(schedule);
+			db.persistSchedule(schedule, new Handler());
 			int total = 0;
 			for (Day day : schedule.getDays()) {
 				for (Room room : day.getRooms()) {
