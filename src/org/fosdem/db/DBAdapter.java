@@ -33,7 +33,7 @@ import android.util.Log;
 public class DBAdapter extends ContentProvider {
 	
 	// Message related
-	public static final int MSG_EVENT_STORED = 1;
+	public static final int MSG_EVENT_STORED = 100;
 	
 	// Provider related
 	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
@@ -223,6 +223,7 @@ public class DBAdapter extends ContentProvider {
 		clearEvents();
 		clearPersons();
 		clearPersonEventLinks();
+		int count = 0;
 		for (Day day : s.getDays()) {
 			for (Room room : day.getRooms()) {
 				for (Event event : room.getEvents()) {
@@ -231,6 +232,7 @@ public class DBAdapter extends ContentProvider {
 					persistPersonEventLink(event);
 					final Message msg = new Message();
 					msg.what = MSG_EVENT_STORED;
+					msg.arg1 = count++;
 					handler.sendMessage(msg);
 				}
 			}

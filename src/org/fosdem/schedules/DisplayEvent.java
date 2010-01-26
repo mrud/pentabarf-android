@@ -68,7 +68,7 @@ public class DisplayEvent extends Activity {
 		public void handleMessage(Message msg) {
 			if (msg == null)
 				return;
-			if (msg.arg1 == MAPREADY) {
+			if (msg.what == MAPREADY) {
 				ImageView iv = (ImageView) findViewById(R.id.room_image);
 				iv.setImageDrawable(roomImageDrawable);
 				// tv.setText("Fetched "+counter+" events.");
@@ -135,7 +135,7 @@ public class DisplayEvent extends Activity {
 					e.printStackTrace();
 				}
 				Message msg = Message.obtain();
-				msg.arg1 = MAPREADY;
+				msg.what = MAPREADY;
 				handler.sendMessage(msg);
 			}
 		};

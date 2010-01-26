@@ -7,10 +7,7 @@ import java.util.Date;
 import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
-import org.fosdem.parsers.ScheduleParser;
-import org.fosdem.pojo.Schedule;
 import org.fosdem.services.NotificationService;
 import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
@@ -35,14 +32,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends Activity implements ParserEventListener,
-		OnClickListener {
+public class Main extends Activity implements ParserEventListener, OnClickListener {
 	public static final String LOG_TAG = Main.class.getName();
-	protected static final int DONEFETCHING = 0;
-	protected static final int TAGEVENT = 1;
-	protected static final int DONELOADINGDB = 2;
-	protected static final int ROOMIMGSTART = 3;
-	protected static final int ROOMIMGDONE = 4;
+
+	public static final int STARTFETCHING = -1;
+	public static final int DONEFETCHING = 0;
+	public static final int TAGEVENT = 1;
+	public static final int DONELOADINGDB = 2;
+
+	public static final int ROOMIMGSTART = 3;
+	public static final int ROOMIMGDONE = 4;
 
 	protected static final int DIALOG_ABOUT = 0;
 
@@ -64,8 +63,7 @@ public class Main extends Activity implements ParserEventListener,
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			long count = intent
-					.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
+			long count = intent.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
 			if (count == 0)
 				btnFavorites.setEnabled(false);
 			else
@@ -86,8 +84,7 @@ public class Main extends Activity implements ParserEventListener,
 		}
 		if (Intent.ACTION_VIEW.equals(queryAction)) {
 			Intent i = new Intent(this, DisplayEvent.class);
-			i.putExtra(DisplayEvent.ID, Integer
-					.parseInt(intent.getDataString()));
+			i.putExtra(DisplayEvent.ID, Integer.parseInt(intent.getDataString()));
 			startActivity(i);
 			finish();
 		}
@@ -105,11 +102,9 @@ public class Main extends Activity implements ParserEventListener,
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
-		tvDbVer.setText(getString(R.string.db_ver) + " "
-				+ StringUtil.dateTimeToString(getDBLastUpdated()));
+		tvDbVer.setText(getString(R.string.db_ver) + " " + StringUtil.dateTimeToString(getDBLastUpdated()));
 
-		registerReceiver(favoritesChangedReceiver, new IntentFilter(
-				FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
+		registerReceiver(favoritesChangedReceiver, new IntentFilter(FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
 
 		service = new Intent(this, NotificationService.class);
 		startService(service);
@@ -123,16 +118,13 @@ public class Main extends Activity implements ParserEventListener,
 		super.onCreateOptionsMenu(menu);
 		// menu.add(0, SETTINGS_ID, 2,
 		// R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
-		menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(
-				R.drawable.menu_refresh);
-		menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(
-				R.drawable.menu_refresh);
-		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(
-				android.R.drawable.ic_menu_info_details);
+		menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
+		menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(R.drawable.menu_refresh);
+		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
 		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
-		//Quitting this way will stop the background service. Otherwise it will keep running in background.
-		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(
-				android.R.drawable.ic_menu_close_clear_cancel);
+		// Quitting this way will stop the background service. Otherwise it will
+		// keep running in background.
+		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -142,8 +134,7 @@ public class Main extends Activity implements ParserEventListener,
 
 		switch (id) {
 		case DIALOG_ABOUT:
-			View view = getLayoutInflater()
-					.inflate(R.layout.about, null, false);
+			View view = getLayoutInflater().inflate(R.layout.about, null, false);
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getString(R.string.app_name));
 			builder.setIcon(android.R.drawable.ic_dialog_info);
@@ -175,8 +166,7 @@ public class Main extends Activity implements ParserEventListener,
 			showFavorites();
 			break;
 		default:
-			Log.e(LOG_TAG,
-					"Received a button click, but I don't know from where.");
+			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
 			break;
 		}
 	}
@@ -203,7 +193,7 @@ public class Main extends Activity implements ParserEventListener,
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
-	
+
 	public void toast(String message) {
 		final Context context = getApplicationContext();
 		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
@@ -214,23 +204,34 @@ public class Main extends Activity implements ParserEventListener,
 		public void handleMessage(Message msg) {
 			if (msg == null)
 				return;
-			if (msg.arg1 == TAGEVENT) {
+			switch (msg.what) {
+			case TAGEVENT:
 				tvProgress.setText("Fetched " + counter + " events.");
-			} else if (msg.arg1 == DONEFETCHING) {
+				break;
+			case STARTFETCHING:
+				tvProgress.setText("Downloading...");
+				break;
+			case DBAdapter.MSG_EVENT_STORED:
+				tvProgress.setText("Stored " + msg.arg1 + " events.");
+				break;
+			case DONEFETCHING:
 				tvProgress.setText("Done fetching, loading into DB");
 				setDBLastUpdated();
-			} else if (msg.arg1 == DONELOADINGDB) {
-				final String doneMessage = "Done loading into DB";
-				tvProgress.setText(doneMessage);
-				toast(doneMessage);
-				tvDbVer.setText(getString(R.string.db_ver) + " "
-						+ StringUtil.dateTimeToString(getDBLastUpdated()));
-			} else if (msg.arg1 == ROOMIMGSTART) {
+				break;
+			case DONELOADINGDB:
+				final String doneDb = "Done loading into DB";
+				tvProgress.setText(doneDb);
+				toast(doneDb);
+				tvDbVer.setText(getString(R.string.db_ver) + " " + StringUtil.dateTimeToString(getDBLastUpdated()));
+				break;
+			case ROOMIMGSTART:
 				tvProgress.setText("Downloading room images...");
-			} else if (msg.arg1 == ROOMIMGDONE) {
-				final String doneMessage = "Room Images downloaded";
-				tvProgress.setText(doneMessage);
-				toast(doneMessage);
+				break;
+			case ROOMIMGDONE:
+				final String doneRooms = "Room Images downloaded";
+				tvProgress.setText(doneRooms);
+				toast(doneRooms);
+				break;
 			}
 		}
 	};
@@ -238,8 +239,8 @@ public class Main extends Activity implements ParserEventListener,
 	public void onTagEvent(String tag, int type) {
 		if (tag.equals("event") && type == ParserEventListener.TAG_OPEN) {
 			counter++;
-			Message msg = Message.obtain();
-			msg.arg1 = TAGEVENT;
+			final Message msg = Message.obtain();
+			msg.what = TAGEVENT;
 			handler.sendMessage(msg);
 		}
 	}
@@ -262,44 +263,7 @@ public class Main extends Activity implements ParserEventListener,
 	 * local database
 	 */
 	public void updateXML() {
-		// FIXME sandb - ask user if he also wants to prefetch the room images
-		// once this XML is downloaded
-
-		/*
-		 * LATER: this is test code, it has to be replaced by some code to: - if
-		 * the db is empty, fill it up from xml (using the fetcher as below) -
-		 * if db is not empty, fetch headers of xml, check last mod date and
-		 * compare to fetch date. if fetch date is older dan last mod date,
-		 * suggest update to user. - updating: automatic/manual => setting!
-		 */
-		tvProgress.setText("Downloading...");
-		Thread t = new Thread() {
-			public void run() {
-				try {
-
-					ScheduleParser parser = new ScheduleParser(XML_URL);
-					parser.addTagEventListener(Main.this);
-					Schedule s = parser.parse();
-					Message msg = Message.obtain();
-					msg.arg1 = DONEFETCHING;
-					handler.sendMessage(msg);
-					DBAdapter db = new DBAdapter(Main.this);
-					db.open();
-					db.persistSchedule(s, handler);
-					db.close();
-					Message msg2 = Message.obtain();
-					msg2.arg1 = DONELOADINGDB;
-					handler.sendMessage(msg2);
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ParserException e) {
-					e.printStackTrace();
-				}
-			};
-
-		};
-
+		final Thread t = new Thread(new BackgroundUpdater(handler, this, getApplicationContext(), true, false));
 		t.start();
 	}
 
@@ -308,39 +272,7 @@ public class Main extends Activity implements ParserEventListener,
 	 * user to have a fast and internet-less experience.
 	 */
 	public void prefetchAllRoomImages() {
-		Thread t = new Thread() {
-			public void run() {
-
-				Message msg1 = Message.obtain();
-				msg1.arg1 = ROOMIMGSTART;
-				handler.sendMessage(msg1);
-
-				String[] rooms;
-
-				// get the list of the rooms
-				DBAdapter db = new DBAdapter(Main.this);
-				try {
-					db.open();
-					rooms = db.getRooms();
-				} finally {
-					db.close();
-				}
-				// download the images in the background
-				for (String room : rooms) {
-					Log.d(LOG_TAG, "Downloading room image:" + room);
-					try {
-						FileUtil.fetchCached(StringUtil.roomNameToURL(room));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				Message msg2 = Message.obtain();
-				msg2.arg1 = ROOMIMGDONE;
-				handler.sendMessage(msg2);
-			};
-		};
+		final Thread t = new Thread(new BackgroundUpdater(handler, this, getApplicationContext(), false, true));
 		t.start();
 	}
 
@@ -348,8 +280,7 @@ public class Main extends Activity implements ParserEventListener,
 	 * Set NOW as the time that the Schedule database has been imported.
 	 */
 	private void setDBLastUpdated() {
-		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0)
-				.edit();
+		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0).edit();
 		long timestamp = System.currentTimeMillis() / 1000;
 		editor.putLong("db_last_updated", timestamp);
 		editor.commit(); // Don't forget to commit your edits!!!
@@ -373,9 +304,9 @@ public class Main extends Activity implements ParserEventListener,
 		unregisterReceiver(favoritesChangedReceiver);
 		super.onDestroy();
 	}
-	
-	public void showSettings(){
-		Intent i = new Intent(this,Preferences.class);
+
+	public void showSettings() {
+		Intent i = new Intent(this, Preferences.class);
 		startActivity(i);
 	}
 }
