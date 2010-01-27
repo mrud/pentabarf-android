@@ -1,7 +1,5 @@
 package org.fosdem.schedules;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Date;
 
 import org.fosdem.R;
@@ -9,7 +7,6 @@ import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.services.NotificationService;
-import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
@@ -17,9 +14,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,11 +43,11 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	public static final int ROOMIMGDONE = 4;
 
 	protected static final int DIALOG_ABOUT = 0;
+	protected static final int DIALOG_UPDATE = 1;
 
 	private static final int ABOUT_ID = Menu.FIRST;
 	private static final int UPDATE_ID = Menu.FIRST + 1;
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
-	private static final int PREFETCH_IMG_ID = Menu.FIRST + 5;
 	private static final int QUIT_ID = Menu.FIRST + 6;
 
 	public static final String PREFS = "org.fosdem";
@@ -119,7 +118,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		// menu.add(0, SETTINGS_ID, 2,
 		// R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
-		menu.add(0, PREFETCH_IMG_ID, 2, R.string.menu_prefetch_rooms).setIcon(R.drawable.menu_refresh);
 		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
 		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
 		// Quitting this way will stop the background service. Otherwise it will
@@ -128,26 +126,69 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		return true;
 	}
 
+	/**
+	 * @return
+	 */
+	private Dialog createAboutDialog() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final View view = getLayoutInflater().inflate(R.layout.about, null, false);
+		builder.setTitle(getString(R.string.app_name));
+		builder.setIcon(android.R.drawable.ic_dialog_info);
+		builder.setView(view);
+		builder.setPositiveButton(getString(android.R.string.ok), null);
+		builder.setCancelable(true);
+		return builder.create();
+	}
+
+	/**
+	 * @return
+	 */
+	private Dialog createUpdateDialog() {
+		
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		builder.setTitle(getString(R.string.updater_title));
+		
+		final boolean[] selection = { true, true };
+		builder.setMultiChoiceItems(R.array.updater_dialog_choices, selection, new OnMultiChoiceClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+				selection[which] = isChecked;
+			}
+		});
+		
+		builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				// if none selected, skip
+				if (!(selection[0]||selection[1]))
+					return;
+				
+				final Thread t = new Thread(new BackgroundUpdater(handler, Main.this, getApplicationContext(), selection[0], selection[1]));
+				t.start();
+			}
+			
+		});
+		
+		builder.setNegativeButton(getString(android.R.string.cancel), null);
+		builder.setCancelable(true);
+		
+		return builder.create();
+	}
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Dialog dialog;
-
 		switch (id) {
 		case DIALOG_ABOUT:
-			View view = getLayoutInflater().inflate(R.layout.about, null, false);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(getString(R.string.app_name));
-			builder.setIcon(android.R.drawable.ic_dialog_info);
-			builder.setView(view);
-			builder.setPositiveButton(getString(android.R.string.ok), null);
-			builder.setCancelable(true);
-
-			dialog = builder.create();
-			break;
+			return createAboutDialog();
+		case DIALOG_UPDATE:
+			return createUpdateDialog();
 		default:
-			dialog = null;
+			return null;
 		}
-		return dialog;
 	}
 
 	public void onClick(View v) {
@@ -175,10 +216,7 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case UPDATE_ID:
-			updateXML();
-			return true;
-		case PREFETCH_IMG_ID:
-			prefetchAllRoomImages();
+			showDialog(DIALOG_UPDATE);
 			return true;
 		case ABOUT_ID:
 			showDialog(DIALOG_ABOUT);
@@ -256,24 +294,6 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		Intent i = new Intent(this, EventListActivity.class);
 		i.putExtra(EventListActivity.FAVORITES, true);
 		startActivity(i);
-	}
-
-	/**
-	 * Download the new schedule from the server and import the data in the
-	 * local database
-	 */
-	public void updateXML() {
-		final Thread t = new Thread(new BackgroundUpdater(handler, this, getApplicationContext(), true, false));
-		t.start();
-	}
-
-	/**
-	 * This function will prefetch all the images of the rooms. This enables the
-	 * user to have a fast and internet-less experience.
-	 */
-	public void prefetchAllRoomImages() {
-		final Thread t = new Thread(new BackgroundUpdater(handler, this, getApplicationContext(), false, true));
-		t.start();
 	}
 
 	/**

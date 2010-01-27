@@ -23,4 +23,9 @@
 	<string name="favorites_event_removed">Event removed from favorites</string>
 	<string name="favorites_event_added">Event added to favorites</string>
 	<string name="share">Share...</string>
+	<string name="updater_title">What do you want to update?</string>
+	<string-array name="updater_dialog_choices">
+		<item name="updater_dialog_choices_xml">Update schedule contents</item>
+		<item name="updater_dialog_choices_rooms">Preload room images</item>
+	</string-array>
 </resources>
