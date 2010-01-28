@@ -31,7 +31,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends Activity implements ParserEventListener, OnClickListener {
+public class Main extends Activity implements ParserEventListener,
+		OnClickListener {
 	public static final String LOG_TAG = Main.class.getName();
 
 	public static final int STARTFETCHING = -1;
@@ -62,8 +63,10 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			long count = intent.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
-			if (count == 0)
+			long count = intent
+					.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
+			Log.v(getClass().getName(),"FavoritesBroadcast received! "+count);
+			if (count == 0 || count==-1)
 				btnFavorites.setEnabled(false);
 			else
 				btnFavorites.setEnabled(true);
@@ -83,7 +86,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		}
 		if (Intent.ACTION_VIEW.equals(queryAction)) {
 			Intent i = new Intent(this, DisplayEvent.class);
-			i.putExtra(DisplayEvent.ID, Integer.parseInt(intent.getDataString()));
+			i.putExtra(DisplayEvent.ID, Integer
+					.parseInt(intent.getDataString()));
 			startActivity(i);
 			finish();
 		}
@@ -101,13 +105,31 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
-		tvDbVer.setText(getString(R.string.db_ver) + " " + StringUtil.dateTimeToString(getDBLastUpdated()));
+		tvDbVer.setText(getString(R.string.db_ver) + " "
+				+ StringUtil.dateTimeToString(getDBLastUpdated()));
 
-		registerReceiver(favoritesChangedReceiver, new IntentFilter(FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
+		registerReceiver(favoritesChangedReceiver, new IntentFilter(
+				FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
 
 		service = new Intent(this, NotificationService.class);
 		startService(service);
 
+		DBAdapter dbAdapter = new DBAdapter(this);
+		long count = 0;
+		try {
+			dbAdapter.open();
+			btnFavorites.setEnabled(dbAdapter.getBookmarkCount() > 0);
+			count = dbAdapter.getEventCount();
+			btnDay1.setEnabled(count > 0);
+			btnDay2.setEnabled(count > 0);
+		} finally {
+			dbAdapter.close();
+		}
+
+		if(count<1){
+			showDialog(DIALOG_UPDATE);
+		}
+		
 		// FIXME on first startup
 		// - propose user to update database
 	}
@@ -117,12 +139,16 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 		super.onCreateOptionsMenu(menu);
 		// menu.add(0, SETTINGS_ID, 2,
 		// R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
-		menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(R.drawable.menu_refresh);
-		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
-		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, UPDATE_ID, 2, R.string.menu_update).setIcon(
+				R.drawable.menu_refresh);
+		menu.add(0, ABOUT_ID, 2, R.string.menu_about).setIcon(
+				android.R.drawable.ic_menu_info_details);
+		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(
+				android.R.drawable.ic_menu_preferences);
 		// Quitting this way will stop the background service. Otherwise it will
 		// keep running in background.
-		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(
+				android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -131,7 +157,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	 */
 	private Dialog createAboutDialog() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final View view = getLayoutInflater().inflate(R.layout.about, null, false);
+		final View view = getLayoutInflater().inflate(R.layout.about, null,
+				false);
 		builder.setTitle(getString(R.string.app_name));
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setView(view);
@@ -144,38 +171,41 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	 * @return
 	 */
 	private Dialog createUpdateDialog() {
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		
-		builder.setTitle(getString(R.string.updater_title));
-		
-		final boolean[] selection = { true, true };
-		builder.setMultiChoiceItems(R.array.updater_dialog_choices, selection, new OnMultiChoiceClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-				selection[which] = isChecked;
-			}
-		});
-		
-		builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				
-				// if none selected, skip
-				if (!(selection[0]||selection[1]))
-					return;
-				
-				final Thread t = new Thread(new BackgroundUpdater(handler, Main.this, getApplicationContext(), selection[0], selection[1]));
-				t.start();
-			}
-			
-		});
-		
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setTitle(getString(R.string.updater_title));
+
+		final boolean[] selection = { true, true };
+		builder.setMultiChoiceItems(R.array.updater_dialog_choices, selection,
+				new OnMultiChoiceClickListener() {
+
+					public void onClick(DialogInterface dialog, int which,
+							boolean isChecked) {
+						selection[which] = isChecked;
+					}
+				});
+
+		builder.setPositiveButton(getString(android.R.string.ok),
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+
+						// if none selected, skip
+						if (!(selection[0] || selection[1]))
+							return;
+
+						final Thread t = new Thread(new BackgroundUpdater(
+								handler, Main.this, getApplicationContext(),
+								selection[0], selection[1]));
+						t.start();
+					}
+
+				});
+
 		builder.setNegativeButton(getString(android.R.string.cancel), null);
 		builder.setCancelable(true);
-		
+
 		return builder.create();
 	}
 
@@ -207,7 +237,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 			showFavorites();
 			break;
 		default:
-			Log.e(LOG_TAG, "Received a button click, but I don't know from where.");
+			Log.e(LOG_TAG,
+					"Received a button click, but I don't know from where.");
 			break;
 		}
 	}
@@ -260,7 +291,17 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 				final String doneDb = "Done loading into DB";
 				tvProgress.setText(doneDb);
 				toast(doneDb);
-				tvDbVer.setText(getString(R.string.db_ver) + " " + StringUtil.dateTimeToString(getDBLastUpdated()));
+				tvDbVer.setText(getString(R.string.db_ver) + " "
+						+ StringUtil.dateTimeToString(getDBLastUpdated()));
+				DBAdapter db = new DBAdapter(Main.this);
+				db.open();
+				try {
+					long count = db.getEventCount();
+					btnDay1.setEnabled(count > 0);
+					btnDay2.setEnabled(count > 0);
+				} finally {
+					db.close();
+				}
 				break;
 			case ROOMIMGSTART:
 				tvProgress.setText("Downloading room images...");
@@ -300,7 +341,8 @@ public class Main extends Activity implements ParserEventListener, OnClickListen
 	 * Set NOW as the time that the Schedule database has been imported.
 	 */
 	private void setDBLastUpdated() {
-		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0).edit();
+		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0)
+				.edit();
 		long timestamp = System.currentTimeMillis() / 1000;
 		editor.putLong("db_last_updated", timestamp);
 		editor.commit(); // Don't forget to commit your edits!!!

@@ -64,7 +64,6 @@ public class EventListActivity extends ListActivity {
 		}
 
 		events = getEventList(favorites);
-
 		eventAdapter=new EventAdapter(this, R.layout.event_list, events); 
 		setListAdapter(eventAdapter);
 		
@@ -139,6 +138,7 @@ public class EventListActivity extends ListActivity {
             for(Event event:events){
             	eventAdapter.add(event);
             }
+            if(events==null || events.size()==0)EventListActivity.this.finish();
         }
     };
 

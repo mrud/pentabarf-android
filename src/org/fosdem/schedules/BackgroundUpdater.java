@@ -121,7 +121,6 @@ public class BackgroundUpdater implements Runnable {
 		sendMessage(Main.ROOMIMGDONE);
 	}
 
-	@Override
 	public void run() {
 		synchronized (LOCK) {
 			try {
