@@ -1,51 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView 
 	xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:id="@+id/ScrollView01" 
-	android:background="#fff" 
+	android:id="@+id/ScrollView01"  
 	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent"
+	android:background="#ecfaff">
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical">
 	<RelativeLayout 
 		android:id="@+id/RelativeRootLayout" 
 		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent" 
+		android:layout_height="wrap_content" 
 		android:orientation="vertical" 
-		android:padding="5dip">
+		android:background="@drawable/eventtopbg"
+		>
 		<org.fosdem.views.FavoriteButton
 			android:id="@+id/favoriteButton"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true" android:layout_marginTop="5dip" android:layout_marginRight="5dip"/>
+			android:layout_alignParentRight="true" android:paddingTop="10dip" android:paddingRight="10dip"/>
 		<TextView 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
 			android:id="@+id/event_title" 
-			android:textColor="#333" 
-			android:textSize="25dip" 
-			android:textStyle="bold" 
+			android:textColor="#FFF" 
+			android:textSize="22dip"  
 			android:text="Title"
-			android:paddingRight="25dip">
+			android:paddingRight="25dip"
+			android:paddingLeft="5dip"
+			android:paddingTop="5dip">
 		</TextView>
+	</RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/MetaLayout" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:orientation="vertical" 
+		android:background="@drawable/eventmetabg"
+		>
 		<TextView 
 			android:text="event_track" 
 			android:id="@+id/event_track" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:textColor="#000" 
+			android:textColor="#BBB" 
 			android:layout_marginRight="2dip" 
 			android:layout_alignParentRight="true"
        		android:layout_below="@id/event_title"
+       		android:paddingRight="5dip"
+       		android:paddingTop="3dip"
 			/>
 		<TextView 
 			android:text="event_room" 
 			android:id="@+id/event_room" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:textColor="#000" 
+			android:textColor="#BBB" 
 			android:layout_marginRight="2dip" 
 			android:layout_marginBottom="5dip"
 			android:layout_alignParentRight="true"
        		android:layout_below="@id/event_track"
+       		android:paddingRight="5dip"
+       		android:paddingBottom="3dip"
 			/>
 				
 			
@@ -54,8 +72,10 @@
 			android:id="@+id/event_speaker" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:textColor="#000" 
+			android:textColor="#BBB" 
 			android:layout_marginRight="2dip"
+			android:paddingLeft="3dip"
+			android:paddingTop="3dip"
 			android:layout_below="@id/event_title" />
 		
 		<TextView 
@@ -63,35 +83,46 @@
 			android:id="@+id/event_time" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content" 
-			android:textColor="#000" 
+			android:textColor="#BBB" 
 			android:layout_marginRight="2dip"
+			android:paddingLeft="3dip"
+			android:paddingBottom="3dip"
 			android:layout_below="@id/event_speaker" />	
-			
+		</RelativeLayout>
+		<RelativeLayout 
+			android:id="@+id/BodyLayout" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:orientation="vertical" 
+			android:background="#ecfaff"
+			>
 		<TextView 
 			android:text="event_abstract" 
 			android:id="@+id/event_abstract" 
 			android:layout_width="fill_parent" 
 			android:layout_height="wrap_content" 
-			android:textColor="#007" 
-			android:layout_marginBottom="5dip" 
-			android:textStyle="italic"
-			android:layout_below="@id/event_room"
-			android:background="@drawable/bg_abstract" />
+			android:textColor="#333" 
+			android:padding="4dip"
+			android:layout_margin="10dip"
+			android:background="#d9f7ff"
+			/>
 			
 		<TextView 
 			android:text="event_description" 
 			android:id="@+id/event_description" 
 			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent" 
+			android:layout_height="fill_parent"
+			android:layout_below="@id/event_abstract" 
 			android:textColor="#000"
-			android:layout_below="@id/event_abstract"
-			android:background="@drawable/bg_description" />
-			
+			android:paddingLeft="10dip"
+			android:paddingRight="10dip"
+			android:paddingBottom="10dip"
+			/>
+		</RelativeLayout>
 		<ImageView
 			android:id="@+id/room_image"
 			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent" 
-			android:layout_below="@id/event_description"
+			android:layout_height="wrap_content" 
 			/>
-	</RelativeLayout>
+	</LinearLayout>
 </ScrollView>
