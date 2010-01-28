@@ -146,7 +146,7 @@ public class DBAdapter extends ContentProvider {
 	protected static final String TABLE_PERSONS = "persons";
 	protected static final String TABLE_JOIN_PERSON_EVENT = "person_event";
 	protected static final String TABLE_FAVORITES = "favorites";
-	protected static final int DB_VERSION = 7;
+	protected static final int DB_VERSION = 9;
 
 	public static final String ID = "id";
 	public static final String START = "start";
@@ -311,6 +311,15 @@ public class DBAdapter extends ContentProvider {
 	public long getBookmarkCount() {
 		Cursor c = db.rawQuery("select count(" + ID + ") from "
 				+ TABLE_FAVORITES, null);
+		c.moveToFirst();
+		long count = c.getLong(0);
+		c.close();
+		return count;
+	}
+	
+	public long getEventCount() {
+		Cursor c = db.rawQuery("select count(" + ID + ") from "
+				+ TABLE_EVENTS, null);
 		c.moveToFirst();
 		long count = c.getLong(0);
 		c.close();
