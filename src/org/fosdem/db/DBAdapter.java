@@ -517,7 +517,7 @@ public class DBAdapter extends ContentProvider {
 					+ endDate.getTime() + ")");
 		}
 		if (dayIndex != null) {
-			sb.append(" or dayindex = :" + dayIndex + "");
+			sb.append(" and dayindex=" + dayIndex + "");
 		}
 		String where = sb.toString();
 		if (where.startsWith(" or ")) {
