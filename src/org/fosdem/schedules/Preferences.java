@@ -1,8 +1,10 @@
 package org.fosdem.schedules;
 
 import org.fosdem.R;
+import org.fosdem.broadcast.FavoritesBroadcast;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -16,11 +18,13 @@ public class Preferences extends PreferenceActivity implements
 	public static final String PREF_VIBRATE = "vibratePref";
 	public static final String PREF_DELAY = "delayPref";
 	public static final String PREF_LED = "ledPref";
+	public static final String PREF_UPCOMING = "upcomingPref";
 
 	private Preference notifyPref;
 	private Preference vibratePref;
 	private Preference ledPref;
 	private Preference delayPref;
+	private Preference upcomingPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class Preferences extends PreferenceActivity implements
 		
 		ledPref = (Preference) findPreference(PREF_LED);
 		ledPref.setOnPreferenceChangeListener(this);
+		
+		upcomingPref = (Preference) findPreference(PREF_UPCOMING);
+		upcomingPref.setOnPreferenceChangeListener(this);
 
 		SharedPreferences sharedPreferences = getSharedPreferences(Main.PREFS,
 				Activity.MODE_PRIVATE);
@@ -66,7 +73,6 @@ public class Preferences extends PreferenceActivity implements
 				Activity.MODE_PRIVATE);
 		Editor edit = sharedPreferences.edit();
 		
-		
 		if (preference.getKey().equals(PREF_NOTIFY)) {
 			vibratePref.setEnabled((Boolean) newValue);
 			delayPref.setEnabled((Boolean) newValue);
@@ -75,8 +81,13 @@ public class Preferences extends PreferenceActivity implements
 			String value=(String)newValue;
 			if(value!=null && value.length()==0)return false;
 			edit.putInt(PREF_DELAY, Integer.parseInt(value));
+			
+			// Update alarms
+			Intent intent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_UPDATE);
+			intent.putExtra(FavoritesBroadcast.EXTRA_TYPE, FavoritesBroadcast.EXTRA_TYPE_RESCHEDULE);
+			sendBroadcast(intent);
 		}
-		if(preference.getKey().equals(PREF_NOTIFY) || preference.getKey().equals(PREF_VIBRATE) || preference.getKey().equals(PREF_LED)){
+		if(preference.getKey().equals(PREF_UPCOMING) || preference.getKey().equals(PREF_NOTIFY) || preference.getKey().equals(PREF_VIBRATE) || preference.getKey().equals(PREF_LED)){
 			edit.putBoolean(preference.getKey(), (Boolean)newValue);
 		}
 		edit.commit();

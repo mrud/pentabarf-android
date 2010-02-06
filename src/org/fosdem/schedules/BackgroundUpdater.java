@@ -15,6 +15,7 @@ import org.fosdem.util.StringUtil;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.sax.StartElementListener;
 import android.util.Log;
 
 /**
@@ -124,10 +125,12 @@ public class BackgroundUpdater implements Runnable {
 	public void run() {
 		synchronized (LOCK) {
 			try {
+				sendMessage(Main.LOAD_BG_START);
 				if (doUpdateXml)
 					updateXml();
 				if (doUpdateRooms)
 					updateRooms();
+				sendMessage(Main.LOAD_BG_END); 
 			} catch (IOException e) {
 			} catch (ParserException e) {
 			}

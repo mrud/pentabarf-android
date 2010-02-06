@@ -213,7 +213,7 @@ public class DisplayEvent extends Activity {
 		final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		String extra = "I'm attending '" + event.getTitle() + "' (Day "
-				+ (event.getDayindex() + 1) + " at "
+				+ (event.getDayindex()) + " at "
 				+ event.getStart().getHours() + ":"
 				+ event.getStart().getMinutes() + " @ " + event.getRoom()
 				+ ") #fosdem";

@@ -26,4 +26,11 @@ android:digits="0123456789"
 android:maxLength="3"
 />
 </PreferenceCategory>
+<PreferenceCategory android:title="Favorites">
+<CheckBoxPreference
+android:title="Only show upcoming"
+android:defaultValue="false"
+android:summary="If checked, this will ony show the upcoming favorites in the list"
+android:key="upcomingPref" />
+</PreferenceCategory>
 </PreferenceScreen>

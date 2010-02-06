@@ -1,6 +1,7 @@
 package org.fosdem.schedules;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
@@ -14,6 +15,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +39,7 @@ public class EventListActivity extends ListActivity {
 	private int dayIndex = 0;
 	private String query = null;
 	private Boolean favorites = null;
-	private EventAdapter eventAdapter=null;
+	private EventAdapter eventAdapter = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,15 +60,18 @@ public class EventListActivity extends ListActivity {
 			setTitle("Day " + dayIndex + " - " + trackName);
 		if (query != null)
 			setTitle("Search for: " + query);
-		if (favorites != null && favorites){
+		if (favorites != null && favorites) {
 			setTitle("Favorites");
-			registerReceiver(favoritesChangedReceiver, new IntentFilter(FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
+			
+			registerReceiver(favoritesChangedReceiver, new IntentFilter(
+					FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
+			
 		}
 
 		events = getEventList(favorites);
-		eventAdapter=new EventAdapter(this, R.layout.event_list, events); 
+		eventAdapter = new EventAdapter(this, R.layout.event_list, events);
 		setListAdapter(eventAdapter);
-		
+
 	}
 
 	@Override
@@ -96,6 +101,7 @@ public class EventListActivity extends ListActivity {
 					"You are loading this class with no valid room parameter");
 			return null;
 		}
+		
 		// Load event with specified id from the db
 		final DBAdapter db = new DBAdapter(this);
 		try {
@@ -111,7 +117,11 @@ public class EventListActivity extends ListActivity {
 						null, queryArgs);
 			} else if (favorites != null && favorites) {
 				Log.e(LOG_TAG, "Getting favorites...");
-				return db.getFavoriteEvents(null);
+				
+				SharedPreferences prefs = getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
+				Date startDate=prefs.getBoolean(Preferences.PREF_UPCOMING, false)?new Date():null;
+				
+				return db.getFavoriteEvents(startDate);
 			}
 
 			return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(
@@ -129,22 +139,24 @@ public class EventListActivity extends ListActivity {
 				.getStringExtra(SearchManager.QUERY));
 		context.startActivity(i);
 	}
-	
+
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            eventAdapter.clear();
-            events = getEventList(favorites);
-            for(Event event:events){
-            	eventAdapter.add(event);
-            }
-            if(events==null || events.size()==0)EventListActivity.this.finish();
-        }
-    };
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			eventAdapter.clear();
+			events = getEventList(favorites);
+			for (Event event : events) {
+				eventAdapter.add(event);
+			}
+			if (events == null || events.size() == 0)
+				EventListActivity.this.finish();
+		}
+	};
 
-    protected void onDestroy() {
-    	super.onDestroy();
-    	if(favorites!=null && favorites)unregisterReceiver(favoritesChangedReceiver);
+	protected void onDestroy() {
+		super.onDestroy();
+		if (favorites != null && favorites)
+			unregisterReceiver(favoritesChangedReceiver);
 
-    }
+	}
 }

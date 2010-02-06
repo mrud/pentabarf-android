@@ -6,7 +6,6 @@ import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.listeners.ParserEventListener;
-import org.fosdem.services.NotificationService;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
@@ -16,9 +15,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,9 +38,10 @@ public class Main extends Activity implements ParserEventListener,
 	public static final int DONEFETCHING = 0;
 	public static final int TAGEVENT = 1;
 	public static final int DONELOADINGDB = 2;
-
 	public static final int ROOMIMGSTART = 3;
 	public static final int ROOMIMGDONE = 4;
+	public static final int LOAD_BG_START = 5;
+	public static final int LOAD_BG_END = 6;
 
 	protected static final int DIALOG_ABOUT = 0;
 	protected static final int DIALOG_UPDATE = 1;
@@ -49,7 +49,6 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int ABOUT_ID = Menu.FIRST;
 	private static final int UPDATE_ID = Menu.FIRST + 1;
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
-	private static final int QUIT_ID = Menu.FIRST + 6;
 
 	public static final String PREFS = "org.fosdem";
 	public static final String XML_URL = "http://fosdem.org/schedule/xml";
@@ -63,10 +62,17 @@ public class Main extends Activity implements ParserEventListener,
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			//Log.v(getClass().getName(),"Action: "+intent.getIntExtra(FavoritesBroadcast.EXTRA_TYPE, -1));
+			if (intent.getIntExtra(FavoritesBroadcast.EXTRA_TYPE,-1)
+							!=FavoritesBroadcast.EXTRA_TYPE_INSERT && intent
+							.getIntExtra(FavoritesBroadcast.EXTRA_TYPE,-1)!=FavoritesBroadcast.EXTRA_TYPE_DELETE)
+				return;
 			long count = intent
 					.getLongExtra(FavoritesBroadcast.EXTRA_COUNT, -1);
-			Log.v(getClass().getName(),"FavoritesBroadcast received! "+count);
-			if (count == 0 || count==-1)
+			Log
+					.v(getClass().getName(), "FavoritesBroadcast received! "
+							+ count);
+			if (count == 0 || count == -1)
 				btnFavorites.setEnabled(false);
 			else
 				btnFavorites.setEnabled(true);
@@ -77,7 +83,7 @@ public class Main extends Activity implements ParserEventListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		final Intent intent = getIntent();
 		final String queryAction = intent.getAction();
 		if (Intent.ACTION_SEARCH.equals(queryAction)) {
@@ -91,6 +97,9 @@ public class Main extends Activity implements ParserEventListener,
 			startActivity(i);
 			finish();
 		}
+		
+		Intent initialLoadIntent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_INITIAL_LOAD);
+		sendBroadcast(initialLoadIntent);
 
 		setContentView(R.layout.main);
 
@@ -105,14 +114,16 @@ public class Main extends Activity implements ParserEventListener,
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
+
+		// FIXME on first startup
+		// - propose user to update database
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 		tvDbVer.setText(getString(R.string.db_ver) + " "
 				+ StringUtil.dateTimeToString(getDBLastUpdated()));
-
-		registerReceiver(favoritesChangedReceiver, new IntentFilter(
-				FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
-
-		service = new Intent(this, NotificationService.class);
-		startService(service);
 
 		DBAdapter dbAdapter = new DBAdapter(this);
 		long count = 0;
@@ -126,10 +137,10 @@ public class Main extends Activity implements ParserEventListener,
 			dbAdapter.close();
 		}
 
-		if(count<1){
+		if (count < 1) {
 			showDialog(DIALOG_UPDATE);
 		}
-		
+
 		// FIXME on first startup
 		// - propose user to update database
 	}
@@ -145,10 +156,6 @@ public class Main extends Activity implements ParserEventListener,
 				android.R.drawable.ic_menu_info_details);
 		menu.add(0, SETTINGS_ID, 2, R.string.menu_settings).setIcon(
 				android.R.drawable.ic_menu_preferences);
-		// Quitting this way will stop the background service. Otherwise it will
-		// keep running in background.
-		menu.add(0, QUIT_ID, 2, R.string.menu_quit).setIcon(
-				android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -252,10 +259,6 @@ public class Main extends Activity implements ParserEventListener,
 		case ABOUT_ID:
 			showDialog(DIALOG_ABOUT);
 			break;
-		case QUIT_ID:
-			stopService(service);
-			finish();
-			break;
 		case SETTINGS_ID:
 			showSettings();
 			break;
@@ -275,6 +278,7 @@ public class Main extends Activity implements ParserEventListener,
 				return;
 			switch (msg.what) {
 			case TAGEVENT:
+				Main.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 				tvProgress.setText("Fetched " + counter + " events.");
 				break;
 			case STARTFETCHING:
@@ -311,6 +315,13 @@ public class Main extends Activity implements ParserEventListener,
 				tvProgress.setText(doneRooms);
 				toast(doneRooms);
 				break;
+			/*case LOAD_BG_START:
+				Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay(); 
+				Main.this.setRequestedOrientation(display.getOrientation());
+				break;
+			case LOAD_BG_END:
+				Main.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+				break;*/
 			}
 		}
 	};
@@ -363,7 +374,6 @@ public class Main extends Activity implements ParserEventListener,
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(favoritesChangedReceiver);
 		super.onDestroy();
 	}
 
