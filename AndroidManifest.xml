@@ -62,7 +62,8 @@
 		<provider android:name="org.fosdem.providers.SearchProvider"
 			android:authorities="fosdemsearch"
 			android:syncable="false" />
-	</application>
+	<activity android:name=".schedules.SortPreferences"></activity>
+</application>
 	<uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>
 	<instrumentation 
 		android:name="android.test.InstrumentationTestRunner"

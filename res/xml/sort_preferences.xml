@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory 
+android:summary="Set grouping " 
+android:title="Group by">
+	<ListPreference 
+		android:summary="Choose the criteria after the events should be aggregated" 
+		android:title="Aggregate Events by" 
+		android:entryValues="@array/sort_by_desc" 
+		android:entries="@array/sort_by_desc"
+		android:key="sortbyPref" 
+		/>
+</PreferenceCategory>
+</PreferenceScreen>
