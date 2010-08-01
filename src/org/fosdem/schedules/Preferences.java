@@ -19,12 +19,14 @@ public class Preferences extends PreferenceActivity implements
 	public static final String PREF_DELAY = "delayPref";
 	public static final String PREF_LED = "ledPref";
 	public static final String PREF_UPCOMING = "upcomingPref";
+	public static final String PREF_SORT = "sortbyPref";
 
 	private Preference notifyPref;
 	private Preference vibratePref;
 	private Preference ledPref;
 	private Preference delayPref;
 	private Preference upcomingPref;
+	private Preference sortPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,9 @@ public class Preferences extends PreferenceActivity implements
 		upcomingPref = (Preference) findPreference(PREF_UPCOMING);
 		upcomingPref.setOnPreferenceChangeListener(this);
 
+		sortPref = (Preference) findPreference(PREF_SORT);
+		sortPref.setOnPreferenceChangeListener(this);
+		
 		SharedPreferences sharedPreferences = getSharedPreferences(Main.PREFS,
 				Activity.MODE_PRIVATE);
 		vibratePref.setEnabled(sharedPreferences.getBoolean(PREF_NOTIFY, true));
@@ -89,6 +94,9 @@ public class Preferences extends PreferenceActivity implements
 		}
 		if(preference.getKey().equals(PREF_UPCOMING) || preference.getKey().equals(PREF_NOTIFY) || preference.getKey().equals(PREF_VIBRATE) || preference.getKey().equals(PREF_LED)){
 			edit.putBoolean(preference.getKey(), (Boolean)newValue);
+		}
+		if (preference.getKey().equals(PREF_SORT)) {
+			edit.putString(preference.getKey(), (String) newValue);
 		}
 		edit.commit();
 		return true;
