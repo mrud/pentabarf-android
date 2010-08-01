@@ -259,6 +259,9 @@ public class ScheduleParser extends BaseParser {
 				} else if (xpp.getName().equals(DESCRIPTION)) {
 					event.setDescription(content);
 				} else if (xpp.getName().equals(EVENT)) {
+					if (event.getTrack() == null || event.getTrack().length() == 0) {
+						event.setTrack("Unknown Track");
+					}
 					return event;
 				}
 			} else if (eventType == XmlPullParser.TEXT) {
