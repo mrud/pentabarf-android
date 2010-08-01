@@ -33,13 +33,15 @@ public class EventListActivity extends ListActivity {
 	public static final String TRACK_NAME = "trackName";
 	public static final String QUERY = "query";
 	public static final String FAVORITES = "favorites";
-
+	public static final String ROOM = "roomName";
+	
 	private ArrayList<Event> events = null;
 	private String trackName = null;
 	private int dayIndex = 0;
 	private String query = null;
 	private Boolean favorites = null;
 	private EventAdapter eventAdapter = null;
+	private String roomName = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,14 @@ public class EventListActivity extends ListActivity {
 			trackName = extras.getString(TRACK_NAME);
 			dayIndex = extras.getInt(DAY_INDEX);
 			favorites = extras.getBoolean(FAVORITES);
+			roomName = extras.getString(ROOM);
 			query = extras.getString(QUERY);
 		}
 		if (trackName != null && dayIndex != 0)
 			setTitle("Day " + dayIndex + " - " + trackName);
+		if (trackName == null && roomName != null) {
+			setTitle("Day " + dayIndex + " - Room " + roomName);
+		}
 		if (query != null)
 			setTitle("Search for: " + query);
 		if (favorites != null && favorites) {
@@ -95,7 +101,7 @@ public class EventListActivity extends ListActivity {
 	 */
 	private ArrayList<Event> getEventList(Boolean favoritesOnly) {
 
-		if (query == null && trackName == null
+		if (query == null && trackName == null && roomName == null
 				&& (favoritesOnly == null || !favoritesOnly)) {
 			Log.e(LOG_TAG,
 					"You are loading this class with no valid room parameter");
@@ -123,10 +129,16 @@ public class EventListActivity extends ListActivity {
 				
 				return db.getFavoriteEvents(startDate);
 			}
-
+			if (trackName != null) {
 			return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(
 					trackName, dayIndex);
-		} finally {
+			}
+			if (roomName != null) {
+				return (ArrayList<Event>) db.getEventsbyRoomNameAndDayIndex(roomName, dayIndex);
+			} else{
+				return null;
+			}
+ 		} finally {
 			db.close();
 		}
 	}
