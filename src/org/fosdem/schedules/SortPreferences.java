@@ -1,7 +1,6 @@
 package org.fosdem.schedules;
 
-import org.fosdem.R;
-
+import net.spamt.debconf10.R;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

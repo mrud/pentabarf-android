@@ -3,7 +3,8 @@ package org.fosdem.schedules;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.fosdem.R;
+import net.spamt.debconf10.R;
+
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
