@@ -1,11 +1,9 @@
-/**
- * 
- */
 package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
+import net.spamt.debconf10.R;
+
 import org.fosdem.pojo.Room;
 
 import android.content.Context;
@@ -14,11 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
-/**
- * @author Christophe Vandeplas <christophe@vandeplas.com>
- *
- */
 public class RoomAdapter extends ArrayAdapter<Room> {
 	
 	private ArrayList<Room> items;

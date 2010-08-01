@@ -5,7 +5,8 @@ package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
+import net.spamt.debconf10.R;
+
 import org.fosdem.pojo.Track;
 
 import android.content.Context;
