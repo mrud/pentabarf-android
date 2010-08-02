@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 /**
  * @author Christophe Vandeplas <christophe@vandeplas.com>
- * 
+ *
  */
 public class EventListActivity extends ListActivity {
 
@@ -69,10 +69,10 @@ public class EventListActivity extends ListActivity {
 			setTitle("Search for: " + query);
 		if (favorites != null && favorites) {
 			setTitle("Favorites");
-			
+
 			registerReceiver(favoritesChangedReceiver, new IntentFilter(
 					FavoritesBroadcast.ACTION_FAVORITES_UPDATE));
-			
+
 		}
 
 		events = getEventList(favorites);
@@ -103,7 +103,7 @@ public class EventListActivity extends ListActivity {
 	/**
 	 * Gets the {@link Event} that was specified through the intent or null if
 	 * no or wrongly specified event.
-	 * 
+	 *
 	 * @return The Event or null.
 	 */
 	private ArrayList<Event> getEventList(Boolean favoritesOnly) {
@@ -114,7 +114,7 @@ public class EventListActivity extends ListActivity {
 					"You are loading this class with no valid room parameter");
 			return null;
 		}
-		
+
 		// Load event with specified id from the db
 		final DBAdapter db = new DBAdapter(this);
 		try {
