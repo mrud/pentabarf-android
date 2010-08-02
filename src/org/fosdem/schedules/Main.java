@@ -124,11 +124,14 @@ public class Main extends Activity implements ParserEventListener,
 		DBAdapter dbAdapter = new DBAdapter(this);
 	    int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
+		LinearLayout buttonsView = (LinearLayout) findViewById(R.id.day_select);
+		buttonsView.removeAllViews();
+
 		try {
 			dbAdapter.open();
 			List<Date> ldays = dbAdapter.getDays();
 
-			LinearLayout buttonsView = (LinearLayout) findViewById(R.id.day_select);
+			buttonsView = (LinearLayout) findViewById(R.id.day_select);
 			buttonsView.setOrientation(LinearLayout.VERTICAL);
 
 			int counter = 0;
