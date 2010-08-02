@@ -35,7 +35,8 @@ public class EventListActivity extends ListActivity {
 	public static final String QUERY = "query";
 	public static final String FAVORITES = "favorites";
 	public static final String ROOM = "roomName";
-	
+	public static final String TIME = "time";
+
 	private ArrayList<Event> events = null;
 	private String trackName = null;
 	private int dayIndex = -1;
@@ -43,7 +44,9 @@ public class EventListActivity extends ListActivity {
 	private Boolean favorites = null;
 	private EventAdapter eventAdapter = null;
 	private String roomName = null;
-
+	private Long timeSearch  = null;
+	// 10 min.
+	private static final long CURRENT_TIME_SLICE = 600000;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,10 +58,13 @@ public class EventListActivity extends ListActivity {
 		Bundle extras = getIntent().getExtras();
 		if (trackName == null && query == null && extras != null) {
 			trackName = extras.getString(TRACK_NAME);
-			dayIndex = extras.getInt(DAY_INDEX);
+			if (extras.containsKey(DAY_INDEX)) {
+				dayIndex = extras.getInt(DAY_INDEX);
+			}
 			favorites = extras.getBoolean(FAVORITES);
 			roomName = extras.getString(ROOM);
 			query = extras.getString(QUERY);
+			timeSearch = extras.getLong(TIME);
 		}
 		if (trackName != null && dayIndex != 0)
 			setTitle("Day " + dayIndex + " - " + trackName);
@@ -108,7 +114,8 @@ public class EventListActivity extends ListActivity {
 	 */
 	private ArrayList<Event> getEventList(Boolean favoritesOnly) {
 
-		if (query == null && trackName == null && roomName == null && dayIndex == -1
+		if (query == null && trackName == null && roomName == null
+				&& dayIndex == -1 && timeSearch == null
 				&& (favoritesOnly == null || !favoritesOnly)) {
 			Log.e(LOG_TAG,
 					"You are loading this class with no valid room parameter");
@@ -139,6 +146,10 @@ public class EventListActivity extends ListActivity {
 				return (ArrayList<Event>) db.getEventsbyRoomNameAndDayIndex(roomName, dayIndex);
 			} else if (dayIndex != -1){
 				return (ArrayList<Event>) db.getEventsbyDayIndex(dayIndex);
+			} else if (timeSearch != null) {
+				setTitle("Upcoming Events");
+				Date beginDate = new Date(timeSearch -CURRENT_TIME_SLICE);
+				return (ArrayList<Event>) db.getUpcomingEvents(beginDate);
 			} else {
 				return null;
 			}
