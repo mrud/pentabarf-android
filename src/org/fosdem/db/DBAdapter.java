@@ -31,10 +31,10 @@ import android.util.Log;
  * This class can either be used as a content provider or as a standalone DBAdapter.
  */
 public class DBAdapter extends ContentProvider {
-	
+
 	// Message related
 	public static final int MSG_EVENT_STORED = 100;
-	
+
 	// Provider related
 	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
 	public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -316,7 +316,7 @@ public class DBAdapter extends ContentProvider {
 		c.close();
 		return count;
 	}
-	
+
 	public long getEventCount() {
 		Cursor c = db.rawQuery("select count(" + ID + ") from "
 				+ TABLE_EVENTS, null);
@@ -622,7 +622,7 @@ public class DBAdapter extends ContentProvider {
 	/**
 	 * Converts a cursor over the events table to a list of {@link Event}s. If
 	 * the cursor is empty, will return an empty list.
-	 * 
+	 *
 	 * @param eventsCursor
 	 *            The cursor.
 	 * @return A list of events.
@@ -667,7 +667,7 @@ public class DBAdapter extends ContentProvider {
 
 	/**
 	 * Retrieves the event for given id, or null if no such event exists.
-	 * 
+	 *
 	 * @param id
 	 *            The id of the requested event.
 	 * @return The event or null.
@@ -696,7 +696,7 @@ public class DBAdapter extends ContentProvider {
 		String rooms[] = { roomName };
 		return getEventsFiltered(null, null, null, null, null, rooms, null, dayIndex);
 	}
-	
+
 	public List<Event> getEventsbyDayIndex(int dayIndex) {
 		return getEventsFiltered(null, null, null, null, null, null, null, dayIndex);
 	}
@@ -717,6 +717,6 @@ public class DBAdapter extends ContentProvider {
 		db.execSQL("delete from " + TABLE_FAVORITES);
 	}
 
-	
+
 
 }
