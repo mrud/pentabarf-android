@@ -33,4 +33,5 @@
 </string-array>
 
 <string name="all_events">All Events</string>
+<string name="current_event">Upcoming events</string>
 </resources>

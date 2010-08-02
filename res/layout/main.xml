@@ -17,13 +17,24 @@
 		android:layout_width="fill_parent" 
 		/>
 
-	<Button
-		android:id="@+id/btn_favorites"
-		android:text="@string/favorites"
+		<Button android:id="@+id/current_event" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
 		android:layout_below="@id/day_select"
+		android:textSize="20dip"
+		android:text="@string/current_event"
+		android:enabled="false"
+		android:layout_weight="1"/>
+		
+		
+		<Button android:id="@+id/btn_favorites"
+		android:text="@string/favorites"
+	 	android:layout_weight="1"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:textSize="20dip"/>
+		android:layout_below="@id/current_event"
+		android:textSize="20dip" />
+	
 	<Button 
 		android:id="@+id/btn_search"
 		android:text="To search press the Android search key"
@@ -42,12 +53,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_below="@id/btn_search" >
-	<TextView  
-	    android:id="@+id/progress"
-	    
-	    android:layout_width="fill_parent" 
-	    android:layout_height="wrap_content" 
-	    />
+	
 	    
     <TextView  
 	    android:text="Database version"
@@ -56,8 +62,15 @@
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
 	    
-	    android:layout_below="@id/progress"
+	    android:layout_below="@+id/btn_search"
+	    
+	    /><TextView android:id="@+id/progress" 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/db_ver"
 	    />
 	</RelativeLayout>
+
 </RelativeLayout>
+
 </ScrollView>

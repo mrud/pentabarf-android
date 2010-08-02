@@ -63,9 +63,10 @@ public class Main extends Activity implements ParserEventListener,
 
 	public int counter = 0;
 	protected TextView tvProgress = null, tvDbVer = null;
-	protected Button btnSearch, btnFavorites;
+	protected Button btnSearch, btnFavorites, btnCurrentEvents;
 	protected Intent service;
 
+	@SuppressWarnings("unused")
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -114,6 +115,9 @@ public class Main extends Activity implements ParserEventListener,
 		
 		btnFavorites = (Button) findViewById(R.id.btn_favorites);
 		btnFavorites.setOnClickListener(this);
+		
+		btnCurrentEvents = (Button) findViewById(R.id.current_event);
+		btnCurrentEvents.setOnClickListener(this);
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
@@ -179,6 +183,7 @@ public class Main extends Activity implements ParserEventListener,
 			dbAdapter.open();
 			btnFavorites.setEnabled(dbAdapter.getBookmarkCount() > 0);
 			count = dbAdapter.getEventCount();
+			btnCurrentEvents.setEnabled(count > 0);
 		} finally {
 			dbAdapter.close();
 		}
@@ -216,7 +221,7 @@ public class Main extends Activity implements ParserEventListener,
 			version = pinfo.versionName;
 		} catch (NameNotFoundException e) {
 		}
-
+		
 		builder.setTitle(getString(R.string.app_name) + " - V. " + version);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setView(view);
@@ -290,11 +295,20 @@ public class Main extends Activity implements ParserEventListener,
 		case R.id.btn_favorites:
 			showFavorites();
 			break;
+		case R.id.current_event:
+			showCurrentEvents();
+			break;
 		default:
 			Log.e(LOG_TAG,
 					"Received a button click, but I don't know from where.");
 			break;
 		}
+	}
+
+	private void showCurrentEvents() {
+		Intent i = new Intent(this, EventListActivity.class);
+		i.putExtra(EventListActivity.TIME, new Date().getTime());
+		startActivity(i);
 	}
 
 	@Override
