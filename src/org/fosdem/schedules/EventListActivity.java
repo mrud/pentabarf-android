@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * @author Christophe Vandeplas <christophe@vandeplas.com>
@@ -75,6 +76,12 @@ public class EventListActivity extends ListActivity {
 		}
 
 		events = getEventList(favorites);
+		if (events.size() <= 0) {
+			this.finish();
+			final Context context = getApplicationContext();
+			final Toast toast = Toast.makeText(context, "Could not find events", Toast.LENGTH_LONG);
+			toast.show();
+		}
 		eventAdapter = new EventAdapter(this, R.layout.event_list, events);
 		setListAdapter(eventAdapter);
 
