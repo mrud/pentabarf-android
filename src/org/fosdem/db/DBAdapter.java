@@ -541,14 +541,21 @@ public class DBAdapter extends ContentProvider {
 			for (String language : languages) {
 				sb.append(" or language='" + language + "'");
 			}
-		if (beginDate != null && endDate != null) {
+		if (beginDate != null || endDate != null) {
 			if (sb.length() != 0) {
 				sb.append(" and ");
 			} else {
 				sb.append(" or ");
 			}
-			sb.append(" (start>=" + beginDate.getTime() + " and start<="
-					+ endDate.getTime() + ")");
+			sb.append(" (");
+			if (beginDate != null) {
+				sb.append("start>=" + beginDate.getTime());
+				sb.append(endDate != null ? " and " : " ");
+			}
+			if (endDate != null) {
+				sb.append(" start<=" + endDate.getTime());
+			}
+			sb.append(")");
 		}
 		if (dayIndex != null) {
 			sb.append(" and dayindex=" + dayIndex + "");
