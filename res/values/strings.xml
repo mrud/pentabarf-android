@@ -31,4 +31,6 @@
 <string-array name="sort_by_desc"><item>Track</item>
 <item>Room</item>
 </string-array>
+
+<string name="all_events">All Events</string>
 </resources>

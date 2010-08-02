@@ -36,6 +36,9 @@ public class TrackListActivity extends ListActivity  {
 
 	public static final String DAY_INDEX = "dayIndex";
 	
+	private static final int ALL_EVENTS = Menu.FIRST;
+	private static final int SETTINGS = Menu.FIRST + 1;
+	
 	private ArrayList<Track> tracks = null;
 	private int dayIndex = 0;
 
@@ -79,7 +82,8 @@ public class TrackListActivity extends ListActivity  {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, Menu.FIRST, 2, R.string.menu_settings).setIcon(
+		menu.add(0, ALL_EVENTS, 1, R.string.all_events).setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, SETTINGS, 2, R.string.menu_settings).setIcon(
 				android.R.drawable.ic_menu_preferences);
 
 		return true;
@@ -147,9 +151,21 @@ public class TrackListActivity extends ListActivity  {
 	}
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		Intent i = new Intent(this, SortPreferences.class);
-		startActivity(i);
-		return true;
+		Intent i = null;
+		switch (item.getItemId()) {
+		case ALL_EVENTS:
+			i = new Intent(this, EventListActivity.class);
+			i.putExtra(EventListActivity.DAY_INDEX, dayIndex);
+			startActivity(i);
+			return true;
+		case SETTINGS:
+			i = new Intent(this, SortPreferences.class);
+			startActivity(i);
+			return true;
+		default:
+			return false;
+		}
+
 
 	}
 	

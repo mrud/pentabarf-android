@@ -667,6 +667,10 @@ public class DBAdapter extends ContentProvider {
 		String rooms[] = { roomName };
 		return getEventsFiltered(null, null, null, null, null, rooms, null, dayIndex);
 	}
+	
+	public List<Event> getEventsbyDayIndex(int dayIndex) {
+		return getEventsFiltered(null, null, null, null, null, null, null, dayIndex);
+	}
 
 	public void clearEvents() {
 		db.execSQL("delete from " + TABLE_EVENTS);
@@ -683,5 +687,7 @@ public class DBAdapter extends ContentProvider {
 	public void clearBookmarks() {
 		db.execSQL("delete from " + TABLE_FAVORITES);
 	}
+
+	
 
 }

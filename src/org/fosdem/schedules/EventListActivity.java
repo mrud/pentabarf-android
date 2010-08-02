@@ -37,7 +37,7 @@ public class EventListActivity extends ListActivity {
 	
 	private ArrayList<Event> events = null;
 	private String trackName = null;
-	private int dayIndex = 0;
+	private int dayIndex = -1;
 	private String query = null;
 	private Boolean favorites = null;
 	private EventAdapter eventAdapter = null;
@@ -101,7 +101,7 @@ public class EventListActivity extends ListActivity {
 	 */
 	private ArrayList<Event> getEventList(Boolean favoritesOnly) {
 
-		if (query == null && trackName == null && roomName == null
+		if (query == null && trackName == null && roomName == null && dayIndex == -1
 				&& (favoritesOnly == null || !favoritesOnly)) {
 			Log.e(LOG_TAG,
 					"You are loading this class with no valid room parameter");
@@ -128,14 +128,11 @@ public class EventListActivity extends ListActivity {
 				Date startDate=prefs.getBoolean(Preferences.PREF_UPCOMING, false)?new Date():null;
 				
 				return db.getFavoriteEvents(startDate);
-			}
-			if (trackName != null) {
-			return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(
-					trackName, dayIndex);
-			}
-			if (roomName != null) {
+			} else if (roomName != null) {
 				return (ArrayList<Event>) db.getEventsbyRoomNameAndDayIndex(roomName, dayIndex);
-			} else{
+			} else if (dayIndex != -1){
+				return (ArrayList<Event>) db.getEventsbyDayIndex(dayIndex);
+			} else {
 				return null;
 			}
  		} finally {
