@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -209,7 +211,15 @@ public class Main extends Activity implements ParserEventListener,
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		final View view = getLayoutInflater().inflate(R.layout.about, null,
 				false);
-		builder.setTitle(getString(R.string.app_name));
+		String version = "";
+		PackageInfo pinfo;
+		try {
+			pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			version = pinfo.versionName;
+		} catch (NameNotFoundException e) {
+		}
+
+		builder.setTitle(getString(R.string.app_name) + " - V. " + version);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setView(view);
 		builder.setPositiveButton(getString(android.R.string.ok), null);
