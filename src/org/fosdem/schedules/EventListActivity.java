@@ -128,6 +128,7 @@ public class EventListActivity extends ListActivity {
 			db.open();
 
 			if (trackName != null) {
+				setTitle("Events on Track " + trackName + " for Day " + dayIndex);
 				return (ArrayList<Event>) db.getEventsByTrackNameAndDayIndex(
 						trackName, dayIndex);
 			} else if (query != null) {
@@ -137,12 +138,13 @@ public class EventListActivity extends ListActivity {
 						null, queryArgs);
 			} else if (favorites != null && favorites) {
 				Log.e(LOG_TAG, "Getting favorites...");
-				
+
 				SharedPreferences prefs = getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
 				Date startDate=prefs.getBoolean(Preferences.PREF_UPCOMING, false)?new Date():null;
-				
+
 				return db.getFavoriteEvents(startDate);
 			} else if (roomName != null) {
+				setTitle("Events in Room " + roomName + " on Day " + dayIndex);
 				return (ArrayList<Event>) db.getEventsbyRoomNameAndDayIndex(roomName, dayIndex);
 			} else if (dayIndex != -1){
 				return (ArrayList<Event>) db.getEventsbyDayIndex(dayIndex);
