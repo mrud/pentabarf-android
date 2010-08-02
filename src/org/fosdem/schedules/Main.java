@@ -118,8 +118,6 @@ public class Main extends Activity implements ParserEventListener,
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
 
-		// FIXME on first startup
-		// - propose user to update database
 	}
 
 	protected void createButtons() {
