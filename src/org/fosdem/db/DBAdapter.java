@@ -443,6 +443,35 @@ public class DBAdapter extends ContentProvider {
 		return list;
 	}
 
+	public int getDayIndexByDate(Date currentTime) {
+		Date d = (Date) currentTime.clone();
+		d.setHours(0);
+		d.setMinutes(0);
+		Cursor days = db.query(true, TABLE_EVENTS, new String[] { DAYINDEX },
+					START + ">= " + d.getTime(), null, null, null, null, "1");
+		int[] values = getIntFromCursor(days, DAYINDEX);
+		if (values.length == 0) return -1;
+		return values[0];
+	}
+
+	public List<Event> getUpcomingEvents(Date current) {
+		int curday = getDayIndexByDate(current);
+		String[] rooms = getRoomsByDayIndex(curday);
+		StringBuilder sb = new StringBuilder();
+		sb.append(START + ">=" + current.getTime());
+		sb.append(" and " + DAYINDEX + "=" + curday);
+		List<Event> retval = new ArrayList<Event>();
+		for (String room : rooms) {
+			StringBuilder clause = new StringBuilder(sb.toString());
+			clause.append(" and " + ROOM + "='" + room + "'");
+			Cursor c = db.query(TABLE_EVENTS, new String[] { ID, START, DURATION, ROOM,
+				TAG, TITLE, SUBTITLE, TRACK, EVENTTYPE, LANGUAGE, ABSTRACT,
+				DESCRIPTION, DAYINDEX }, clause.toString(), null, null, null, START, "1");
+			retval.addAll(getEventsFromCursor(c));
+		}
+		return retval;
+
+	}
 	public String[] getRoomsByDayIndex(int dayIndex) {
 		Cursor roomCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM },
 				DAYINDEX + "=" + dayIndex, null, null, null, START, null);
