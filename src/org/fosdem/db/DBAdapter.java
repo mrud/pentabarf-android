@@ -36,7 +36,7 @@ public class DBAdapter extends ContentProvider {
 	public static final int MSG_EVENT_STORED = 100;
 
 	// Provider related
-	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
+	public static final String PROVIDER_NAME = "froscondb";
 	public static final Uri CONTENT_URI = Uri.parse("content://"
 			+ PROVIDER_NAME + "/events");
 

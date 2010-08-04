@@ -5,7 +5,8 @@ package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
+import net.spamt.froscon10.R;
+
 import org.fosdem.pojo.Event;
 import org.fosdem.schedules.EventListActivity;
 

@@ -1,6 +1,7 @@
 package org.fosdem.schedules;
 
-import org.fosdem.R;
+import net.spamt.froscon10.R;
+
 import org.fosdem.broadcast.FavoritesBroadcast;
 
 import android.app.Activity;
