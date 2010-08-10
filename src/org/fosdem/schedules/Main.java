@@ -260,7 +260,7 @@ public class Main extends Activity implements ParserEventListener,
 
 						final Thread t = new Thread(new BackgroundUpdater(
 								handler, Main.this, getApplicationContext(),
-								selection[0], selection[1]));
+								selection[0], false));
 						t.start();
 					}
 
