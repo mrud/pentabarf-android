@@ -26,7 +26,7 @@
 	<string name="updater_title">What do you want to update?</string>
 	<string-array name="updater_dialog_choices">
 		<item name="updater_dialog_choices_xml">Update schedule contents</item>
-		<item name="updater_dialog_choices_rooms">Preload room images</item>
+
 	</string-array>
 <string-array name="sort_by_desc"><item>Track</item>
 <item>Room</item>
