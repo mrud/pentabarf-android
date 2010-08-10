@@ -33,6 +33,8 @@ public class FavoriteButton extends ImageView implements OnClickListener {
 		this.event = event;
 		
 		initialize();
+
+		this.setOnClickListener(this);
 	}
 	
 	public FavoriteButton(Context context,AttributeSet attributeSet){
@@ -41,8 +43,6 @@ public class FavoriteButton extends ImageView implements OnClickListener {
 	}
 
 	protected void initialize() {
-		if(initialized)return;
-		initialized=true;
 		//this.setLayoutParams(UIUtil.WRAPPED);
 		Log.v(getClass().getName(),"Initialize");
 
@@ -54,7 +54,6 @@ public class FavoriteButton extends ImageView implements OnClickListener {
 
 		setImageResource();
 
-		this.setOnClickListener(this);
 	}
 
 	protected void setImageResource() {
