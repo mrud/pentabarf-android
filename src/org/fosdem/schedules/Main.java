@@ -111,8 +111,6 @@ public class Main extends Activity implements ParserEventListener,
 
 		setContentView(R.layout.main);
 		
-		createButtons();
-		
 		btnFavorites = (Button) findViewById(R.id.btn_favorites);
 		btnFavorites.setOnClickListener(this);
 		
@@ -121,7 +119,8 @@ public class Main extends Activity implements ParserEventListener,
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
-
+		
+		createButtons();
 	}
 
 	protected void createButtons() {
@@ -166,6 +165,7 @@ public class Main extends Activity implements ParserEventListener,
 				
 			}
 			buttonsView.addView(ll);
+			btnCurrentEvents.setEnabled(dbAdapter.getEventCount() > 0);
 		} finally {
 			dbAdapter.close();
 		}
