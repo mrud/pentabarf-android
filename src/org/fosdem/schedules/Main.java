@@ -1,11 +1,14 @@
 package org.fosdem.schedules;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.listeners.ParserEventListener;
+import org.fosdem.pojo.Event;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
@@ -27,8 +30,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TableRow.LayoutParams;
 
 public class Main extends Activity implements ParserEventListener,
 		OnClickListener {
@@ -56,13 +61,13 @@ public class Main extends Activity implements ParserEventListener,
 
 	public int counter = 0;
 	protected TextView tvProgress = null, tvDbVer = null;
-	protected Button btnDay1, btnDay2, btnSearch, btnFavorites;
+	protected Button btnSearch, btnFavorites;
 	protected Intent service;
 
 	private BroadcastReceiver favoritesChangedReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//Log.v(getClass().getName(),"Action: "+intent.getIntExtra(FavoritesBroadcast.EXTRA_TYPE, -1));
+			// Log.v(getClass().getName(),"Action: "+intent.getIntExtra(FavoritesBroadcast.EXTRA_TYPE, -1));
 			if (intent.getIntExtra(FavoritesBroadcast.EXTRA_TYPE,-1)
 							!=FavoritesBroadcast.EXTRA_TYPE_INSERT && intent
 							.getIntExtra(FavoritesBroadcast.EXTRA_TYPE,-1)!=FavoritesBroadcast.EXTRA_TYPE_DELETE)
@@ -103,12 +108,8 @@ public class Main extends Activity implements ParserEventListener,
 
 		setContentView(R.layout.main);
 
-		btnDay1 = (Button) findViewById(R.id.btn_day_1);
-		btnDay1.setOnClickListener(this);
-		btnDay2 = (Button) findViewById(R.id.btn_day_2);
-		btnDay2.setOnClickListener(this);
-		btnSearch = (Button) findViewById(R.id.btn_search);
-		btnSearch.setOnClickListener(this);
+		createButtons();
+
 		btnFavorites = (Button) findViewById(R.id.btn_favorites);
 		btnFavorites.setOnClickListener(this);
 
@@ -119,6 +120,50 @@ public class Main extends Activity implements ParserEventListener,
 		// - propose user to update database
 	}
 
+	protected void createButtons() {
+		DBAdapter dbAdapter = new DBAdapter(this);
+	    int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
+
+		try {
+			dbAdapter.open();
+			List<Date> ldays = dbAdapter.getDays();
+
+			LinearLayout buttonsView = (LinearLayout) findViewById(R.id.day_select);
+			buttonsView.setOrientation(LinearLayout.VERTICAL);
+
+			int counter = 0;
+			SimpleDateFormat formatter = new SimpleDateFormat("E, d MMM");
+			LinearLayout ll = new LinearLayout(this);
+			ll.setOrientation(LinearLayout.HORIZONTAL);
+			for (Date d : ldays) {
+				List<Event> lv = dbAdapter.getEventsFiltered(d, new Date(d.getTime() + MILLIS_IN_DAY), null, null, null, null, null, null);
+				if (lv.isEmpty()) continue;
+				++counter;
+				Button b = new Button(this);
+				b.setOnClickListener(this);
+				b.setText(formatter.format(d));
+				b.setTag(lv.get(0).getDayindex());
+				b.setId(R.id.day_select);
+				b.setTextSize(15);
+				b.setHeight(80);
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams
+				(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 1);
+				b.setLayoutParams(lp);
+				ll.addView(b);
+
+				if (counter % 2 == 0) {
+					buttonsView.addView(ll, lp);
+					ll = new LinearLayout(this);
+					ll.setOrientation(LinearLayout.HORIZONTAL);
+				}
+
+			}
+			buttonsView.addView(ll);
+		} finally {
+			dbAdapter.close();
+		}
+
+	}
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -131,8 +176,6 @@ public class Main extends Activity implements ParserEventListener,
 			dbAdapter.open();
 			btnFavorites.setEnabled(dbAdapter.getBookmarkCount() > 0);
 			count = dbAdapter.getEventCount();
-			btnDay1.setEnabled(count > 0);
-			btnDay2.setEnabled(count > 0);
 		} finally {
 			dbAdapter.close();
 		}
@@ -140,9 +183,6 @@ public class Main extends Activity implements ParserEventListener,
 		if (count < 1) {
 			showDialog(DIALOG_UPDATE);
 		}
-
-		// FIXME on first startup
-		// - propose user to update database
 	}
 
 	@Override
@@ -231,12 +271,8 @@ public class Main extends Activity implements ParserEventListener,
 	public void onClick(View v) {
 		int id = v.getId();
 		switch (id) {
-		case R.id.btn_day_1:
-			showTracksForDay(1);
-			break;
-		case R.id.btn_day_2:
-			showTracksForDay(2);
-			break;
+		case R.id.day_select:
+			showTracksForDay((Integer) v.getTag());
 		case R.id.btn_search:
 			// nothing to do as btn is not active
 			break;
@@ -297,15 +333,7 @@ public class Main extends Activity implements ParserEventListener,
 				toast(doneDb);
 				tvDbVer.setText(getString(R.string.db_ver) + " "
 						+ StringUtil.dateTimeToString(getDBLastUpdated()));
-				DBAdapter db = new DBAdapter(Main.this);
-				db.open();
-				try {
-					long count = db.getEventCount();
-					btnDay1.setEnabled(count > 0);
-					btnDay2.setEnabled(count > 0);
-				} finally {
-					db.close();
-				}
+				createButtons();
 				break;
 			case ROOMIMGSTART:
 				tvProgress.setText("Downloading room images...");

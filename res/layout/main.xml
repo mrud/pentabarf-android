@@ -1,41 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_bg"   >
+    android:background="@drawable/debconf_bg"  >
 
-	<LinearLayout
-		android:id="@+id/btn_days"
-		android:layout_width="fill_parent" 
+	<RelativeLayout  
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		>
 		
-	<Button 
-		android:id="@+id/btn_day_1"
-		android:text="Saturday"
+	<LinearLayout 
+		android:layout_height="wrap_content" 
+		android:id="@+id/day_select"
 		
 		android:layout_width="fill_parent" 
-		android:layout_height="80dip"
-		android:layout_weight="1"
-		
-		android:textSize="20dip"
 		/>
-	<Button 
-		android:id="@+id/btn_day_2"
-		android:text="Sunday"
-		
-		android:layout_width="fill_parent" 
-		android:layout_height="80dip"
-		android:layout_weight="1"
-		
-		android:textSize="20dip"
-		/>
-		</LinearLayout>
+
 	<Button
 		android:id="@+id/btn_favorites"
 		android:text="@string/favorites"
-		android:layout_below="@id/btn_days"
+		android:layout_below="@id/day_select"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textSize="20dip"/>
@@ -50,12 +35,13 @@
 		
 		android:textSize="14dip"
 		/>
+		
 	<RelativeLayout
 		android:id="@+id/texts"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
-		>
+		android:layout_below="@id/btn_search" >
 	<TextView  
 	    android:id="@+id/progress"
 	    
@@ -73,5 +59,5 @@
 	    android:layout_below="@id/progress"
 	    />
 	</RelativeLayout>
-
 </RelativeLayout>
+</ScrollView>
