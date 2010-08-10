@@ -56,8 +56,8 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
 
 	public static final String PREFS = "org.fosdem";
-	public static final String XML_URL = "http://fosdem.org/schedule/xml";
-	public static final String ROOM_IMG_URL_BASE = "http://fosdem.org/2010/map/room/";
+	public static final String XML_URL = "http://penta.debconf.org/dc10_schedule/schedule.en.xml";
+	public static final String ROOM_IMG_URL_BASE = "http://penta.debconf.org/dc10_schedule/map/room/";
 
 	public int counter = 0;
 	protected TextView tvProgress = null, tvDbVer = null;
@@ -107,9 +107,9 @@ public class Main extends Activity implements ParserEventListener,
 		sendBroadcast(initialLoadIntent);
 
 		setContentView(R.layout.main);
-
+		
 		createButtons();
-
+		
 		btnFavorites = (Button) findViewById(R.id.btn_favorites);
 		btnFavorites.setOnClickListener(this);
 
@@ -150,13 +150,13 @@ public class Main extends Activity implements ParserEventListener,
 				(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 1);
 				b.setLayoutParams(lp);
 				ll.addView(b);
-
+				
 				if (counter % 2 == 0) {
 					buttonsView.addView(ll, lp);
 					ll = new LinearLayout(this);
 					ll.setOrientation(LinearLayout.HORIZONTAL);
 				}
-
+				
 			}
 			buttonsView.addView(ll);
 		} finally {
