@@ -45,6 +45,8 @@ public class EventListActivity extends ListActivity {
 	private EventAdapter eventAdapter = null;
 	private String roomName = null;
 	private Long timeSearch  = null;
+	private ArrayList<Integer> event_ids;
+	
 	// 10 min.
 	private static final long CURRENT_TIME_SLICE = 600000;
 	@Override
@@ -82,6 +84,7 @@ public class EventListActivity extends ListActivity {
 		}
 
 		events = getEventList(favorites);
+		event_ids = new ArrayList<Integer>(events.size());
 		if (events.size() <= 0) {
 			this.finish();
 			final Context context = getApplicationContext();
@@ -102,7 +105,8 @@ public class EventListActivity extends ListActivity {
 				+ event.getTitle());
 
 		Intent i = new Intent(this, DisplayEvent.class);
-		i.putExtra(DisplayEvent.ID, event.getId());
+		i.putExtra(DisplayEvent.POSITON, position);
+		i.putIntegerArrayListExtra(DisplayEvent.EVENTS, event_ids);
 		startActivity(i);
 	}
 
@@ -139,7 +143,7 @@ public class EventListActivity extends ListActivity {
 			} else if (favorites != null && favorites) {
 				Log.e(LOG_TAG, "Getting favorites...");
 
-				SharedPreferences prefs = getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
+				SharedPreferences prefs = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 				Date startDate=prefs.getBoolean(Preferences.PREF_UPCOMING, false)?new Date():null;
 
 				return db.getFavoriteEvents(startDate);
@@ -187,5 +191,8 @@ public class EventListActivity extends ListActivity {
 		if (favorites != null && favorites)
 			unregisterReceiver(favoritesChangedReceiver);
 
+	}
+	public void addEvent(int id) {
+		event_ids.add(id);
 	}
 }

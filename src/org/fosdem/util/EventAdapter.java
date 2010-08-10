@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.fosdem.R;
 import org.fosdem.pojo.Event;
+import org.fosdem.schedules.EventListActivity;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,10 +24,12 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
 	public static final String LOG_TAG= EventAdapter.class.getName();
 	private ArrayList<Event> items;
+	private EventListActivity eventList;
 
-	public EventAdapter(Context context, int textViewResourceId, ArrayList<Event> items) {
+	public EventAdapter(EventListActivity context, int textViewResourceId, ArrayList<Event> items) {
 		super(context, textViewResourceId, items);
 		this.items = items;
+		this.eventList = context;
 	}
 	
 	@Override
@@ -37,6 +40,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 			v = vi.inflate(R.layout.event_list, null);
 		}
 		Event event = items.get(position);
+		eventList.addEvent(event.getId());
 		if (event != null) {
 			TextView title = (TextView) v.findViewById(R.id.event_title);
 			TextView speaker = (TextView) v.findViewById(R.id.event_speakers);
