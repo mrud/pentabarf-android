@@ -69,7 +69,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	
 	private void createNotification(int eventId) {
 		// Ensure user wants notified
-		SharedPreferences prefs = mContext.getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
+		SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), Context.MODE_PRIVATE);
 		
 		if (!prefs.getBoolean(Preferences.PREF_NOTIFY, true)) {
 			Log.d("NotifyRecv", "User doesn't want notified");
@@ -128,7 +128,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	}
 	
 	private void setEventAlarms() {
-		SharedPreferences prefs = mContext.getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
+		SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), Context.MODE_PRIVATE);
 		int delayMins = prefs.getInt(Preferences.PREF_DELAY, 10);
 		
 		DBAdapter db = new DBAdapter(mContext);
@@ -143,7 +143,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 	}
 
 	private void setEventAlarm(long eventId) {
-		SharedPreferences prefs = mContext.getSharedPreferences(Main.PREFS, Context.MODE_PRIVATE);
+		SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), Context.MODE_PRIVATE);
 		int delayMins = prefs.getInt(Preferences.PREF_DELAY, 10);
 		setEventAlarm(getEventById(eventId), delayMins);
 	}
