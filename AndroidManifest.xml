@@ -44,7 +44,7 @@
 		<activity android:name="org.fosdem.schedules.EventListActivity"/>
 		<activity android:name="org.fosdem.schedules.Preferences"/>
 
- 		<receiver android:name=".broadcast.NotificationReceiver" android:exported="false">
+ 		<receiver android:name="org.fosdem.broadcast.NotificationReceiver" android:exported="false">
 			<intent-filter>
 				<action android:name="org.fosdem.action.favorites_update" />
 			</intent-filter>
@@ -62,7 +62,7 @@
 		<provider android:name="org.fosdem.providers.SearchProvider"
 			android:authorities="fosdemsearch"
 			android:syncable="false" />
-	<activity android:name=".schedules.SortPreferences"></activity>
+	<activity android:name="org.fosdem.schedules.SortPreferences"></activity>
 </application>
 	<uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>
 	<instrumentation 
