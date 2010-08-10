@@ -69,7 +69,7 @@ public class TrackListActivity extends ListActivity  {
 	protected void onResume() {
 		super.onResume();
 		SharedPreferences prefs = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		String sortby = prefs.getString(Preferences.PREF_SORT, "Room");
+		String sortby = prefs.getString(Preferences.PREF_SORT, "Track");
 		switch (SortBy.valueOf(sortby)) {
 		case Track:
 			handleTrack();
