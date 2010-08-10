@@ -110,8 +110,16 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		
 		pos = extras.getInt(POSITON);
 		event_ids = extras.getIntegerArrayList(EVENTS);
-		if (pos == null || event_ids == null)
-			return null;
+
+		if (pos == null || event_ids == null) {
+			final int id = extras.getInt(ID, -1);
+			if (id == -1)
+				return null;
+			pos = 0;
+			event_ids = new ArrayList<Integer>(1);
+			event_ids.add(id);
+		}
+			
 		
 		return getEvent(event_ids.get(pos));
 
