@@ -16,9 +16,9 @@
 	<string name="synchronize_title">Synchronize</string>
 	<string name="synchronize_description">Synchronizes the schedule with the one from FOSDEM online.\n\nYou need a connection to the Internet for this to work.</string>
 	<string name="db_ver">Database last updated:</string>
-	<string name="about_text1">Debcon2010 Schedule application</string>
-	<string name="about_text2">Extended for Debconf by: Ulrich Dangel\nOriginally developed by: \nMichaël Uyttersprot, Pieter Iserbyt and Christophe Vandeplas.</string>
-	<string name="about_text3">Source available at http://fosdem.org/schedule/phone</string> 
+	<string name="about_text1">Schedule application</string>
+	<string name="about_text2">Extended by: Ulrich \'mru\' Dangel\nOriginally developed by: \nMichaël Uyttersprot, Pieter Iserbyt and Christophe Vandeplas.</string>
+    <string name="about_text3">Source available at http://github.com/mrud/pentabarf-android/</string> 
 	<string name="favorites">Favorites</string>
 	<string name="favorites_event_removed">Event removed from favorites</string>
 	<string name="favorites_event_added">Event added to favorites</string>
