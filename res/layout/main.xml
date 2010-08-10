@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/debconf_bg"  >
-
-	<RelativeLayout  
+    android:background="@drawable/froscon_bg"  >
+<ScrollView
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	>
+<RelativeLayout
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		>
+		android:layout_height="fill_parent"
+		android:layout_gravity="fill" android:gravity="bottom|fill">
 		
 	<LinearLayout 
-		android:layout_height="wrap_content" 
 		android:id="@+id/day_select"
 		
 		android:layout_width="fill_parent" 
-		/>
+		android:layout_height="fill_parent" />
 
 		<Button android:id="@+id/current_event" 
 		android:layout_width="fill_parent" 
@@ -48,12 +50,11 @@
 		android:textSize="14dip"
 		/>
 		
-	<RelativeLayout
-		android:id="@+id/texts"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_below="@id/btn_search" >
+
+
+
+</RelativeLayout>
+</ScrollView>
 	
 	    
     <TextView  
@@ -63,15 +64,12 @@
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
 	    
-	    android:layout_below="@+id/btn_search"
+	    android:layout_above="@+id/progress" android:gravity="bottom"/>
 	    
-	    /><TextView android:id="@+id/progress" 
+	    <TextView android:id="@+id/progress"
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/db_ver"
+	    android:layout_alignParentBottom="true"
 	    />
-	</RelativeLayout>
 
 </RelativeLayout>
-
-</ScrollView>
