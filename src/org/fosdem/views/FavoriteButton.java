@@ -33,13 +33,14 @@ public class FavoriteButton extends ImageView implements OnClickListener {
 		this.event = event;
 		
 		initialize();
-
+		setEvent(event);
 		this.setOnClickListener(this);
 	}
 	
 	public FavoriteButton(Context context,AttributeSet attributeSet){
 		super(context,attributeSet);
 		this.setImageResource(R.drawable.btn_star_big_off);
+		this.setOnClickListener(this);
 	}
 
 	protected void initialize() {
