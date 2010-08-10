@@ -2,7 +2,6 @@ package org.fosdem.schedules;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Enumeration;
 
 import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
@@ -15,8 +14,6 @@ import org.fosdem.util.StringUtil;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.sax.StartElementListener;
-import android.util.Log;
 
 /**
  * @author sandbender
