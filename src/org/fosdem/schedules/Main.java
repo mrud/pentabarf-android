@@ -405,7 +405,7 @@ public class Main extends Activity implements ParserEventListener,
 	 * Set NOW as the time that the Schedule database has been imported.
 	 */
 	private void setDBLastUpdated() {
-		SharedPreferences.Editor editor = getSharedPreferences(Main.PREFS, 0)
+		SharedPreferences.Editor editor = getSharedPreferences(getPackageName(), 0)
 				.edit();
 		long timestamp = System.currentTimeMillis() / 1000;
 		editor.putLong("db_last_updated", timestamp);
@@ -418,7 +418,7 @@ public class Main extends Activity implements ParserEventListener,
 	 * @return Date of the last Database update
 	 */
 	private Date getDBLastUpdated() {
-		SharedPreferences settings = getSharedPreferences(Main.PREFS, 0);
+		SharedPreferences settings = getSharedPreferences(getPackageName(), 0);
 		long timestamp = settings.getLong("db_last_updated", 0);
 		if (timestamp == 0)
 			return null;

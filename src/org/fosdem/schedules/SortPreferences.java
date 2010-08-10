@@ -23,7 +23,7 @@ public class SortPreferences extends PreferenceActivity implements
 	}
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		SharedPreferences sharedPreferences = getSharedPreferences(Main.PREFS,
+		SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(),
 				Activity.MODE_PRIVATE);
 		Editor edit = sharedPreferences.edit();
 		
