@@ -45,7 +45,7 @@ public class EventListActivity extends ListActivity {
 	private EventAdapter eventAdapter = null;
 	private String roomName = null;
 	private Long timeSearch  = null;
-	private ArrayList<Integer> event_ids;
+	private ArrayList<Integer> event_ids = new ArrayList<Integer>();
 	
 	// 10 min.
 	private static final long CURRENT_TIME_SLICE = 600000;
@@ -90,6 +90,9 @@ public class EventListActivity extends ListActivity {
 			final Context context = getApplicationContext();
 			final Toast toast = Toast.makeText(context, "Could not find events", Toast.LENGTH_LONG);
 			toast.show();
+		}
+		for (Event e : events) {
+			event_ids.add(e.getId());
 		}
 		eventAdapter = new EventAdapter(this, R.layout.event_list, events);
 		setListAdapter(eventAdapter);
@@ -191,8 +194,5 @@ public class EventListActivity extends ListActivity {
 		if (favorites != null && favorites)
 			unregisterReceiver(favoritesChangedReceiver);
 
-	}
-	public void addEvent(int id) {
-		event_ids.add(id);
 	}
 }

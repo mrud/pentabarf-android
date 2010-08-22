@@ -204,8 +204,8 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 
 		// setImageViewImage(R.id.room_image,
 		// StringUtil.roomNameToURL(event.getRoom()));
-		prefetchImageViewImageAndShowIt(StringUtil.roomNameToURL(event
-				.getRoom()));
+//		prefetchImageViewImageAndShowIt(StringUtil.roomNameToURL(event
+//				.getRoom()));
 
 		FavoriteButton fb = (FavoriteButton) findViewById(R.id.favoriteButton);
 		fb.setEvent(event);
