@@ -24,7 +24,9 @@
 		android:textSize="20dip"
 		android:text="@string/current_event"
 		android:enabled="false"
-		android:layout_weight="1"/>
+		android:layout_weight="1"
+		android:layout_height="fill_parent"
+		/>
 		
 		
 		<Button android:id="@+id/btn_favorites"
@@ -43,7 +45,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
 		android:layout_below="@id/btn_favorites"
-		
+		android:layout_weight="1"
 		android:textSize="14dip"
 		/>
 		
