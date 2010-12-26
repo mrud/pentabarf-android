@@ -436,8 +436,8 @@ public class DBAdapter extends ContentProvider {
 		Date minDate = new Date(min);
 		Date maxDate = new Date(max);
 		Date currDate = minDate;
-		currDate.setHours(0);
-		currDate.setMinutes(0);
+		currDate.setHours(5);
+		currDate.setMinutes(1);
 		currDate.setSeconds(0);
 		while (currDate.getTime() <= maxDate.getTime()) {
 			list.add(currDate);
@@ -449,7 +449,7 @@ public class DBAdapter extends ContentProvider {
 
 	public int getDayIndexByDate(Date currentTime) {
 		Date d = (Date) currentTime.clone();
-		d.setHours(0);
+		d.setHours(4);
 		d.setMinutes(0);
 		Cursor days = db.query(true, TABLE_EVENTS, new String[] { DAYINDEX },
 					START + ">= " + d.getTime(), null, null, null, null, "1");
