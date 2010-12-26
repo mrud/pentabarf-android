@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.listeners.ParserEventListener;
@@ -58,7 +58,7 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
 
 	public static final String PREFS = "org.fosdem";
-	public static final String XML_URL = "http://penta.debconf.org/dc10_schedule/schedule.en.xml";
+	public static final String XML_URL = "http://events.ccc.de/congress/2010/Fahrplan/schedule.en.xml";
 	public static final String ROOM_IMG_URL_BASE = "http://penta.debconf.org/dc10_schedule/map/room/";
 
 	public int counter = 0;

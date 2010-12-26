@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/debconf_bg"  >
+    android:background="@drawable/c3_bg"  >
 
 	<RelativeLayout  
 		android:layout_width="fill_parent"
@@ -25,7 +25,6 @@
 		android:text="@string/current_event"
 		android:enabled="false"
 		android:layout_weight="1"
-		android:layout_height="fill_parent"
 		/>
 		
 		

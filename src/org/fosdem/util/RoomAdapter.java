@@ -5,7 +5,7 @@ package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 import org.fosdem.pojo.Room;
 
 import android.content.Context;

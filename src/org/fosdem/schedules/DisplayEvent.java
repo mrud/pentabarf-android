@@ -5,7 +5,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
@@ -234,22 +234,15 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		String extra = "I'm attending '" + event.getTitle() + "' (Day "
-<<<<<<< HEAD
-				+ (event.getDayindex()) + " at "
-				+ event.getStart().getHours() + ":"
-				+ event.getStart().getMinutes() + " @ " + event.getRoom()
-				+ ") #fosdem";
-=======
 				+ (event.getDayindex()) + " at " + event.getStart().getHours()
 				+ ":" + event.getStart().getMinutes() + " @ " + event.getRoom()
-				+ ") #debconf10";
->>>>>>> 6a42dc8... Allow scrolling through events
+				+ ") #27C3";
 		long currentTime = Calendar.getInstance().getTimeInMillis();
 		if (currentTime >= event.getStart().getTime()
 				&& currentTime <= (event.getStart().getTime() + ((event
 						.getDuration() + 10) * 60 * 1000)))
 			extra = "I'm currently attending '" + event.getTitle() + "' ("
-					+ event.getRoom() + ") #fosdem";
+					+ event.getRoom() + ") #27C3";
 		intent.putExtra(Intent.EXTRA_TEXT, extra);
 		startActivity(Intent.createChooser(intent, getString(R.string.share)));
 	}

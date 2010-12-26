@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-	<string name="hello">Hello World, Main!</string>
-	<string name="app_name">Debconf10</string>
+	<string name="app_name">27C3</string>
 	<string name="menu_settings">Settings</string>
 	<string name="menu_about">About</string>
 	<string name="menu_testing">Testing</string>
 	<string name="menu_update">Update</string>
     <string name="menu_quit">Quit</string>
 	<string name="search_label">Search</string>
-	<string name="settings_description">FOSDEM search</string>   
+	<string name="settings_description">27C3 search</string>   
 	<string name="menu_test_display_event">Display event</string>
 	<string name="menu_prefetch_rooms">Prefetch Maps</string> 
 	<string name="synchronize_button">Synchronize</string>
 	<string name="synchronize_title">Synchronize</string>
-	<string name="synchronize_description">Synchronizes the schedule with the one from FOSDEM online.\n\nYou need a connection to the Internet for this to work.</string>
+	<string name="synchronize_description">Synchronizes the schedule with the one from 27C3 online.\n\nYou need a connection to the Internet for this to work.</string>
 	<string name="db_ver">Database last updated:</string>
 	<string name="about_text1">Schedule application</string>
 	<string name="about_text2">Extended by: Ulrich \'mru\' Dangel\nOriginally developed by: \nMichaël Uyttersprot, Pieter Iserbyt and Christophe Vandeplas.</string>

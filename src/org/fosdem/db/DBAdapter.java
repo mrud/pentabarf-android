@@ -273,7 +273,11 @@ public class DBAdapter extends ContentProvider {
 		deleteFromEvents(event.getId());
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(ID, event.getId());
-		initialValues.put(START, event.getStart().getTime());
+		if (event.getStart().getHours() > 4) {
+			initialValues.put(START, event.getStart().getTime());
+		} else {
+			initialValues.put(START, 60 * 60 * 1000 * 24 + event.getStart().getTime());
+		}
 		initialValues.put(DURATION, event.getDuration());
 		initialValues.put(ROOM, event.getRoom());
 		initialValues.put(TAG, event.getTag());
@@ -474,7 +478,7 @@ public class DBAdapter extends ContentProvider {
 	}
 	public String[] getRoomsByDayIndex(int dayIndex) {
 		Cursor roomCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM },
-				DAYINDEX + "=" + dayIndex, null, null, null, START, null);
+				DAYINDEX + "=" + dayIndex, null, null, null, ROOM, null);
 		return getStringFromCursor(roomCursor, ROOM);
 	}
 
@@ -640,8 +644,8 @@ public class DBAdapter extends ContentProvider {
 		for (int i = 0; i < eventsCursor.getCount(); i++) {
 			final Event event = new Event();
 			event.setId(eventsCursor.getInt(eventsCursor.getColumnIndex(ID)));
-			event.setStart(new Date(eventsCursor.getLong(eventsCursor
-					.getColumnIndex(START))));
+			Date starttime = new Date(eventsCursor.getLong(eventsCursor.getColumnIndex(START)));
+			event.setStart(starttime);
 			event.setDuration(eventsCursor.getInt(eventsCursor
 					.getColumnIndex(DURATION)));
 			event.setRoom(eventsCursor.getString(eventsCursor

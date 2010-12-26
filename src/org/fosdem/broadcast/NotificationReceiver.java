@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Event;
 import org.fosdem.schedules.DisplayEvent;

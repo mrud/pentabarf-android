@@ -5,7 +5,7 @@ package org.fosdem.schedules;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.pojo.Room;
 import org.fosdem.pojo.Track;

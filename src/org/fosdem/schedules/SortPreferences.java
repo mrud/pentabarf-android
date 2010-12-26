@@ -1,6 +1,6 @@
 package org.fosdem.schedules;
 
-import org.fosdem.R;
+import net.spamt.CCCC2010.R;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
