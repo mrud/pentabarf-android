@@ -3,41 +3,44 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
 	android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
     android:paddingLeft="10dip"
    >
-	 
+        <TextView
+               android:textAppearance="?android:attr/textAppearanceLarge"
+               android:id="@+id/text1"
+               android:text="name"
+               android:singleLine="true"
+               android:layout_alignParentTop="true"
+        		android:layout_width="wrap_content"
+               android:layout_height="wrap_content" 
+               />
+
+
 	<TextView
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:id="@+id/text1"
-		android:text="name"
-		android:singleLine="true"
-		
-		android:layout_alignParentTop="true"
-        android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		/>
-	<TextView
-		android:id="@+id/text_small"
-		android:text="type"
-		
-		android:textColor="@drawable/gray_text_color"
+        android:id="@+id/text_small"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
 		android:layout_below="@id/text1"
-		android:layout_alignParentBottom="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		/>
-	<CheckBox
-        android:id="@+id/more_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
+   		android:layout_alignParentLeft="true"
+        android:paddingBottom="2dip"
+		android:textColor="@drawable/gray_text_color"
+		android:textSize="12dip"
+		android:text="room"
+        />
+
+	    <CheckBox
+        android:id="@+id/event_star"
+        android:layout_width="23dip"
+        android:layout_height="23dip"
+        android:layout_marginTop="7dip"
+        android:layout_marginLeft="7dip"
         android:layout_alignParentRight="true"
-        
         android:focusable="false"
         android:button="@drawable/more_icon"
         />
+
+
 </RelativeLayout>
