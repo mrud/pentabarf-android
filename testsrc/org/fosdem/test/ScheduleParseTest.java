@@ -7,14 +7,14 @@ import java.util.List;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.parsers.ScheduleParser;
-import org.fosdem.pojo.Day;
-import org.fosdem.pojo.Event;
-import org.fosdem.pojo.Room;
-import org.fosdem.pojo.Schedule;
 
 import android.os.Handler;
 import android.test.AndroidTestCase;
 import android.util.Log;
+import at.linuxtage.glt.pojo.Day;
+import at.linuxtage.glt.pojo.Event;
+import at.linuxtage.glt.pojo.Room;
+import at.linuxtage.glt.pojo.Schedule;
 
 public class ScheduleParseTest extends AndroidTestCase {
 	public static Schedule schedule;

@@ -1,7 +1,6 @@
 package org.fosdem.views;
 
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Event;
 import org.fosdem.util.UIUtil;
 
 import android.R;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import at.linuxtage.glt.pojo.Event;
 
 public class FavoriteButton extends ImageView implements OnClickListener {
 
@@ -72,12 +72,12 @@ public class FavoriteButton extends ImageView implements OnClickListener {
 			// Unmark
 			db.deleteBookmark(event.getId());
 			UIUtil.showToast(this.getContext(), this.getContext().getString(
-					org.fosdem.R.string.favorites_event_removed));
+					at.linuxtage.R.string.favorites_event_removed));
 		} else {
 			// Mark
 			db.addBookmark(event);
 			UIUtil.showToast(this.getContext(), this.getContext().getString(
-					org.fosdem.R.string.favorites_event_added));
+					at.linuxtage.R.string.favorites_event_added));
 		}
 		db.close();
 		isFavorite = !isFavorite;

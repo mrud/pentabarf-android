@@ -1,14 +1,12 @@
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
 import org.fosdem.listeners.ParserEventListener;
-import org.fosdem.pojo.Event;
 import org.fosdem.util.StringUtil;
 
 import android.app.Activity;
@@ -36,6 +34,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Event;
 
 public class Main extends Activity implements ParserEventListener,
 		OnClickListener {
@@ -57,9 +57,8 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int UPDATE_ID = Menu.FIRST + 1;
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
 
-	public static final String PREFS = "org.fosdem";
-	public static final String XML_URL = "http://penta.debconf.org/dc10_schedule/schedule.en.xml";
-	public static final String ROOM_IMG_URL_BASE = "http://penta.debconf.org/dc10_schedule/map/room/";
+	public static final String PREFS = "at.linuxtage";
+	public static final String XML_URL = "http://glt11-programm.linuxtage.at/schedule.en.xml";
 
 	public int counter = 0;
 	protected TextView tvProgress = null, tvDbVer = null;
@@ -91,7 +90,7 @@ public class Main extends Activity implements ParserEventListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		final Intent intent = getIntent();
 		final String queryAction = intent.getAction();
 		if (Intent.ACTION_SEARCH.equals(queryAction)) {
@@ -105,21 +104,21 @@ public class Main extends Activity implements ParserEventListener,
 			startActivity(i);
 			finish();
 		}
-		
+
 		Intent initialLoadIntent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_INITIAL_LOAD);
 		sendBroadcast(initialLoadIntent);
 
 		setContentView(R.layout.main);
-		
+
 		btnFavorites = (Button) findViewById(R.id.btn_favorites);
 		btnFavorites.setOnClickListener(this);
-		
+
 		btnCurrentEvents = (Button) findViewById(R.id.current_event);
 		btnCurrentEvents.setOnClickListener(this);
 
 		tvProgress = (TextView) findViewById(R.id.progress);
 		tvDbVer = (TextView) findViewById(R.id.db_ver);
-		
+
 		createButtons();
 	}
 
@@ -156,13 +155,13 @@ public class Main extends Activity implements ParserEventListener,
 				(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 1);
 				b.setLayoutParams(lp);
 				ll.addView(b);
-				
+
 				if (counter % 2 == 0) {
 					buttonsView.addView(ll, lp);
 					ll = new LinearLayout(this);
 					ll.setOrientation(LinearLayout.HORIZONTAL);
 				}
-				
+
 			}
 			buttonsView.addView(ll);
 			btnCurrentEvents.setEnabled(dbAdapter.getEventCount() > 0);
@@ -221,7 +220,7 @@ public class Main extends Activity implements ParserEventListener,
 			version = pinfo.versionName;
 		} catch (NameNotFoundException e) {
 		}
-		
+
 		builder.setTitle(getString(R.string.app_name) + " - V. " + version);
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setView(view);
@@ -360,16 +359,8 @@ public class Main extends Activity implements ParserEventListener,
 						+ StringUtil.dateTimeToString(getDBLastUpdated()));
 				createButtons();
 				break;
-			case ROOMIMGSTART:
-				tvProgress.setText("Downloading room images...");
-				break;
-			case ROOMIMGDONE:
-				final String doneRooms = "Room Images downloaded";
-				tvProgress.setText(doneRooms);
-				toast(doneRooms);
-				break;
 			/*case LOAD_BG_START:
-				Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay(); 
+				Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 				Main.this.setRequestedOrientation(display.getOrientation());
 				break;
 			case LOAD_BG_END:
@@ -414,7 +405,7 @@ public class Main extends Activity implements ParserEventListener,
 
 	/**
 	 * Fetch the Date when the Schedule database has been imported
-	 * 
+	 *
 	 * @return Date of the last Database update
 	 */
 	private Date getDBLastUpdated() {

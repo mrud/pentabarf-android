@@ -35,6 +35,6 @@
         android:label="@string/search_label"
         android:searchSettingsDescription="@string/settings_description"
         android:includeInGlobalSearch="true"
-        android:searchSuggestAuthority="fosdemsearch"
+        android:searchSuggestAuthority="linuxtagesearch"
         android:searchSuggestIntentAction="android.intent.action.VIEW">
 </searchable>

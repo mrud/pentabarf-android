@@ -5,8 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.fosdem.pojo.Person;
-import org.fosdem.schedules.Main;
+
+import at.linuxtage.glt.pojo.Person;
+import at.linuxtage.schedule.Main;
 
 
 /**
@@ -109,15 +110,4 @@ public class StringUtil {
 		if (date == null) return "Never";
 		return DateFormat.getDateTimeInstance().format(date);
 	}
-
-	/**
-	 * Clean up a string to remove dots and lowercase.
-	 * This is usually needed for url paths for the map download
-	 * @param name 
-	 * @return
-	 */
-	public static String roomNameToURL(String name) {
-		return Main.ROOM_IMG_URL_BASE+name.replace(".", "").toLowerCase();
-	}
-
 }

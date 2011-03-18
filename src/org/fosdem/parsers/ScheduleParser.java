@@ -9,16 +9,17 @@ import java.util.List;
 
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
-import org.fosdem.pojo.Conference;
-import org.fosdem.pojo.Day;
-import org.fosdem.pojo.Event;
-import org.fosdem.pojo.Person;
-import org.fosdem.pojo.Room;
-import org.fosdem.pojo.Schedule;
 import org.fosdem.util.DateUtil;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import at.linuxtage.glt.pojo.Conference;
+import at.linuxtage.glt.pojo.Day;
+import at.linuxtage.glt.pojo.Event;
+import at.linuxtage.glt.pojo.Person;
+import at.linuxtage.glt.pojo.Room;
+import at.linuxtage.glt.pojo.Schedule;
 
 //TODO eMich - persons and links need to be added to the parser.
 public class ScheduleParser extends BaseParser {

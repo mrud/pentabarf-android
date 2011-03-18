@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/debconf_bg"  >
+    android:background="@drawable/glt_bg"  >
 
 	<RelativeLayout  
 		android:layout_width="fill_parent"
@@ -13,7 +13,7 @@
 	<LinearLayout 
 		android:layout_height="wrap_content" 
 		android:id="@+id/day_select"
-		
+		android:paddingTop="66px"
 		android:layout_width="fill_parent" 
 		/>
 

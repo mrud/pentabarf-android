@@ -5,8 +5,6 @@ package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
-import org.fosdem.pojo.Room;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Room;
 
 /**
  * @author Christophe Vandeplas <christophe@vandeplas.com>

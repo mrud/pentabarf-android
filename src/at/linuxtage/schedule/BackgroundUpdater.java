@@ -1,4 +1,4 @@
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -7,20 +7,20 @@ import org.fosdem.db.DBAdapter;
 import org.fosdem.exceptions.ParserException;
 import org.fosdem.listeners.ParserEventListener;
 import org.fosdem.parsers.ScheduleParser;
-import org.fosdem.pojo.Schedule;
 import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import at.linuxtage.glt.pojo.Schedule;
 
 /**
  * @author sandbender
- * 
+ *
  */
 public class BackgroundUpdater implements Runnable {
-	
+
 	private final static Object LOCK = new Object();
 
 	private final Handler handler;
@@ -31,7 +31,7 @@ public class BackgroundUpdater implements Runnable {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param handler
 	 *            Handler that gets messages about progress
 	 * @param parseEventListener
@@ -50,7 +50,7 @@ public class BackgroundUpdater implements Runnable {
 
 	/**
 	 * Sends a message to the handler of the specific type (in arg1)
-	 * 
+	 *
 	 * @param type
 	 */
 	private void sendMessage(int type) {
@@ -61,22 +61,22 @@ public class BackgroundUpdater implements Runnable {
 
 	/**
 	 * Downloads the xml and repopulates the database
-	 * 
+	 *
 	 * @throws ParserException
 	 * @throws IOException
-	 * 
+	 *
 	 */
 	private void updateXml() throws ParserException, IOException {
-		
+
 		sendMessage(Main.STARTFETCHING);
 
 		// Parse
 		final ScheduleParser parser = new ScheduleParser(Main.XML_URL);
 		parser.addTagEventListener(parseEventListener);
 		final Schedule s = parser.parse();
+		s.getConference().getVersion();
 
 		sendMessage(Main.DONEFETCHING);
-
 		// Persist
 		final DBAdapter db = new DBAdapter(context);
 		db.open();
@@ -89,45 +89,13 @@ public class BackgroundUpdater implements Runnable {
 		sendMessage(Main.DONELOADINGDB);
 	}
 
-	/**
-	 * Prefetches the rooms images
-	 */
-	private void updateRooms() {
-
-		sendMessage(Main.ROOMIMGSTART);
-
-		// get the list of the rooms
-		final String[] rooms;
-		final DBAdapter db = new DBAdapter(context);
-		db.open();
-		try {
-			rooms = db.getRooms();
-		} finally {
-			db.close();
-		}
-
-		// Download the images in the background
-		for (final String room : rooms) {
-			// Log.d(LOG_TAG, "Downloading room image:" + room);
-			try {
-				FileUtil.fetchCached(StringUtil.roomNameToURL(room));
-			} catch (MalformedURLException e) {
-			} catch (IOException e) {
-			}
-		}
-
-		sendMessage(Main.ROOMIMGDONE);
-	}
-
 	public void run() {
 		synchronized (LOCK) {
 			try {
 				sendMessage(Main.LOAD_BG_START);
 				if (doUpdateXml)
 					updateXml();
-				if (doUpdateRooms)
-					updateRooms();
-				sendMessage(Main.LOAD_BG_END); 
+				sendMessage(Main.LOAD_BG_END);
 			} catch (IOException e) {
 			} catch (ParserException e) {
 			}

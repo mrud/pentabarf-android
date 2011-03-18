@@ -1,14 +1,12 @@
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Event;
 import org.fosdem.util.FileUtil;
 import org.fosdem.util.StringUtil;
 import org.fosdem.views.FavoriteButton;
@@ -33,6 +31,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Event;
 
 public class DisplayEvent extends Activity implements OnGestureListener {
 
@@ -41,7 +41,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
 	/** Display event action string */
-	public final static String ACTION_DISPLAY_EVENT = "org.fosdem.schedules.DISPLAY_EVENT";
+	public final static String ACTION_DISPLAY_EVENT = "at.linuxtage.schedule.DISPLAY_EVENT";
 
 	/** Id extras parameter name */
 	public final static String ID = "org.fosdem.Id";
@@ -99,7 +99,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 	/**
 	 * Gets the {@link Event} that was specified through the intent or null if
 	 * no or wrongly specified event.
-	 * 
+	 *
 	 * @return The Event or null.
 	 */
 	private Event getEvent() {
@@ -107,7 +107,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		final Bundle extras = getIntent().getExtras();
 		if (extras == null)
 			return null;
-		
+
 		pos = extras.getInt(POSITON);
 		event_ids = extras.getIntegerArrayList(EVENTS);
 
@@ -119,8 +119,8 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 			event_ids = new ArrayList<Integer>(1);
 			event_ids.add(id);
 		}
-			
-		
+
+
 		return getEvent(event_ids.get(pos));
 
 
@@ -141,7 +141,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 	/**
 	 * Helper method to set the text of the {@link TextView} identified by
 	 * specified id.
-	 * 
+	 *
 	 * @param id
 	 *            Id of the view (must be a TextView)
 	 * @param value
@@ -179,7 +179,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 
 	/**
 	 * Loads the contents of the event with into the gui.
-	 * 
+	 *
 	 * @param event
 	 *            The event to show
 	 */
@@ -234,22 +234,16 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		String extra = "I'm attending '" + event.getTitle() + "' (Day "
-<<<<<<< HEAD
 				+ (event.getDayindex()) + " at "
 				+ event.getStart().getHours() + ":"
 				+ event.getStart().getMinutes() + " @ " + event.getRoom()
-				+ ") #fosdem";
-=======
-				+ (event.getDayindex()) + " at " + event.getStart().getHours()
-				+ ":" + event.getStart().getMinutes() + " @ " + event.getRoom()
-				+ ") #debconf10";
->>>>>>> 6a42dc8... Allow scrolling through events
+				+ ") " + R.string.hashtag;
 		long currentTime = Calendar.getInstance().getTimeInMillis();
 		if (currentTime >= event.getStart().getTime()
 				&& currentTime <= (event.getStart().getTime() + ((event
 						.getDuration() + 10) * 60 * 1000)))
 			extra = "I'm currently attending '" + event.getTitle() + "' ("
-					+ event.getRoom() + ") #fosdem";
+					+ event.getRoom() + ") " + R.string.hashtag;
 		intent.putExtra(Intent.EXTRA_TEXT, extra);
 		startActivity(Intent.createChooser(intent, getString(R.string.share)));
 	}
@@ -302,7 +296,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 	}
 
 	private void next() {
-		
+
 		if (pos >= event_ids.size() -1) {
 			Toast.makeText(this, "No more additional events", Toast.LENGTH_SHORT).show();
 			return;
@@ -310,7 +304,7 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		pos += 1;
 		event = getEvent((int) event_ids.get(pos));
 		showEvent(event);
-		
+
 		scrollView.startAnimation(outToLeftAnimation());
 		scrollView.smoothScrollTo(0,0);
 	}

@@ -5,11 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.fosdem.broadcast.FavoritesBroadcast;
-import org.fosdem.pojo.Day;
-import org.fosdem.pojo.Event;
-import org.fosdem.pojo.Person;
-import org.fosdem.pojo.Room;
-import org.fosdem.pojo.Schedule;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -26,6 +21,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import at.linuxtage.glt.pojo.Day;
+import at.linuxtage.glt.pojo.Event;
+import at.linuxtage.glt.pojo.Person;
+import at.linuxtage.glt.pojo.Room;
+import at.linuxtage.glt.pojo.Schedule;
 
 /*
  * This class can either be used as a content provider or as a standalone DBAdapter.
@@ -36,7 +36,7 @@ public class DBAdapter extends ContentProvider {
 	public static final int MSG_EVENT_STORED = 100;
 
 	// Provider related
-	public static final String PROVIDER_NAME = "org.fosdem.pojo.Event";
+	public static final String PROVIDER_NAME = "at.linuxtage.glt.pojo.Event";
 	public static final Uri CONTENT_URI = Uri.parse("content://"
 			+ PROVIDER_NAME + "/events");
 
@@ -474,7 +474,7 @@ public class DBAdapter extends ContentProvider {
 	}
 	public String[] getRoomsByDayIndex(int dayIndex) {
 		Cursor roomCursor = db.query(true, TABLE_EVENTS, new String[] { ROOM },
-				DAYINDEX + "=" + dayIndex, null, null, null, START, null);
+				DAYINDEX + "=" + dayIndex, null, null, null, ROOM, null);
 		return getStringFromCursor(roomCursor, ROOM);
 	}
 

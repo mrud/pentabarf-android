@@ -2,14 +2,8 @@ package org.fosdem.broadcast;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.fosdem.R;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Event;
-import org.fosdem.schedules.DisplayEvent;
-import org.fosdem.schedules.Main;
-import org.fosdem.schedules.Preferences;
 import org.fosdem.util.StringUtil;
 
 import android.app.AlarmManager;
@@ -22,6 +16,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Event;
+import at.linuxtage.schedule.DisplayEvent;
+import at.linuxtage.schedule.Preferences;
 
 public class NotificationReceiver extends BroadcastReceiver {
 

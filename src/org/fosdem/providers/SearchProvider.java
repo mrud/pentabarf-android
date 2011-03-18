@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Event;
-import org.fosdem.pojo.Person;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;
@@ -16,10 +14,12 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import at.linuxtage.glt.pojo.Event;
+import at.linuxtage.glt.pojo.Person;
 
 public class SearchProvider extends ContentProvider {
 	// TODO eMich - add person to search suggestions
-	public static String AUTHORITY = "fosdemsearch";
+	public static String AUTHORITY = "linuxtagesearch";
 
 	private static final int SEARCH_SUGGEST = 0;
 	private static final int SHORTCUT_REFRESH = 1;

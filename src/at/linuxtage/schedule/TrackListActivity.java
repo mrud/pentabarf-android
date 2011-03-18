@@ -1,14 +1,16 @@
 /**
- * 
+ *
  */
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import org.fosdem.R;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Room;
+import at.linuxtage.glt.pojo.Track;
+
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Room;
-import org.fosdem.pojo.Track;
 import org.fosdem.util.RoomAdapter;
 import org.fosdem.util.TrackAdapter;
 
@@ -29,16 +31,16 @@ import android.widget.ListView;
  */
 public class TrackListActivity extends ListActivity  {
 
-	
 
-	
+
+
 	public static final String LOG_TAG=TrackListActivity.class.getName();
 
 	public static final String DAY_INDEX = "dayIndex";
-	
+
 	private static final int ALL_EVENTS = Menu.FIRST;
 	private static final int SETTINGS = Menu.FIRST + 1;
-	
+
 	private ArrayList<Track> tracks = null;
 	private int dayIndex = 0;
 
@@ -52,8 +54,8 @@ public class TrackListActivity extends ListActivity  {
 		super.onCreate(savedInstanceState);
 		// what day should we show? fetch from the parameters or saved instance
 		dayIndex = savedInstanceState != null ? savedInstanceState.getInt(DAY_INDEX) : 0;
-	
-		if (dayIndex == 0) { 
+
+		if (dayIndex == 0) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null)
 				dayIndex = extras.getInt(DAY_INDEX);
@@ -99,7 +101,7 @@ public class TrackListActivity extends ListActivity  {
 		setTitle("Tracks for Day " + dayIndex);
 		setListAdapter(new TrackAdapter(this, R.layout.track_list, getTracks()));
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -119,7 +121,7 @@ public class TrackListActivity extends ListActivity  {
 	}
 
 	private ArrayList<Track> getTracks() {
-		
+
 		// Load event with specified id from the db
 		final DBAdapter db = new DBAdapter(this);
 		try {
@@ -169,5 +171,5 @@ public class TrackListActivity extends ListActivity  {
 
 
 	}
-	
+
 }

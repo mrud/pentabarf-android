@@ -3,9 +3,9 @@ package org.fosdem.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fosdem.pojo.Person;
 
 import android.test.AndroidTestCase;
+import at.linuxtage.glt.pojo.Person;
 
 public class StringUtilTest extends AndroidTestCase {
 	

@@ -5,8 +5,8 @@ package org.fosdem.util;
 
 import java.util.ArrayList;
 
-import org.fosdem.R;
-import org.fosdem.pojo.Track;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Track;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,12 +1,10 @@
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 import org.fosdem.db.DBAdapter;
-import org.fosdem.pojo.Event;
 import org.fosdem.util.EventAdapter;
 
 import android.app.ListActivity;
@@ -21,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+import at.linuxtage.R;
+import at.linuxtage.glt.pojo.Event;
 
 /**
  * @author Christophe Vandeplas <christophe@vandeplas.com>
@@ -46,7 +46,7 @@ public class EventListActivity extends ListActivity {
 	private String roomName = null;
 	private Long timeSearch  = null;
 	private ArrayList<Integer> event_ids = new ArrayList<Integer>();
-	
+
 	// 10 min.
 	private static final long CURRENT_TIME_SLICE = 600000;
 	@Override
@@ -162,7 +162,7 @@ public class EventListActivity extends ListActivity {
 			} else {
 				return null;
 			}
- 		} finally {
+		} finally {
 			db.close();
 		}
 	}

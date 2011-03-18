@@ -1,6 +1,5 @@
-package org.fosdem.schedules;
+package at.linuxtage.schedule;
 
-import org.fosdem.R;
 import org.fosdem.broadcast.FavoritesBroadcast;
 
 import android.app.Activity;
@@ -11,6 +10,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
+import at.linuxtage.R;
 
 public class Preferences extends PreferenceActivity implements
 		OnPreferenceChangeListener {
@@ -38,7 +38,7 @@ public class Preferences extends PreferenceActivity implements
 		 * Preference customPref = (Preference) findPreference("customPref");
 		 * customPref .setOnPreferenceClickListener(new
 		 * OnPreferenceClickListener() {
-		 * 
+		 *
 		 * public boolean onPreferenceClick(Preference preference) {
 		 * Toast.makeText(getBaseContext(),
 		 * "The custom preference has been clicked", Toast.LENGTH_LONG).show();
@@ -47,7 +47,7 @@ public class Preferences extends PreferenceActivity implements
 		 * SharedPreferences.Editor editor = customSharedPreference .edit();
 		 * editor.putString("myCustomPref", "The preference has been clicked");
 		 * editor.commit(); return true; }
-		 * 
+		 *
 		 * });
 		 */
 		notifyPref = (Preference) findPreference(PREF_NOTIFY);
@@ -58,16 +58,16 @@ public class Preferences extends PreferenceActivity implements
 
 		delayPref = (Preference) findPreference(PREF_DELAY);
 		delayPref.setOnPreferenceChangeListener(this);
-		
+
 		ledPref = (Preference) findPreference(PREF_LED);
 		ledPref.setOnPreferenceChangeListener(this);
-		
+
 		upcomingPref = (Preference) findPreference(PREF_UPCOMING);
 		upcomingPref.setOnPreferenceChangeListener(this);
 
 		sortPref = (Preference) findPreference(PREF_SORT);
 		sortPref.setOnPreferenceChangeListener(this);
-		
+
 		SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(),
 				Activity.MODE_PRIVATE);
 		vibratePref.setEnabled(sharedPreferences.getBoolean(PREF_NOTIFY, true));
@@ -77,7 +77,7 @@ public class Preferences extends PreferenceActivity implements
 		SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(),
 				Activity.MODE_PRIVATE);
 		Editor edit = sharedPreferences.edit();
-		
+
 		if (preference.getKey().equals(PREF_NOTIFY)) {
 			vibratePref.setEnabled((Boolean) newValue);
 			delayPref.setEnabled((Boolean) newValue);
@@ -86,7 +86,7 @@ public class Preferences extends PreferenceActivity implements
 			String value=(String)newValue;
 			if(value!=null && value.length()==0)return false;
 			edit.putInt(PREF_DELAY, Integer.parseInt(value));
-			
+
 			// Update alarms
 			Intent intent = new Intent(FavoritesBroadcast.ACTION_FAVORITES_UPDATE);
 			intent.putExtra(FavoritesBroadcast.EXTRA_TYPE, FavoritesBroadcast.EXTRA_TYPE_RESCHEDULE);
