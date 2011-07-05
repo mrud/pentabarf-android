@@ -110,14 +110,5 @@ public class StringUtil {
 		return DateFormat.getDateTimeInstance().format(date);
 	}
 
-	/**
-	 * Clean up a string to remove dots and lowercase.
-	 * This is usually needed for url paths for the map download
-	 * @param name 
-	 * @return
-	 */
-	public static String roomNameToURL(String name) {
-		return Main.ROOM_IMG_URL_BASE+name.replace(".", "").toLowerCase();
-	}
 
 }

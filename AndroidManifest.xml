@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	  package="net.spamt.froscon10"
-	  android:versionCode="5"
-	  android:versionName="1.0.1">
+	  android:versionCode="6" android:versionName="1.1" >
 	  <uses-permission android:name="android.permission.INTERNET" />
 	  <uses-permission android:name="android.permission.VIBRATE" />
 	  <supports-screens android:smallScreens="true" 
@@ -67,6 +66,5 @@
 	<uses-sdk  android:targetSdkVersion="4" android:minSdkVersion="3"/>
 	<instrumentation 
 		android:name="android.test.InstrumentationTestRunner"
-		android:targetPackage="org.fosdem"
-		android:label="FOSDEM JUnit" />
+		android:label="FOSDEM JUnit" android:targetPackage="net.spamt.froscon10"/>
 </manifest> 

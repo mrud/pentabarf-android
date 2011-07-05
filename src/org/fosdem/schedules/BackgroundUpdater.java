@@ -71,7 +71,7 @@ public class BackgroundUpdater implements Runnable {
 		sendMessage(Main.STARTFETCHING);
 
 		// Parse
-		final ScheduleParser parser = new ScheduleParser(Main.XML_URL);
+		final ScheduleParser parser = new ScheduleParser(Main.XML_URL, context);
 		parser.addTagEventListener(parseEventListener);
 		final Schedule s = parser.parse();
 
@@ -106,17 +106,6 @@ public class BackgroundUpdater implements Runnable {
 			db.close();
 		}
 
-		// Download the images in the background
-		for (final String room : rooms) {
-			// Log.d(LOG_TAG, "Downloading room image:" + room);
-			try {
-				FileUtil.fetchCached(StringUtil.roomNameToURL(room));
-			} catch (MalformedURLException e) {
-			} catch (IOException e) {
-			}
-		}
-
-		sendMessage(Main.ROOMIMGDONE);
 	}
 
 	public void run() {

@@ -146,7 +146,7 @@ public class DBAdapter extends ContentProvider {
 	protected static final String TABLE_PERSONS = "persons";
 	protected static final String TABLE_JOIN_PERSON_EVENT = "person_event";
 	protected static final String TABLE_FAVORITES = "favorites";
-	protected static final int DB_VERSION = 9;
+	protected static final int DB_VERSION = 10;
 
 	public static final String ID = "id";
 	public static final String START = "start";

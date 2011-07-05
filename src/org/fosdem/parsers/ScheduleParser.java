@@ -20,6 +20,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.content.Context;
+
 //TODO eMich - persons and links need to be added to the parser.
 public class ScheduleParser extends BaseParser {
 
@@ -71,8 +73,8 @@ public class ScheduleParser extends BaseParser {
 		super(s);
 	}
 
-	public ScheduleParser(String url) throws IOException {
-		super(url);
+	public ScheduleParser(String url, Context ctx) throws IOException {
+		super(url, ctx);
 	}
 
 	public Schedule parse() throws ParserException {

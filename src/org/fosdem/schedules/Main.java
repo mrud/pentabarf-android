@@ -58,8 +58,7 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int UPDATE_ID = Menu.FIRST + 1;
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
 
-	public static final String XML_URL = "http://programm.froscon.org/2010//schedule.en.xml";
-	public static final String ROOM_IMG_URL_BASE = "http://programm.froscon.org/2010/map/room/";
+	public static final String XML_URL = "http://programm.froscon.org/2011/schedule.xml";
 
 	public int counter = 0;
 	protected TextView tvProgress = null, tvDbVer = null;
