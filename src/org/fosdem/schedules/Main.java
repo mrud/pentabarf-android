@@ -59,7 +59,7 @@ public class Main extends Activity implements ParserEventListener,
 	private static final int SETTINGS_ID = Menu.FIRST + 2;
 
 	public static final String PREFS = "org.fosdem";
-	public static final String XML_URL = "http://penta.debconf.org/dc10_schedule/schedule.en.xml";
+	public static final String XML_URL = "http://penta.debconf.org/dc11_schedule/schedule.en.xml";
 	public static final String ROOM_IMG_URL_BASE = "http://penta.debconf.org/dc10_schedule/map/room/";
 
 	public int counter = 0;
