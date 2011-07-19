@@ -237,13 +237,13 @@ public class DisplayEvent extends Activity implements OnGestureListener {
 		String extra = "I'm attending '" + event.getTitle() + "' (Day "
 				+ (event.getDayindex()) + " at " + event.getStart().getHours()
 				+ ":" + event.getStart().getMinutes() + " @ " + event.getRoom()
-				+ ") #debconf10";
+				+ ") #debconf11";
 		long currentTime = Calendar.getInstance().getTimeInMillis();
 		if (currentTime >= event.getStart().getTime()
 				&& currentTime <= (event.getStart().getTime() + ((event
 						.getDuration() + 10) * 60 * 1000)))
 			extra = "I'm currently attending '" + event.getTitle() + "' ("
-					+ event.getRoom() + ") #fosdem";
+					+ event.getRoom() + ") #debconf11";
 		intent.putExtra(Intent.EXTRA_TEXT, extra);
 		startActivity(Intent.createChooser(intent, getString(R.string.share)));
 	}
